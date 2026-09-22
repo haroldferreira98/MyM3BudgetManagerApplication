@@ -342,7 +342,15 @@
 
       <div class="card">
         <div style="font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 8px;">Sauvegarde de secours</div>
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--outline-var);">
+          <div>
+            <div style="font-weight: 500;">Importer un JSON</div>
+            <div style="font-size: 11px; color: var(--outline);">Injecte et synchronise avec Firebase</div>
+          </div>
+          <button id="btnTriggerImport" class="btn btn-sec">Importer</button>
+          <input type="file" id="jsonFileInput" accept=".json,application/json" style="display: none;" />
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0 0;">
           <div><div style="font-weight: 500;">Exporter en JSON</div></div>
           <button id="btnExport" class="btn btn-sec">Exporter</button>
         </div>
@@ -445,10 +453,11 @@
       doc, 
       setDoc, 
       deleteDoc, 
+      writeBatch,
       onSnapshot 
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // Configuration Firebase officielle de ton projet
+    // Configuration Firebase officielle du projet
     const firebaseConfig = {
       apiKey: "AIzaSyA02Emvdc_sNSYuaxUhlE87aDoaJ3CtSPE",
       authDomain: "mym3budgetmanagerapplication.firebaseapp.com",
@@ -958,6 +967,58 @@
           notify("Erreur Firestore : " + err.message, "error");
         }
       }
+    };
+
+    // --- IMPORT & EXPORT JSON ---
+    $("btnTriggerImport").onclick = () => $("jsonFileInput").click();
+
+    $("jsonFileInput").onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (evt) => {
+        try {
+          if (!currentUser) return notify("Connectez-vous avant d'importer", "error");
+          
+          const raw = JSON.parse(evt.target.result);
+          const listToImport = Array.isArray(raw) ? raw : (raw.transactions || []);
+
+          if (!listToImport.length) return notify("Aucune opération trouvée dans le JSON", "error");
+
+          notify(`Import de ${listToImport.length} opérations...`, "sync");
+
+          // Découpage par lots de 400 (limite Firestore de 500 max par lot)
+          const chunkSize = 400;
+          for (let i = 0; i < listToImport.length; i += chunkSize) {
+            const chunk = listToImport.slice(i, i + chunkSize);
+            const batch = writeBatch(db);
+
+            chunk.forEach(t => {
+              const id = t.id ? String(t.id) : (Date.now() + Math.random().toString(36).substr(2, 6));
+              const ref = doc(db, "users", currentUser.uid, "transactions", id);
+              batch.set(ref, {
+                label: t.label || "Sans libellé",
+                amount: Number(t.amount) || 0,
+                type: t.type || "expense",
+                category: t.category || "supermarche",
+                isFixed: !!t.isFixed,
+                trackRefund: !!t.trackRefund,
+                refunds: Array.isArray(t.refunds) ? t.refunds : [],
+                date: t.date || new Date().toISOString().split("T")[0]
+              });
+            });
+
+            await batch.commit();
+          }
+
+          notify(`${listToImport.length} opérations synchronisées !`, "cloud_done");
+          $("jsonFileInput").value = "";
+        } catch (err) {
+          notify("Erreur de lecture du JSON : " + err.message, "error");
+        }
+      };
+      reader.readAsText(file);
     };
 
     $("btnExport").onclick = () => {
