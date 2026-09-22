@@ -120,7 +120,6 @@
     .tx-item h4 { font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .badge { border-radius: 6px; padding: 1px 6px; font-weight: 500; font-size: 11px; }
     .badge-fix { background: var(--sec-container); color: var(--on-sec-container); }
-    .badge-med { background: var(--primary-container); color: var(--on-primary-container); font-weight: 600; }
     .amt { font-family: var(--font-display); font-size: 15px; font-weight: 700; white-space: nowrap; }
     .amt.inc { color: var(--success); }
 
@@ -328,19 +327,6 @@
       </div>
 
       <div class="card">
-        <div id="toggleClaims" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
-          <span style="font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase;">Suivi remboursements santé</span>
-          <span class="material-symbols-rounded" id="claimsChevron" style="transition: .25s;">expand_more</span>
-        </div>
-        <div id="claimsSummary" style="display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; gap: 6px; padding: 10px; background: var(--surface-high); border-radius: 12px; margin-top: 10px; font-size: 11px;">
-          <div><span>Dossiers</span><strong id="csCount" style="display:block; font-size:13px;">0</strong></div>
-          <div><span>Reçu</span><strong id="csRec" style="display:block; font-size:13px; color:var(--success);">0 €</strong></div>
-          <div><span>Reste dû</span><strong id="csPend" style="display:block; font-size:13px; color:var(--error);">0 €</strong></div>
-        </div>
-        <div id="claimsList" style="display: none; margin-top: 14px;"></div>
-      </div>
-
-      <div class="card">
         <div style="font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 8px;">Sauvegarde de secours</div>
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--outline-var);">
           <div>
@@ -393,7 +379,7 @@
         <select id="txCat" class="input"></select>
         <input type="date" id="txDate" class="input" />
         <div id="switchRow" style="display: flex; justify-content: space-between; align-items: center;">
-          <div><div id="swTitle" style="font-weight: 500;">Charge Fixe</div><div id="swSub" style="font-size: 11px; color: var(--outline);">Récurrente chaque mois</div></div>
+          <div><div style="font-weight: 500;">Charge Fixe</div><div style="font-size: 11px; color: var(--outline);">Récurrente chaque mois</div></div>
           <label class="switch"><input type="checkbox" id="txSwitch"><span class="slider"></span></label>
         </div>
       </div>
@@ -417,26 +403,6 @@
     </div>
   </div>
 
-  <!-- MODAL REMBOURSEMENT SANTÉ -->
-  <div class="modal-backdrop" id="modalRefund">
-    <div class="sheet">
-      <h3 style="font-family: var(--font-display); font-size: 18px; margin-bottom: 14px;">Ajouter un remboursement</h3>
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <select id="refSource" class="input">
-          <option value="Sécurité Sociale (CPAM)">Sécurité Sociale (CPAM)</option>
-          <option value="Mutuelle">Complémentaire / Mutuelle</option>
-          <option value="Autre remboursement">Autre remboursement</option>
-        </select>
-        <input type="tel" inputmode="numeric" id="refAmount" class="input" placeholder="0,00" required />
-        <input type="date" id="refDate" class="input" />
-      </div>
-      <div style="display: flex; gap: 10px; margin-top: 18px;">
-        <button class="btn btn-sec" style="flex: 1;" data-close="modalRefund">Annuler</button>
-        <button id="btnSaveRef" class="btn btn-pri" style="flex: 1;">Valider</button>
-      </div>
-    </div>
-  </div>
-
   <!-- FIREBASE SDK & APPLICATION LOGIC -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -457,7 +423,6 @@
       onSnapshot 
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // Configuration Firebase officielle du projet
     const firebaseConfig = {
       apiKey: "AIzaSyA02Emvdc_sNSYuaxUhlE87aDoaJ3CtSPE",
       authDomain: "mym3budgetmanagerapplication.firebaseapp.com",
@@ -537,7 +502,6 @@
     const DONUT_COLORS = ["#704f8b", "#655a6f", "#b88728", "#a25666", "#3b647f", "#7b757f"];
 
     let currentFilter = "all", editingId = null, selectedId = null, modalType = "expense", currentSort = 0, searchQuery = "";
-    let activeClaimId = null, claimsExpanded = false;
     let currentMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
 
     const getMonthTx = () => transactions.filter(t => t.date && t.date.startsWith(currentMonth));
@@ -548,7 +512,6 @@
       renderSummary();
       renderTransactions();
       renderAnalytics();
-      renderClaims();
     }
 
     function renderSummary() {
@@ -615,7 +578,6 @@
                 <div style="font-size:11px; color:var(--on-surface-var); display:flex; gap:6px;">
                   <span>${d}/${m}</span><span>•</span><span>${cat.label}</span>
                   ${tx.isFixed ? `<span class="badge badge-fix">Fixe</span>` : ""}
-                  ${tx.trackRefund ? `<span class="badge badge-med">Soins</span>` : ""}
                 </div>
               </div>
             </div>
@@ -701,29 +663,6 @@
       });
     }
 
-    function renderClaims() {
-      const list = transactions.filter(t => t.category === "sante" && t.trackRefund);
-      let claimed = 0, rec = 0;
-      list.forEach(t => { claimed += Number(t.amount); rec += (t.refunds || []).reduce((s, r) => s + Number(r.amount), 0); });
-      $("csCount").textContent = list.length;
-      $("csRec").textContent = `+${fmt(rec)}`;
-      $("csPend").textContent = fmt(Math.max(0, claimed - rec));
-
-      const c = $("claimsList");
-      if (!list.length) { c.innerHTML = `<div style="text-align:center; padding:10px; font-size:12px; color:var(--outline);">Aucun dossier de soin actif.</div>`; return; }
-      c.innerHTML = list.map(t => {
-        const tRec = (t.refunds || []).reduce((s, r) => s + Number(r.amount), 0);
-        return `
-          <div class="rule-card" style="margin-bottom:8px;">
-            <div style="display:flex; justify-content:space-between; font-weight:600; font-size:13px;">
-              <span>${t.label}</span><span>${fmt(t.amount)}</span>
-            </div>
-            <div style="font-size:11px; color:var(--success); margin:4px 0;">Remboursé : ${fmt(tRec)}</div>
-            <button class="btn btn-sec" style="font-size:12px; padding:6px 12px; margin-top:4px;" onclick="openRefund('${t.id}')">+ Remboursement</button>
-          </div>`;
-      }).join("");
-    }
-
     function updateSlidingPill() {
       const active = document.querySelector(".nav-item.active");
       if (!active) return;
@@ -784,13 +723,6 @@
       modal("modalAction", true);
     };
 
-    window.openRefund = parentId => {
-      activeClaimId = parentId;
-      setTPE($("refAmount"), 0);
-      $("refDate").value = new Date().toISOString().split("T")[0];
-      modal("modalRefund", true);
-    };
-
     function setModalType(type) {
       modalType = type;
       const isExp = type === "expense";
@@ -798,18 +730,10 @@
       $("btnTypeInc").className = `btn ${!isExp ? 'btn-pri' : 'btn-sec'}`;
       $("switchRow").style.display = isExp ? "flex" : "none";
       $("txCat").innerHTML = CATS[type].map(c => `<option value="${c.id}">${c.label}</option>`).join("");
-      updateSwitchLabel();
-    }
-
-    function updateSwitchLabel() {
-      const isMed = modalType === "expense" && $("txCat").value === "sante";
-      $("swTitle").textContent = isMed ? "Suivre le remboursement" : "Charge Fixe";
-      $("swSub").textContent = isMed ? "Visite médicale, mutuelle..." : "Récurrente chaque mois";
     }
 
     // --- INITIALISATION ---
     fmtTPE($("txAmount"));
-    fmtTPE($("refAmount"));
 
     const p = localStorage.getItem("budget_pixel_color") || "lavender";
     document.documentElement.setAttribute("data-color", p);
@@ -874,12 +798,6 @@
       renderAnalytics();
     };
 
-    $("toggleClaims").onclick = () => {
-      claimsExpanded = !claimsExpanded;
-      $("claimsList").style.display = claimsExpanded ? "block" : "none";
-      $("claimsChevron").style.transform = claimsExpanded ? "rotate(180deg)" : "";
-    };
-
     $("openAdd").onclick = () => {
       editingId = null;
       $("modalTxTitle").textContent = "Nouvelle opération";
@@ -893,33 +811,28 @@
 
     $("btnTypeExp").onclick = () => setModalType("expense");
     $("btnTypeInc").onclick = () => setModalType("income");
-    $("txCat").onchange = updateSwitchLabel;
 
     $("btnSaveTx").onclick = async () => {
       if (!currentUser) return notify("Veuillez vous connecter", "error");
       const label = $("txLabel").value.trim(), amount = getTPE($("txAmount")), cat = $("txCat").value, date = $("txDate").value;
       if (!label || amount <= 0) return notify("Veuillez saisir un libellé et montant", "error");
 
-      const isFix = modalType === "expense" && cat !== "sante" && $("txSwitch").checked;
-      const trackRef = modalType === "expense" && cat === "sante" && $("txSwitch").checked;
+      const isFix = modalType === "expense" && $("txSwitch").checked;
       const targetId = editingId || Date.now().toString();
 
-      const existingData = editingId ? (transactions.find(t => t.id === editingId) || {}) : {};
       const txData = {
         label,
         amount,
         type: modalType,
         category: cat,
         isFixed: isFix,
-        trackRefund: trackRef,
-        refunds: existingData.refunds || [],
         date
       };
 
       try {
         await setDoc(doc(db, "users", currentUser.uid, "transactions", targetId), txData);
         modal("modalTx", false);
-        notify("Opération synchronisée avec Google", "cloud_done");
+        notify("Opération enregistrée", "cloud_done");
       } catch (err) {
         notify("Erreur Firestore : " + err.message, "error");
       }
@@ -936,7 +849,7 @@
       $("txDate").value = t.date;
       setModalType(t.type);
       $("txCat").value = t.category;
-      $("txSwitch").checked = t.category === "sante" ? !!t.trackRefund : !!t.isFixed;
+      $("txSwitch").checked = !!t.isFixed;
       modal("modalTx", true);
     };
 
@@ -945,27 +858,9 @@
       try {
         await deleteDoc(doc(db, "users", currentUser.uid, "transactions", selectedId));
         modal("modalAction", false);
-        notify("Opération supprimée de votre compte", "delete");
+        notify("Opération supprimée", "delete");
       } catch (err) {
         notify("Erreur lors de la suppression", "error");
-      }
-    };
-
-    $("btnSaveRef").onclick = async () => {
-      if (!currentUser || !activeClaimId) return;
-      const amt = getTPE($("refAmount"));
-      if (amt <= 0) return notify("Montant invalide", "error");
-
-      const t = transactions.find(x => x.id === activeClaimId);
-      if (t) {
-        const refList = [...(t.refunds || []), { id: Date.now().toString(), source: $("refSource").value, amount: amt, date: $("refDate").value }];
-        try {
-          await setDoc(doc(db, "users", currentUser.uid, "transactions", activeClaimId), { refunds: refList }, { merge: true });
-          modal("modalRefund", false);
-          notify("Remboursement enregistré", "check");
-        } catch (err) {
-          notify("Erreur Firestore : " + err.message, "error");
-        }
       }
     };
 
@@ -984,11 +879,10 @@
           const raw = JSON.parse(evt.target.result);
           const listToImport = Array.isArray(raw) ? raw : (raw.transactions || []);
 
-          if (!listToImport.length) return notify("Aucune opération trouvée dans le JSON", "error");
+          if (!listToImport.length) return notify("Aucune opération trouvée", "error");
 
           notify(`Import de ${listToImport.length} opérations...`, "sync");
 
-          // Découpage par lots de 400 (limite Firestore de 500 max par lot)
           const chunkSize = 400;
           for (let i = 0; i < listToImport.length; i += chunkSize) {
             const chunk = listToImport.slice(i, i + chunkSize);
@@ -1003,8 +897,6 @@
                 type: t.type || "expense",
                 category: t.category || "supermarche",
                 isFixed: !!t.isFixed,
-                trackRefund: !!t.trackRefund,
-                refunds: Array.isArray(t.refunds) ? t.refunds : [],
                 date: t.date || new Date().toISOString().split("T")[0]
               });
             });
