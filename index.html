@@ -87,13 +87,11 @@
     body { background: var(--surface); color: var(--on-surface); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; display: flex; justify-content: center; }
     .app { width: 100%; max-width: 480px; min-height: 100vh; padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)); position: relative; }
 
-    /* Écran de verrouillage / Connexion */
     #authOverlay { position: fixed; inset: 0; background: var(--surface); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; }
     #authOverlay.hidden { display: none; }
     .google-btn { display: inline-flex; align-items: center; gap: 12px; background: var(--surface-container); border: 1px solid var(--outline-var); border-radius: 28px; padding: 12px 24px; font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--on-surface); cursor: pointer; box-shadow: var(--elev-1); transition: .2s; }
     .google-btn:hover { background: var(--surface-high); }
 
-    /* Typo & Layout de base */
     header { padding: 18px 16px 12px; display: flex; justify-content: space-between; align-items: center; }
     header h1 { font-family: var(--font-display); font-size: 20px; font-weight: 700; letter-spacing: -.4px; }
     .month-pill { position: relative; display: inline-flex; align-items: center; gap: 5px; background: var(--surface-container); border: 1px solid var(--outline-var); padding: 6px 12px; border-radius: 12px; font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--primary); }
@@ -450,16 +448,16 @@
       onSnapshot 
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // Configuration Firebase de ton projet
+    // Configuration Firebase officielle de ton projet
     const firebaseConfig = {
-      apiKey: "AIzaSyDsN9i87GGzx_v_Ci72yt-oDWN77S2Apak",
+      apiKey: "AIzaSyA02Emvdc_sNSYuaxUhlE87aDoaJ3CtSPE",
       authDomain: "mym3budgetmanagerapplication.firebaseapp.com",
       projectId: "mym3budgetmanagerapplication",
       storageBucket: "mym3budgetmanagerapplication.firebasestorage.app",
-      messagingSenderId: "83517729033",
-      appId: "1:83517729033:web:d73283758ef53892984bd8"
+      messagingSenderId: "883702754992",
+      appId: "1:883702754992:web:4a8be32c24c5a3d9645575",
+      measurementId: "G-KSBKHRFD45"
     };
-
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -491,7 +489,6 @@
       clearTimeout(window._sb); window._sb = setTimeout(() => $("snackbar").classList.remove("show"), 3200);
     };
 
-    // Modes de tri & catégories
     const SORT_MODES = [
       { id: "date", icon: "schedule", label: "Date (récent)" },
       { id: "alpha", icon: "sort_by_alpha", label: "Ordre alphabétique" },
@@ -731,7 +728,6 @@
         $("userEmail").textContent = user.email || user.displayName;
         $("authOverlay").classList.add("hidden");
 
-        // Écoute de la collection Firestore en temps réel
         const txCol = collection(db, "users", user.uid, "transactions");
         if (unsubscribeFirestore) unsubscribeFirestore();
 
@@ -770,7 +766,6 @@
       }
     };
 
-    // Actions fenêtres et modales
     window.openAction = id => {
       selectedId = id;
       const t = transactions.find(x => x.id === id);
