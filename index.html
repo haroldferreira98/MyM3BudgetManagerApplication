@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="fr" data-theme="auto" data-color="lavender">
 <head>
   <meta charset="UTF-8" />
@@ -87,6 +87,13 @@
     body { background: var(--surface); color: var(--on-surface); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; display: flex; justify-content: center; }
     .app { width: 100%; max-width: 480px; min-height: 100vh; padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)); position: relative; }
 
+    /* Écran de verrouillage / Connexion */
+    #authOverlay { position: fixed; inset: 0; background: var(--surface); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; }
+    #authOverlay.hidden { display: none; }
+    .google-btn { display: inline-flex; align-items: center; gap: 12px; background: var(--surface-container); border: 1px solid var(--outline-var); border-radius: 28px; padding: 12px 24px; font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--on-surface); cursor: pointer; box-shadow: var(--elev-1); transition: .2s; }
+    .google-btn:hover { background: var(--surface-high); }
+
+    /* Typo & Layout de base */
     header { padding: 18px 16px 12px; display: flex; justify-content: space-between; align-items: center; }
     header h1 { font-family: var(--font-display); font-size: 20px; font-weight: 700; letter-spacing: -.4px; }
     .month-pill { position: relative; display: inline-flex; align-items: center; gap: 5px; background: var(--surface-container); border: 1px solid var(--outline-var); padding: 6px 12px; border-radius: 12px; font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--primary); }
@@ -164,31 +171,26 @@
     .color-dot.active { outline-color: var(--primary); outline-offset: 3px; transform: scale(0.92); }
     .color-dot .material-symbols-rounded { color: #fff; font-size: 22px; display: none; }
     .color-dot.active .material-symbols-rounded { display: block; }
-
-    /* AUTH OVERLAY */
-    #authOverlay { position: fixed; inset: 0; background: var(--surface); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; }
-    .google-btn { display: inline-flex; align-items: center; gap: 12px; background: var(--surface-container); border: 1px solid var(--outline-var); border-radius: 28px; padding: 12px 24px; font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--on-surface); cursor: pointer; box-shadow: var(--elev-1); margin-top: 24px; }
   </style>
 </head>
 <body>
 
-  <!-- ÉCRAN D'AUTHENTIFICATION GOOGLE -->
+  <!-- ÉCRAN DE CONNEXION GOOGLE -->
   <div id="authOverlay">
-    <span class="material-symbols-rounded" style="font-size: 64px; color: var(--primary); margin-bottom: 16px;">account_balance_wallet</span>
-    <h2 style="font-family: var(--font-display); font-size: 24px; font-weight: 700;">Budget familial</h2>
-    <p style="font-size: 14px; color: var(--on-surface-var); margin-top: 8px; max-width: 280px;">Synchronisez vos comptes en toute sécurité avec Google Cloud.</p>
-    <button id="btnLogin" class="google-btn">
-      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.17 0 9.99 0 12s.45 3.83 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+    <div style="background: var(--primary-container); width: 64px; height: 64px; border-radius: 20px; display: grid; place-content: center; margin-bottom: 20px;">
+      <span class="material-symbols-rounded" style="font-size: 36px; color: var(--on-primary-container);">account_balance_wallet</span>
+    </div>
+    <h2 style="font-family: var(--font-display); font-size: 24px; font-weight: 700; margin-bottom: 8px;">Budget familial</h2>
+    <p style="font-size: 14px; color: var(--on-surface-var); margin-bottom: 32px; max-width: 280px;">Connectez-vous pour synchroniser vos comptes et sécuriser vos données.</p>
+    <button class="google-btn" id="btnLoginGoogle">
+      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.35 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
       Continuer avec Google
     </button>
   </div>
 
-  <div class="app" id="mainApp" style="display: none;">
+  <div class="app">
     <header>
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <img id="userAvatar" src="" alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%; display: none;" />
-        <h1>Budget familial</h1>
-      </div>
+      <h1>Budget familial</h1>
       <div class="month-pill">
         <span class="material-symbols-rounded" style="font-size: 18px;">calendar_month</span>
         <span id="monthLabel">...</span>
@@ -288,15 +290,34 @@
       </div>
     </div>
 
-    <!-- SCREEN 3 : Options & Santé -->
+    <!-- SCREEN 3 : Options & Compte -->
     <div id="screenSettings" class="screen">
+      <div class="card">
+        <div style="font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 8px;">Mon compte</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 0 12px;">
+          <div>
+            <div id="userEmail" style="font-weight: 600; font-size: 14px;">Connecté</div>
+            <div style="font-size: 11px; color: var(--outline);">Données synchronisées dans le Cloud Google</div>
+          </div>
+          <button id="btnLogout" class="btn btn-dan" style="padding: 8px 14px; font-size: 12px;">Déconnexion</button>
+        </div>
+      </div>
+
       <div class="card">
         <div style="font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 8px;">Couleurs Google Pixel</div>
         <div class="color-picker-row">
-          <button class="color-dot active" data-palette="lavender" style="background:#704f8b;" title="Lilas"><span class="material-symbols-rounded">check</span></button>
-          <button class="color-dot" data-palette="blue" style="background:#1b6585;" title="Bleu"><span class="material-symbols-rounded">check</span></button>
-          <button class="color-dot" data-palette="sage" style="background:#3b693a;" title="Sauge"><span class="material-symbols-rounded">check</span></button>
-          <button class="color-dot" data-palette="peach" style="background:#8d4f38;" title="Pêche"><span class="material-symbols-rounded">check</span></button>
+          <button class="color-dot active" data-palette="lavender" style="background:#704f8b;" title="Lilas">
+            <span class="material-symbols-rounded">check</span>
+          </button>
+          <button class="color-dot" data-palette="blue" style="background:#1b6585;" title="Bleu">
+            <span class="material-symbols-rounded">check</span>
+          </button>
+          <button class="color-dot" data-palette="sage" style="background:#3b693a;" title="Sauge">
+            <span class="material-symbols-rounded">check</span>
+          </button>
+          <button class="color-dot" data-palette="peach" style="background:#8d4f38;" title="Pêche">
+            <span class="material-symbols-rounded">check</span>
+          </button>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px;">
           <span>Mode d'affichage</span>
@@ -322,32 +343,31 @@
       </div>
 
       <div class="card">
-        <div style="font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 8px;">Compte & Données</div>
+        <div style="font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 8px;">Sauvegarde de secours</div>
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
-          <div><div id="userEmail" style="font-size: 13px; color: var(--on-surface-var);">...</div></div>
-          <button id="btnLogout" class="btn btn-sec">Se déconnecter</button>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-top: 1px solid var(--outline-var);">
           <div><div style="font-weight: 500;">Exporter en JSON</div></div>
           <button id="btnExport" class="btn btn-sec">Exporter</button>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
-          <div><div style="font-weight: 500;">Importer un fichier JSON</div></div>
-          <button onclick="$('importFile').click()" class="btn btn-sec">Importer</button>
-          <input type="file" id="importFile" accept=".json" style="display: none;" />
         </div>
       </div>
     </div>
 
-    <!-- Navigation & FAB -->
+    <!-- FAB & Sliding Navigation Bar -->
     <button class="fab" id="openAdd"><span class="material-symbols-rounded">add</span></button>
 
     <nav class="nav-bar" id="navBar">
       <div class="nav-pill" id="navPill"></div>
-      <button class="nav-item active" data-target="screenOperations"><span class="material-symbols-rounded">receipt_long</span><span>Opérations</span></button>
-      <button class="nav-item" data-target="screenAnalytics"><span class="material-symbols-rounded">pie_chart</span><span>Analyse</span></button>
-      <button class="nav-item" data-target="screenSettings"><span class="material-symbols-rounded">settings</span><span>Options</span></button>
-      <button class="nav-item" id="btnToggleSearch"><span class="material-symbols-rounded">search</span><span>Chercher</span></button>
+      <button class="nav-item active" data-target="screenOperations">
+        <span class="material-symbols-rounded">receipt_long</span><span>Opérations</span>
+      </button>
+      <button class="nav-item" data-target="screenAnalytics">
+        <span class="material-symbols-rounded">pie_chart</span><span>Analyse</span>
+      </button>
+      <button class="nav-item" data-target="screenSettings">
+        <span class="material-symbols-rounded">settings</span><span>Options</span>
+      </button>
+      <button class="nav-item" id="btnToggleSearch">
+        <span class="material-symbols-rounded">search</span><span>Chercher</span>
+      </button>
     </nav>
   </div>
 
@@ -378,7 +398,7 @@
     </div>
   </div>
 
-  <!-- MODAL ACTIONS -->
+  <!-- MODAL ACTIONS TRANSACTION -->
   <div class="modal-backdrop" id="modalAction">
     <div class="sheet">
       <h3 id="actTitle" style="font-family: var(--font-display); font-size: 18px;"></h3>
@@ -391,7 +411,7 @@
     </div>
   </div>
 
-  <!-- MODAL REMBOURSEMENT -->
+  <!-- MODAL REMBOURSEMENT SANTÉ -->
   <div class="modal-backdrop" id="modalRefund">
     <div class="sheet">
       <h3 style="font-family: var(--font-display); font-size: 18px; margin-bottom: 14px;">Ajouter un remboursement</h3>
@@ -411,12 +431,26 @@
     </div>
   </div>
 
-  <!-- FIREBASE ET APPLICATION LOGIQUE -->
+  <!-- FIREBASE SDK & APPLICATION LOGIC -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-    import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, writeBatch } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithPopup, 
+      GoogleAuthProvider, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      collection, 
+      doc, 
+      setDoc, 
+      deleteDoc, 
+      onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // Configuration Firebase de ton projet
     const firebaseConfig = {
       apiKey: "AIzaSyDsN9i87GGzx_v_Ci72yt-oDWN77S2Apak",
       authDomain: "mybudgetmanagerapplication.firebaseapp.com",
@@ -432,10 +466,13 @@
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    // UI Helpers
+    let currentUser = null;
+    let unsubscribeFirestore = null;
+    let transactions = [];
+
+    // --- HELPERS ---
     const $ = id => document.getElementById(id);
     const $all = sel => document.querySelectorAll(sel);
-    window.$ = $;
     const fmt = n => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n);
     const modal = (id, show) => $(id).classList.toggle("show", show);
 
@@ -454,6 +491,7 @@
       clearTimeout(window._sb); window._sb = setTimeout(() => $("snackbar").classList.remove("show"), 3200);
     };
 
+    // Modes de tri & catégories
     const SORT_MODES = [
       { id: "date", icon: "schedule", label: "Date (récent)" },
       { id: "alpha", icon: "sort_by_alpha", label: "Ordre alphabétique" },
@@ -492,10 +530,6 @@
     const ALL_CATS = [...CATS.expense, ...CATS.income];
     const DONUT_COLORS = ["#704f8b", "#655a6f", "#b88728", "#a25666", "#3b647f", "#7b757f"];
 
-    // App State
-    let currentUser = null;
-    let unsubscribeFirestore = null;
-    let transactions = [];
     let currentFilter = "all", editingId = null, selectedId = null, modalType = "expense", currentSort = 0, searchQuery = "";
     let activeClaimId = null, claimsExpanded = false;
     let currentMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
@@ -503,7 +537,7 @@
     const getMonthTx = () => transactions.filter(t => t.date && t.date.startsWith(currentMonth));
     const sumTx = (arr, fn) => arr.filter(fn).reduce((s, t) => s + Number(t.amount), 0);
 
-    // Rendu UI
+    // --- RENDU UI ---
     function renderApp() {
       renderSummary();
       renderTransactions();
@@ -548,10 +582,13 @@
       }
 
       const mode = SORT_MODES[currentSort].id;
-      if (mode === "date") list.sort((a, b) => new Date(b.date) - new Date(a.date));
-      else if (mode === "alpha") list.sort((a, b) => (a.label || "").localeCompare(b.label || "", "fr", { sensitivity: "base" }));
-      else if (mode === "amt_desc") list.sort((a, b) => Number(b.amount) - Number(a.amount));
-      else if (mode === "cat") {
+      if (mode === "date") {
+        list.sort((a, b) => new Date(b.date) - new Date(a.date));
+      } else if (mode === "alpha") {
+        list.sort((a, b) => (a.label || "").localeCompare(b.label || "", "fr", { sensitivity: "base" }));
+      } else if (mode === "amt_desc") {
+        list.sort((a, b) => Number(b.amount) - Number(a.amount));
+      } else if (mode === "cat") {
         list.sort((a, b) => {
           const catA = (ALL_CATS.find(c => c.id === a.category) || {}).label || "";
           const catB = (ALL_CATS.find(c => c.id === b.category) || {}).label || "";
@@ -687,9 +724,57 @@
       $("navPill").style.transform = `translateX(${active.offsetLeft + (active.offsetWidth / 2) - 32}px)`;
     }
 
+    // --- GESTION FIRESTORE & AUTH ---
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUser = user;
+        $("userEmail").textContent = user.email || user.displayName;
+        $("authOverlay").classList.add("hidden");
+
+        // Écoute de la collection Firestore en temps réel
+        const txCol = collection(db, "users", user.uid, "transactions");
+        if (unsubscribeFirestore) unsubscribeFirestore();
+
+        unsubscribeFirestore = onSnapshot(txCol, (snapshot) => {
+          transactions = [];
+          snapshot.forEach(docSnap => {
+            transactions.push({ id: docSnap.id, ...docSnap.data() });
+          });
+          renderApp();
+        }, (err) => {
+          notify("Erreur de synchronisation Firestore", "error");
+        });
+      } else {
+        currentUser = null;
+        if (unsubscribeFirestore) { unsubscribeFirestore(); unsubscribeFirestore = null; }
+        transactions = [];
+        renderApp();
+        $("authOverlay").classList.remove("hidden");
+      }
+    });
+
+    $("btnLoginGoogle").onclick = async () => {
+      try {
+        await signInWithPopup(auth, provider);
+      } catch (err) {
+        notify("Échec de connexion : " + err.message, "error");
+      }
+    };
+
+    $("btnLogout").onclick = async () => {
+      try {
+        await signOut(auth);
+        notify("Déconnecté avec succès", "logout");
+      } catch (err) {
+        notify("Erreur lors de la déconnexion", "error");
+      }
+    };
+
+    // Actions fenêtres et modales
     window.openAction = id => {
       selectedId = id;
       const t = transactions.find(x => x.id === id);
+      if (!t) return;
       $("actTitle").textContent = t.label;
       $("actSub").textContent = `${t.type === 'expense' ? 'Dépense de' : 'Revenu de'} ${fmt(t.amount)}`;
       modal("modalAction", true);
@@ -718,48 +803,7 @@
       $("swSub").textContent = isMed ? "Visite médicale, mutuelle..." : "Récurrente chaque mois";
     }
 
-    // Gestion de la synchronisation Firestore (avec unsubscribe)
-    function syncFirestore(user) {
-      if (unsubscribeFirestore) unsubscribeFirestore();
-      const colRef = collection(db, "users", user.uid, "transactions");
-      unsubscribeFirestore = onSnapshot(colRef, snapshot => {
-        transactions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderApp();
-      }, err => {
-        notify("Erreur de synchronisation Firestore", "error");
-      });
-    }
-
-    // AUTH OBSERVER
-    onAuthStateChanged(auth, user => {
-      currentUser = user;
-      if (user) {
-        $("authOverlay").style.display = "none";
-        $("mainApp").style.display = "block";
-        $("userEmail").textContent = user.email;
-        if (user.photoURL) {
-          $("userAvatar").src = user.photoURL;
-          $("userAvatar").style.display = "block";
-        }
-        syncFirestore(user);
-        setTimeout(updateSlidingPill, 50);
-      } else {
-        if (unsubscribeFirestore) unsubscribeFirestore();
-        currentUser = null;
-        transactions = [];
-        $("authOverlay").style.display = "flex";
-        $("mainApp").style.display = "none";
-      }
-    });
-
-    // EVENT LISTENERS
-    $("btnLogin").onclick = async () => {
-      try { await signInWithPopup(auth, provider); }
-      catch (e) { notify("Échec de connexion Google", "error"); }
-    };
-
-    $("btnLogout").onclick = () => signOut(auth);
-
+    // --- INITIALISATION ---
     fmtTPE($("txAmount"));
     fmtTPE($("refAmount"));
 
@@ -848,25 +892,32 @@
     $("txCat").onchange = updateSwitchLabel;
 
     $("btnSaveTx").onclick = async () => {
+      if (!currentUser) return notify("Veuillez vous connecter", "error");
       const label = $("txLabel").value.trim(), amount = getTPE($("txAmount")), cat = $("txCat").value, date = $("txDate").value;
       if (!label || amount <= 0) return notify("Veuillez saisir un libellé et montant", "error");
-      if (!currentUser) return notify("Connectez-vous pour enregistrer", "error");
 
       const isFix = modalType === "expense" && cat !== "sante" && $("txSwitch").checked;
       const trackRef = modalType === "expense" && cat === "sante" && $("txSwitch").checked;
-      const id = editingId || Date.now().toString();
+      const targetId = editingId || Date.now().toString();
 
-      const payload = {
-        label, amount, type: modalType, category: cat, isFixed: isFix, trackRefund: trackRef, date
+      const existingData = editingId ? (transactions.find(t => t.id === editingId) || {}) : {};
+      const txData = {
+        label,
+        amount,
+        type: modalType,
+        category: cat,
+        isFixed: isFix,
+        trackRefund: trackRef,
+        refunds: existingData.refunds || [],
+        date
       };
-      if (!editingId) payload.refunds = [];
 
       try {
-        await setDoc(doc(db, "users", currentUser.uid, "transactions", id), payload, { merge: true });
+        await setDoc(doc(db, "users", currentUser.uid, "transactions", targetId), txData);
         modal("modalTx", false);
-        notify("Enregistré dans le Cloud", "cloud_done");
-      } catch (e) {
-        notify("Erreur lors de l'enregistrement", "error");
+        notify("Opération synchronisée avec Google", "cloud_done");
+      } catch (err) {
+        notify("Erreur Firestore : " + err.message, "error");
       }
     };
 
@@ -890,27 +941,26 @@
       try {
         await deleteDoc(doc(db, "users", currentUser.uid, "transactions", selectedId));
         modal("modalAction", false);
-        notify("Opération supprimée", "delete");
-      } catch (e) {
+        notify("Opération supprimée de votre compte", "delete");
+      } catch (err) {
         notify("Erreur lors de la suppression", "error");
       }
     };
 
     $("btnSaveRef").onclick = async () => {
+      if (!currentUser || !activeClaimId) return;
       const amt = getTPE($("refAmount"));
       if (amt <= 0) return notify("Montant invalide", "error");
-      if (!currentUser || !activeClaimId) return;
 
       const t = transactions.find(x => x.id === activeClaimId);
       if (t) {
-        const refunds = t.refunds ? [...t.refunds] : [];
-        refunds.push({ id: Date.now().toString(), source: $("refSource").value, amount: amt, date: $("refDate").value });
+        const refList = [...(t.refunds || []), { id: Date.now().toString(), source: $("refSource").value, amount: amt, date: $("refDate").value }];
         try {
-          await setDoc(doc(db, "users", currentUser.uid, "transactions", activeClaimId), { refunds }, { merge: true });
+          await setDoc(doc(db, "users", currentUser.uid, "transactions", activeClaimId), { refunds: refList }, { merge: true });
           modal("modalRefund", false);
-          notify("Remboursement ajouté", "check");
-        } catch (e) {
-          notify("Erreur lors de l'ajout", "error");
+          notify("Remboursement enregistré", "check");
+        } catch (err) {
+          notify("Erreur Firestore : " + err.message, "error");
         }
       }
     };
@@ -922,28 +972,7 @@
       notify("Fichier exporté", "download");
     };
 
-    $("importFile").onchange = async e => {
-      if (!currentUser) return notify("Connectez-vous d'abord", "error");
-      const r = new FileReader();
-      r.onload = async ev => {
-        try {
-          const list = JSON.parse(ev.target.result);
-          if (Array.isArray(list)) {
-            const batch = writeBatch(db);
-            list.forEach(tx => {
-              const txId = tx.id ? tx.id.toString() : Date.now().toString() + Math.random().toString(36).substr(2, 4);
-              const docRef = doc(db, "users", currentUser.uid, "transactions", txId);
-              batch.set(docRef, tx);
-            });
-            await batch.commit();
-            notify("Import réussi dans le Cloud", "cloud_done");
-          }
-        } catch(err) {
-          notify("Fichier JSON invalide", "error");
-        }
-      };
-      if (e.target.files[0]) r.readAsText(e.target.files[0]);
-    };
+    setTimeout(updateSlidingPill, 50);
   </script>
 </body>
 </html>
