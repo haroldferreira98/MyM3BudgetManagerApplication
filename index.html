@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Budget familial</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Roboto:wght@400;500&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -14,12 +14,6 @@
       --h: 275;
       --elev-1: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.12);
       --elev-2: 0 3px 6px rgba(0,0,0,.1), 0 2px 4px rgba(0,0,0,.12);
-    }
-    html[data-color="blue"] { --h: 198; }
-    html[data-color="sage"] { --h: 120; }
-    html[data-color="peach"] { --h: 15; }
-
-    :root {
       --primary: hsl(var(--h), 30%, 42%);
       --on-primary: #fff;
       --primary-container: hsl(var(--h), 80%, 92%);
@@ -39,48 +33,31 @@
       --inv-surface: hsl(var(--h), 10%, 20%);
       --inv-on-surface: hsl(var(--h), 15%, 95%);
     }
+    html[data-color="blue"] { --h: 198; }
+    html[data-color="sage"] { --h: 120; }
+    html[data-color="peach"] { --h: 15; }
 
     @media (prefers-color-scheme: dark) {
       html[data-theme="auto"] {
-        --primary: hsl(var(--h), 65%, 85%);
-        --on-primary: hsl(var(--h), 65%, 20%);
-        --primary-container: hsl(var(--h), 40%, 32%);
-        --on-primary-container: hsl(var(--h), 80%, 92%);
-        --sec-container: hsl(var(--h), 15%, 30%);
-        --on-sec-container: hsl(var(--h), 25%, 90%);
-        --surface: hsl(var(--h), 10%, 8%);
-        --surface-container: hsl(var(--h), 10%, 13%);
-        --surface-high: hsl(var(--h), 10%, 17%);
-        --on-surface: hsl(var(--h), 10%, 90%);
-        --on-surface-var: hsl(var(--h), 8%, 78%);
-        --outline: hsl(var(--h), 5%, 58%);
-        --outline-var: hsl(var(--h), 8%, 28%);
-        --error: #ffb4ab;
-        --error-container: #93000a;
-        --success: #86efac;
-        --inv-surface: hsl(var(--h), 10%, 90%);
-        --inv-on-surface: hsl(var(--h), 10%, 15%);
+        --primary: hsl(var(--h), 65%, 85%); --on-primary: hsl(var(--h), 65%, 20%);
+        --primary-container: hsl(var(--h), 40%, 32%); --on-primary-container: hsl(var(--h), 80%, 92%);
+        --sec-container: hsl(var(--h), 15%, 30%); --on-sec-container: hsl(var(--h), 25%, 90%);
+        --surface: hsl(var(--h), 10%, 8%); --surface-container: hsl(var(--h), 10%, 13%);
+        --surface-high: hsl(var(--h), 10%, 17%); --on-surface: hsl(var(--h), 10%, 90%);
+        --on-surface-var: hsl(var(--h), 8%, 78%); --outline: hsl(var(--h), 5%, 58%);
+        --outline-var: hsl(var(--h), 8%, 28%); --error: #ffb4ab; --error-container: #93000a;
+        --success: #86efac; --inv-surface: hsl(var(--h), 10%, 90%); --inv-on-surface: hsl(var(--h), 10%, 15%);
       }
     }
     html[data-theme="dark"] {
-      --primary: hsl(var(--h), 65%, 85%);
-      --on-primary: hsl(var(--h), 65%, 20%);
-      --primary-container: hsl(var(--h), 40%, 32%);
-      --on-primary-container: hsl(var(--h), 80%, 92%);
-      --sec-container: hsl(var(--h), 15%, 30%);
-      --on-sec-container: hsl(var(--h), 25%, 90%);
-      --surface: hsl(var(--h), 10%, 8%);
-      --surface-container: hsl(var(--h), 10%, 13%);
-      --surface-high: hsl(var(--h), 10%, 17%);
-      --on-surface: hsl(var(--h), 10%, 90%);
-      --on-surface-var: hsl(var(--h), 8%, 78%);
-      --outline: hsl(var(--h), 5%, 58%);
-      --outline-var: hsl(var(--h), 8%, 28%);
-      --error: #ffb4ab;
-      --error-container: #93000a;
-      --success: #86efac;
-      --inv-surface: hsl(var(--h), 10%, 90%);
-      --inv-on-surface: hsl(var(--h), 10%, 15%);
+      --primary: hsl(var(--h), 65%, 85%); --on-primary: hsl(var(--h), 65%, 20%);
+      --primary-container: hsl(var(--h), 40%, 32%); --on-primary-container: hsl(var(--h), 80%, 92%);
+      --sec-container: hsl(var(--h), 15%, 30%); --on-sec-container: hsl(var(--h), 25%, 90%);
+      --surface: hsl(var(--h), 10%, 8%); --surface-container: hsl(var(--h), 10%, 13%);
+      --surface-high: hsl(var(--h), 10%, 17%); --on-surface: hsl(var(--h), 10%, 90%);
+      --on-surface-var: hsl(var(--h), 8%, 78%); --outline: hsl(var(--h), 5%, 58%);
+      --outline-var: hsl(var(--h), 8%, 28%); --error: #ffb4ab; --error-container: #93000a;
+      --success: #86efac; --inv-surface: hsl(var(--h), 10%, 90%); --inv-on-surface: hsl(var(--h), 10%, 15%);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -88,7 +65,9 @@
     .app { width: 100%; max-width: 480px; min-height: 100vh; padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)); position: relative; }
 
     #authOverlay { position: fixed; inset: 0; background: var(--surface); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; }
-    #authOverlay.hidden { display: none; }
+    #authOverlay.hidden, .screen, .search-wrap { display: none; }
+    .screen.active, .search-wrap.show { display: block; }
+
     .google-btn { display: inline-flex; align-items: center; gap: 12px; background: var(--surface-container); border: 1px solid var(--outline-var); border-radius: 28px; padding: 12px 24px; font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--on-surface); cursor: pointer; box-shadow: var(--elev-1); transition: .2s; }
     .google-btn:hover { background: var(--surface-high); }
 
@@ -97,8 +76,7 @@
     .month-pill { position: relative; display: inline-flex; align-items: center; gap: 5px; background: var(--surface-container); border: 1px solid var(--outline-var); padding: 6px 12px; border-radius: 12px; font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--primary); }
     .month-pill input { position: absolute; inset: 0; opacity: 0; width: 100%; cursor: pointer; }
 
-    .search-wrap { padding: 0 16px 12px; display: none; }
-    .search-wrap.show { display: block; }
+    .search-wrap { padding: 0 16px 12px; }
     .search-box { width: 100%; height: 50px; padding: 0 16px 0 46px; border-radius: 25px; background: var(--surface-high); border: none; color: var(--on-surface); font-size: 15px; outline: none; box-shadow: var(--elev-1); }
     .card { background: var(--surface-container); border-radius: 20px; padding: 20px; margin: 0 16px 16px; }
     .balance-card { background: var(--primary-container); color: var(--on-primary-container); border-radius: 28px; }
@@ -132,9 +110,6 @@
 
     .fab { position: fixed; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); right: calc(50% - 240px + 16px); width: 56px; height: 56px; border-radius: 16px; background: var(--primary-container); color: var(--on-primary-container); border: none; box-shadow: var(--elev-2); display: grid; place-content: center; cursor: pointer; z-index: 45; }
     @media (max-width: 480px) { .fab { right: 16px; } }
-
-    .screen { display: none; }
-    .screen.active { display: block; }
 
     .rule-card { background: var(--surface); border: 1px solid var(--outline-var); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; }
     .progress-track { height: 6px; background: var(--surface-high); border-radius: 3px; overflow: hidden; margin: 8px 0 6px; }
@@ -214,7 +189,7 @@
         </div>
       </div>
 
-      <div class="chips">
+      <div class="chips" id="filterChips">
         <button class="chip active" data-filter="all"><span class="material-symbols-rounded chk">check</span>Toutes</button>
         <button class="chip" data-filter="income"><span class="material-symbols-rounded chk">check</span>Revenus</button>
         <button class="chip" data-filter="expense"><span class="material-symbols-rounded chk">check</span>Dépenses</button>
@@ -302,19 +277,11 @@
 
       <div class="card">
         <div style="font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 8px;">Couleurs Google Pixel</div>
-        <div class="color-picker-row">
-          <button class="color-dot active" data-palette="lavender" style="background:#704f8b;" title="Lilas">
-            <span class="material-symbols-rounded">check</span>
-          </button>
-          <button class="color-dot" data-palette="blue" style="background:#1b6585;" title="Bleu">
-            <span class="material-symbols-rounded">check</span>
-          </button>
-          <button class="color-dot" data-palette="sage" style="background:#3b693a;" title="Sauge">
-            <span class="material-symbols-rounded">check</span>
-          </button>
-          <button class="color-dot" data-palette="peach" style="background:#8d4f38;" title="Pêche">
-            <span class="material-symbols-rounded">check</span>
-          </button>
+        <div class="color-picker-row" id="colorPickerRow">
+          <button class="color-dot active" data-palette="lavender" style="background:#704f8b;" title="Lilas"><span class="material-symbols-rounded">check</span></button>
+          <button class="color-dot" data-palette="blue" style="background:#1b6585;" title="Bleu"><span class="material-symbols-rounded">check</span></button>
+          <button class="color-dot" data-palette="sage" style="background:#3b693a;" title="Sauge"><span class="material-symbols-rounded">check</span></button>
+          <button class="color-dot" data-palette="peach" style="background:#8d4f38;" title="Pêche"><span class="material-symbols-rounded">check</span></button>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px;">
           <span>Mode d'affichage</span>
@@ -348,18 +315,10 @@
 
     <nav class="nav-bar" id="navBar">
       <div class="nav-pill" id="navPill"></div>
-      <button class="nav-item active" data-target="screenOperations">
-        <span class="material-symbols-rounded">receipt_long</span><span>Opérations</span>
-      </button>
-      <button class="nav-item" data-target="screenAnalytics">
-        <span class="material-symbols-rounded">pie_chart</span><span>Analyse</span>
-      </button>
-      <button class="nav-item" data-target="screenSettings">
-        <span class="material-symbols-rounded">settings</span><span>Options</span>
-      </button>
-      <button class="nav-item" id="btnToggleSearch">
-        <span class="material-symbols-rounded">search</span><span>Chercher</span>
-      </button>
+      <button class="nav-item active" data-target="screenOperations"><span class="material-symbols-rounded">receipt_long</span><span>Opérations</span></button>
+      <button class="nav-item" data-target="screenAnalytics"><span class="material-symbols-rounded">pie_chart</span><span>Analyse</span></button>
+      <button class="nav-item" data-target="screenSettings"><span class="material-symbols-rounded">settings</span><span>Options</span></button>
+      <button class="nav-item" id="btnToggleSearch"><span class="material-symbols-rounded">search</span><span>Chercher</span></button>
     </nav>
   </div>
 
@@ -406,128 +365,80 @@
   <!-- FIREBASE SDK & APPLICATION LOGIC -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { 
-      getAuth, 
-      signInWithPopup, 
-      GoogleAuthProvider, 
-      onAuthStateChanged, 
-      signOut 
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { 
-      getFirestore, 
-      collection, 
-      doc, 
-      setDoc, 
-      deleteDoc, 
-      writeBatch,
-      onSnapshot 
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, doc, setDoc, deleteDoc, writeBatch, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const firebaseConfig = {
+    const app = initializeApp({
       apiKey: "AIzaSyA02Emvdc_sNSYuaxUhlE87aDoaJ3CtSPE",
       authDomain: "mym3budgetmanagerapplication.firebaseapp.com",
       projectId: "mym3budgetmanagerapplication",
       storageBucket: "mym3budgetmanagerapplication.firebasestorage.app",
       messagingSenderId: "883702754992",
-      appId: "1:883702754992:web:4a8be32c24c5a3d9645575",
-      measurementId: "G-KSBKHRFD45"
-    };
+      appId: "1:883702754992:web:4a8be32c24c5a3d9645575"
+    });
+    const auth = getAuth(app), db = getFirestore(app), provider = new GoogleAuthProvider();
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
+    let currentUser = null, unsubscribeFirestore = null, transactions = [];
+    let currentFilter = "all", editingId = null, selectedId = null, modalType = "expense", currentSort = 0, searchQuery = "";
+    let currentMonth = new Date().toISOString().slice(0, 7);
 
-    let currentUser = null;
-    let unsubscribeFirestore = null;
-    let transactions = [];
-
-    // --- HELPERS ---
     const $ = id => document.getElementById(id);
     const $all = sel => document.querySelectorAll(sel);
-    const fmt = n => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n);
+    const fmt = n => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n || 0);
     const modal = (id, show) => $(id).classList.toggle("show", show);
-
-    const fmtTPE = el => {
-      el.oninput = () => {
-        const d = el.value.replace(/\D/g, "");
-        el.value = d ? (parseInt(d, 10) / 100).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
-      };
-    };
-    const getTPE = el => parseFloat(el.value.replace(/\s/g, '').replace(',', '.')) || 0;
-    const setTPE = (el, v) => el.value = v ? Number(v).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
 
     const notify = (msg, icon = "info") => {
       $("sbMsg").textContent = msg; $("sbIcon").textContent = icon;
       $("snackbar").classList.add("show");
-      clearTimeout(window._sb); window._sb = setTimeout(() => $("snackbar").classList.remove("show"), 3200);
+      clearTimeout(window._sb);
+      window._sb = setTimeout(() => $("snackbar").classList.remove("show"), 3200);
     };
 
     const SORT_MODES = [
-      { id: "date", icon: "schedule", label: "Date (récent)" },
-      { id: "alpha", icon: "sort_by_alpha", label: "Ordre alphabétique" },
-      { id: "amt_desc", icon: "arrow_downward", label: "Montant décroissant" },
-      { id: "cat", icon: "category", label: "Catégorie" }
+      { id: "date", icon: "schedule", label: "Date (récent)", fn: (a, b) => new Date(b.date) - new Date(a.date) },
+      { id: "alpha", icon: "sort_by_alpha", label: "Ordre alphabétique", fn: (a, b) => (a.label || "").localeCompare(b.label || "", "fr", { sensitivity: "base" }) },
+      { id: "amt_desc", icon: "arrow_downward", label: "Montant décroissant", fn: (a, b) => b.amount - a.amount },
+      { id: "cat", icon: "category", label: "Catégorie", fn: (a, b) => ((ALL_CATS.find(c => c.id === a.category) || {}).label || "").localeCompare(((ALL_CATS.find(c => c.id === b.category) || {}).label || ""), "fr", { sensitivity: "base" }) }
     ];
 
     const CATS = {
       expense: [
-        { id: "vtc_taxi", label: "VTC & Taxi", icon: "local_taxi" },
-        { id: "credit", label: "Crédit", icon: "account_balance" },
-        { id: "assurance", label: "Assurance", icon: "shield" },
-        { id: "abonnement", label: "Abonnement", icon: "subscriptions" },
-        { id: "transport_commun", label: "Transport en commun", icon: "directions_subway" },
-        { id: "vehicule", label: "Véhicule", icon: "directions_car" },
-        { id: "supermarche", label: "Supermarché", icon: "shopping_cart" },
-        { id: "shopping", label: "Shopping", icon: "shopping_bag" },
-        { id: "restaurant", label: "Restaurant", icon: "restaurant" },
-        { id: "boulangerie", label: "Boulangerie", icon: "bakery_dining" },
-        { id: "sante", label: "Santé", icon: "medical_services" },
-        { id: "hygiene_corporelle", label: "Hygiène corporelle", icon: "soap" },
-        { id: "soins_beaute", label: "Soins & beauté", icon: "spa" },
-        { id: "entretien_maison", label: "Entretien maison", icon: "cleaning_services" },
-        { id: "logement", label: "Logement", icon: "home" },
-        { id: "energie", label: "Eau, gaz & électricité", icon: "bolt" },
+        { id: "vtc_taxi", label: "VTC & Taxi", icon: "local_taxi" }, { id: "credit", label: "Crédit", icon: "account_balance" },
+        { id: "assurance", label: "Assurance", icon: "shield" }, { id: "abonnement", label: "Abonnement", icon: "subscriptions" },
+        { id: "transport_commun", label: "Transport en commun", icon: "directions_subway" }, { id: "vehicule", label: "Véhicule", icon: "directions_car" },
+        { id: "supermarche", label: "Supermarché", icon: "shopping_cart" }, { id: "shopping", label: "Shopping", icon: "shopping_bag" },
+        { id: "restaurant", label: "Restaurant", icon: "restaurant" }, { id: "boulangerie", label: "Boulangerie", icon: "bakery_dining" },
+        { id: "sante", label: "Santé", icon: "medical_services" }, { id: "hygiene_corporelle", label: "Hygiène corporelle", icon: "soap" },
+        { id: "soins_beaute", label: "Soins & beauté", icon: "spa" }, { id: "entretien_maison", label: "Entretien maison", icon: "cleaning_services" },
+        { id: "logement", label: "Logement", icon: "home" }, { id: "energie", label: "Eau, gaz & électricité", icon: "bolt" },
         { id: "loisir", label: "Loisirs & Sorties", icon: "sports_esports" }
       ],
       income: [
-        { id: "salaire", label: "Salaire & Prime", icon: "payments" },
-        { id: "loyer_recu", label: "Revenu locatif", icon: "real_estate_agent" },
-        { id: "investissement", label: "Investissements / Dividendes", icon: "trending_up" },
-        { id: "aides", label: "Aides / Remboursements", icon: "savings" },
+        { id: "salaire", label: "Salaire & Prime", icon: "payments" }, { id: "loyer_recu", label: "Revenu locatif", icon: "real_estate_agent" },
+        { id: "investissement", label: "Investissements / Dividendes", icon: "trending_up" }, { id: "aides", label: "Aides / Remboursements", icon: "savings" },
         { id: "autre_revenu", label: "Autre revenu", icon: "attach_money" }
       ]
     };
     const ALL_CATS = [...CATS.expense, ...CATS.income];
     const DONUT_COLORS = ["#704f8b", "#655a6f", "#b88728", "#a25666", "#3b647f", "#7b757f"];
 
-    let currentFilter = "all", editingId = null, selectedId = null, modalType = "expense", currentSort = 0, searchQuery = "";
-    let currentMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
-
-    const getMonthTx = () => transactions.filter(t => t.date && t.date.startsWith(currentMonth));
-    const sumTx = (arr, fn) => arr.filter(fn).reduce((s, t) => s + Number(t.amount), 0);
+    const getMonthTx = () => transactions.filter(t => t.date?.startsWith(currentMonth));
+    const sum = (arr, fn) => arr.filter(fn).reduce((s, t) => s + Number(t.amount || 0), 0);
 
     // --- RENDU UI ---
     function renderApp() {
-      renderSummary();
-      renderTransactions();
-      renderAnalytics();
-    }
-
-    function renderSummary() {
       const mTx = getMonthTx();
-      const inc = sumTx(mTx, t => t.type === "income");
-      const exp = sumTx(mTx, t => t.type === "expense");
-      const fix = sumTx(mTx, t => t.isFixed && t.type === "expense");
+      const inc = sum(mTx, t => t.type === "income");
+      const exp = sum(mTx, t => t.type === "expense");
+      const fix = sum(mTx, t => t.isFixed && t.type === "expense");
+
       $("kpiNet").textContent = fmt(inc - exp);
       $("kpiIncome").textContent = `+${fmt(inc)}`;
       $("kpiExpense").textContent = `-${fmt(exp)}`;
       $("kpiFixed").textContent = fmt(fix);
-    }
 
-    function renderTransactions() {
-      const c = $("txContainer"); c.innerHTML = "";
-      let list = getMonthTx().filter(t => {
+      // Rendu Opérations
+      let list = mTx.filter(t => {
         if (currentFilter === "income") return t.type === "income";
         if (currentFilter === "expense") return t.type === "expense" && !t.isFixed;
         if (currentFilter === "fixed") return t.isFixed;
@@ -537,40 +448,20 @@
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         list = list.filter(t => {
-          const num = Number(t.amount).toFixed(2);
           const [y, m, d] = (t.date || "").split("-");
-          return num.includes(q.replace(',', '.')) || (t.label || "").toLowerCase().includes(q) || `${d}/${m}`.includes(q);
+          return Number(t.amount).toFixed(2).includes(q.replace(',', '.')) || (t.label || "").toLowerCase().includes(q) || `${d}/${m}`.includes(q);
         });
       }
 
       $("secBadge").textContent = `${list.length} opération${list.length > 1 ? 's' : ''}`;
+      list.sort(SORT_MODES[currentSort].fn);
 
-      if (!list.length) {
-        c.innerHTML = `<div style="text-align:center; padding:44px; color:var(--outline);"><span class="material-symbols-rounded" style="font-size:48px; opacity:.4;">search_off</span><p style="margin-top:8px;">Aucune opération</p></div>`;
-        return;
-      }
-
-      const mode = SORT_MODES[currentSort].id;
-      if (mode === "date") {
-        list.sort((a, b) => new Date(b.date) - new Date(a.date));
-      } else if (mode === "alpha") {
-        list.sort((a, b) => (a.label || "").localeCompare(b.label || "", "fr", { sensitivity: "base" }));
-      } else if (mode === "amt_desc") {
-        list.sort((a, b) => Number(b.amount) - Number(a.amount));
-      } else if (mode === "cat") {
-        list.sort((a, b) => {
-          const catA = (ALL_CATS.find(c => c.id === a.category) || {}).label || "";
-          const catB = (ALL_CATS.find(c => c.id === b.category) || {}).label || "";
-          return catA.localeCompare(catB, "fr", { sensitivity: "base" });
-        });
-      }
-
-      c.innerHTML = list.map(tx => {
+      $("txContainer").innerHTML = list.length ? list.map(tx => {
         const cat = ALL_CATS.find(x => x.id === tx.category) || { label: "Divers", icon: "category" };
         const isExp = tx.type === "expense";
-        const [y, m, d] = (tx.date || "").split("-");
+        const [, m, d] = (tx.date || "").split("-");
         return `
-          <div class="tx-item" onclick="openAction('${tx.id}')">
+          <div class="tx-item" data-id="${tx.id}">
             <div class="tx-left">
               <div class="tx-icon"><span class="material-symbols-rounded">${cat.icon}</span></div>
               <div style="min-width:0;">
@@ -583,68 +474,59 @@
             </div>
             <div class="amt ${isExp ? '' : 'inc'}">${isExp ? '-' : '+'}${fmt(tx.amount)}</div>
           </div>`;
-      }).join("");
+      }).join("") : `<div style="text-align:center; padding:44px; color:var(--outline);"><span class="material-symbols-rounded" style="font-size:48px; opacity:.4;">search_off</span><p style="margin-top:8px;">Aucune opération</p></div>`;
+
+      renderAnalytics(mTx, inc);
     }
 
-    function renderAnalytics() {
-      const mTx = getMonthTx();
-      const inc = sumTx(mTx, t => t.type === "income");
-      const obl = sumTx(mTx, t => t.type === "expense" && (t.isFixed || t.category === "supermarche"));
-      const wants = sumTx(mTx, t => t.type === "expense" && !t.isFixed && t.category !== "supermarche");
+    function renderAnalytics(mTx = getMonthTx(), inc = sum(mTx, t => t.type === "income")) {
+      const obl = sum(mTx, t => t.type === "expense" && (t.isFixed || t.category === "supermarche"));
+      const wants = sum(mTx, t => t.type === "expense" && !t.isFixed && t.category !== "supermarche");
       const sav = Math.max(0, inc - obl - wants);
 
-      const updateRule = (pb, st, sp, ceil, cur, tgt) => {
+      const setRule = (id, cur, tgt, isSav = false) => {
         const p = tgt > 0 ? (cur / tgt) * 100 : 0;
-        $(pb).style.width = `${Math.min(100, p)}%`;
-        $(pb).style.background = cur > tgt ? "var(--error)" : "var(--primary)";
-        $(st).textContent = cur > tgt ? `+${fmt(cur - tgt)} dépassés` : `${fmt(tgt - cur)} restants`;
-        $(st).style.color = cur > tgt ? "var(--error)" : "var(--success)";
-        $(sp).textContent = `${fmt(cur)} dépensés`;
-        $(ceil).textContent = `Plafond : ${fmt(tgt)}`;
+        const over = cur > tgt;
+        $(id.pb).style.width = `${Math.min(100, p)}%`;
+        $(id.pb).style.background = isSav ? "var(--success)" : (over ? "var(--error)" : "var(--primary)");
+        $(id.st).style.color = isSav ? "" : (over ? "var(--error)" : "var(--success)");
+        $(id.st).textContent = isSav ? (cur >= tgt && tgt > 0 ? `Atteint (+${fmt(cur - tgt)})` : `Manque ${fmt(Math.max(0, tgt - cur))}`) : (over ? `+${fmt(cur - tgt)} dépassés` : `${fmt(tgt - cur)} restants`);
+        $(id.sp).textContent = `${fmt(cur)} ${isSav ? 'mis de côté' : 'dépensés'}`;
+        $(id.ceil).textContent = `${isSav ? 'Objectif' : 'Plafond'} : ${fmt(tgt)}`;
       };
 
-      updateRule("pbObl", "stObl", "spObl", "ceilObl", obl, inc * .5);
-      updateRule("pbWants", "stWants", "spWants", "ceilWants", wants, inc * .3);
+      setRule({ pb: "pbObl", st: "stObl", sp: "spObl", ceil: "ceilObl" }, obl, inc * 0.5);
+      setRule({ pb: "pbWants", st: "stWants", sp: "spWants", ceil: "ceilWants" }, wants, inc * 0.3);
+      setRule({ pb: "pbSav", st: "stSav", sp: "spSav", ceil: "ceilSav" }, sav, inc * 0.2, true);
 
-      const tSav = inc * .2;
-      $("pbSav").style.width = `${Math.min(100, tSav > 0 ? (sav / tSav) * 100 : 0)}%`;
-      $("pbSav").style.background = "var(--success)";
-      $("stSav").textContent = sav >= tSav && tSav > 0 ? `Atteint (+${fmt(sav - tSav)})` : `Manque ${fmt(Math.max(0, tSav - sav))}`;
-      $("spSav").textContent = `${fmt(sav)} mis de côté`;
-      $("ceilSav").textContent = `Objectif : ${fmt(tSav)}`;
-
-      const data = {};
-      let totalExp = 0;
-      mTx.filter(t => t.type === "expense").forEach(t => {
+      // Donut
+      const data = {}, exps = mTx.filter(t => t.type === "expense");
+      const totalExp = exps.reduce((acc, t) => {
         data[t.category] = (data[t.category] || 0) + Number(t.amount);
-        totalExp += Number(t.amount);
-      });
-      drawDonut(data, totalExp);
-    }
+        return acc + Number(t.amount);
+      }, 0);
 
-    function drawDonut(data, total) {
-      const canvas = $("donutChart"), ctx = canvas.getContext("2d");
-      const dpr = window.devicePixelRatio || 1, s = 240;
-      canvas.width = canvas.height = s * dpr;
+      const canvas = $("donutChart"), ctx = canvas.getContext("2d"), dpr = window.devicePixelRatio || 1;
+      canvas.width = canvas.height = 240 * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, s, s);
-      $("donutTotal").textContent = fmt(total);
+      ctx.clearRect(0, 0, 240, 240);
+      $("donutTotal").textContent = fmt(totalExp);
 
-      const bd = $("donutBreakdown"); bd.innerHTML = "";
-      const keys = Object.keys(data).sort((a, b) => data[b] - data[a]);
+      const bd = $("donutBreakdown"), keys = Object.keys(data).sort((a, b) => data[b] - data[a]);
+      bd.innerHTML = "";
 
-      if (!keys.length || !total) {
+      if (!keys.length || !totalExp) {
         ctx.beginPath(); ctx.arc(120, 120, 100, 0, 2 * Math.PI);
         ctx.strokeStyle = "rgba(120,120,120,.15)"; ctx.lineWidth = 22; ctx.stroke();
         return;
       }
 
-      let segs = keys.slice(0, 5).map((k, i) => ({ id: k, amt: data[k], color: DONUT_COLORS[i] }));
+      const segs = keys.slice(0, 5).map((k, i) => ({ id: k, amt: data[k], color: DONUT_COLORS[i] }));
       if (keys.length > 5) segs.push({ id: "autres", amt: keys.slice(5).reduce((a, k) => a + data[k], 0), color: DONUT_COLORS[5] });
 
       let angle = -0.5 * Math.PI;
       segs.forEach(seg => {
-        const slice = (seg.amt / total) * (2 * Math.PI);
+        const slice = (seg.amt / totalExp) * (2 * Math.PI);
         ctx.beginPath(); ctx.arc(120, 120, 100, angle, angle + slice - .04);
         ctx.strokeStyle = seg.color; ctx.lineWidth = 22; ctx.lineCap = "round"; ctx.stroke();
         angle += slice;
@@ -658,70 +540,15 @@
               </div>
               <span style="font-weight:600; font-size:13px;">${cat.label}</span>
             </div>
-            <div><strong>${fmt(seg.amt)}</strong> <span class="badge" style="background:var(--surface-high); margin-left:6px;">${Math.round((seg.amt/total)*100)}%</span></div>
+            <div><strong>${fmt(seg.amt)}</strong> <span class="badge" style="background:var(--surface-high); margin-left:6px;">${Math.round((seg.amt/totalExp)*100)}%</span></div>
           </div>`);
       });
     }
 
     function updateSlidingPill() {
       const active = document.querySelector(".nav-item.active");
-      if (!active) return;
-      $("navPill").style.transform = `translateX(${active.offsetLeft + (active.offsetWidth / 2) - 32}px)`;
+      if (active) $("navPill").style.transform = `translateX(${active.offsetLeft + (active.offsetWidth / 2) - 32}px)`;
     }
-
-    // --- GESTION FIRESTORE & AUTH ---
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        currentUser = user;
-        $("userEmail").textContent = user.email || user.displayName;
-        $("authOverlay").classList.add("hidden");
-
-        const txCol = collection(db, "users", user.uid, "transactions");
-        if (unsubscribeFirestore) unsubscribeFirestore();
-
-        unsubscribeFirestore = onSnapshot(txCol, (snapshot) => {
-          transactions = [];
-          snapshot.forEach(docSnap => {
-            transactions.push({ id: docSnap.id, ...docSnap.data() });
-          });
-          renderApp();
-        }, (err) => {
-          notify("Erreur de synchronisation Firestore", "error");
-        });
-      } else {
-        currentUser = null;
-        if (unsubscribeFirestore) { unsubscribeFirestore(); unsubscribeFirestore = null; }
-        transactions = [];
-        renderApp();
-        $("authOverlay").classList.remove("hidden");
-      }
-    });
-
-    $("btnLoginGoogle").onclick = async () => {
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (err) {
-        notify("Échec de connexion : " + err.message, "error");
-      }
-    };
-
-    $("btnLogout").onclick = async () => {
-      try {
-        await signOut(auth);
-        notify("Déconnecté avec succès", "logout");
-      } catch (err) {
-        notify("Erreur lors de la déconnexion", "error");
-      }
-    };
-
-    window.openAction = id => {
-      selectedId = id;
-      const t = transactions.find(x => x.id === id);
-      if (!t) return;
-      $("actTitle").textContent = t.label;
-      $("actSub").textContent = `${t.type === 'expense' ? 'Dépense de' : 'Revenu de'} ${fmt(t.amount)}`;
-      modal("modalAction", true);
-    };
 
     function setModalType(type) {
       modalType = type;
@@ -732,65 +559,94 @@
       $("txCat").innerHTML = CATS[type].map(c => `<option value="${c.id}">${c.label}</option>`).join("");
     }
 
-    // --- INITIALISATION ---
-    fmtTPE($("txAmount"));
-
-    const p = localStorage.getItem("budget_pixel_color") || "lavender";
-    document.documentElement.setAttribute("data-color", p);
-    $all(".color-dot").forEach(dot => dot.classList.toggle("active", dot.dataset.palette === p));
-    $("themeSelect").value = localStorage.getItem("budget_theme") || "auto";
-
-    $("monthInput").value = currentMonth;
-    const updateMonth = () => {
-      const [y, m] = currentMonth.split("-");
-      $("monthLabel").textContent = new Date(y, m - 1).toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
+    // --- SAISIE MONTANT TPE ---
+    const tpe = $("txAmount");
+    tpe.oninput = () => {
+      const d = tpe.value.replace(/\D/g, "");
+      tpe.value = d ? (parseInt(d, 10) / 100).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
     };
-    updateMonth();
-    $("monthInput").onchange = e => { if (e.target.value) { currentMonth = e.target.value; updateMonth(); renderApp(); } };
+    const getTPE = () => parseFloat(tpe.value.replace(/\s/g, '').replace(',', '.')) || 0;
+    const setTPE = v => tpe.value = v ? Number(v).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
+
+    // --- AUTH & FIRESTORE ---
+    onAuthStateChanged(auth, user => {
+      currentUser = user;
+      $("authOverlay").classList.toggle("hidden", !!user);
+      if (unsubscribeFirestore) { unsubscribeFirestore(); unsubscribeFirestore = null; }
+      if (user) {
+        $("userEmail").textContent = user.email || user.displayName;
+        unsubscribeFirestore = onSnapshot(collection(db, "users", user.uid, "transactions"), snap => {
+          transactions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          renderApp();
+        }, () => notify("Erreur de synchronisation Firestore", "error"));
+      } else {
+        transactions = [];
+        renderApp();
+      }
+    });
+
+    $("btnLoginGoogle").onclick = () => signInWithPopup(auth, provider).catch(err => notify("Échec : " + err.message, "error"));
+    $("btnLogout").onclick = () => signOut(auth).then(() => notify("Déconnecté", "logout")).catch(() => notify("Erreur déconnexion", "error"));
+
+    // --- EVENEMENTS NAVIGATION & MODALES ---
+    $("txContainer").onclick = e => {
+      const item = e.target.closest(".tx-item");
+      if (!item) return;
+      selectedId = item.dataset.id;
+      const t = transactions.find(x => x.id === selectedId);
+      if (!t) return;
+      $("actTitle").textContent = t.label;
+      $("actSub").textContent = `${t.type === 'expense' ? 'Dépense de' : 'Revenu de'} ${fmt(t.amount)}`;
+      modal("modalAction", true);
+    };
 
     $all("[data-close]").forEach(b => b.onclick = () => modal(b.dataset.close, false));
 
     $("btnSort").onclick = () => {
       currentSort = (currentSort + 1) % SORT_MODES.length;
       $("sortIcon").textContent = SORT_MODES[currentSort].icon;
-      renderTransactions();
+      renderApp();
       notify(`Tri : ${SORT_MODES[currentSort].label}`, "sort");
     };
 
-    $all(".nav-item").forEach(item => {
-      item.onclick = () => {
-        if (item.id === "btnToggleSearch") {
-          const sh = $("searchWrap").classList.toggle("show");
-          if (sh) $("searchInput").focus();
-          else { $("searchInput").value = searchQuery = ""; renderTransactions(); }
-          return;
-        }
-        $all(".nav-item").forEach(i => i.classList.remove("active"));
-        $all(".screen").forEach(s => s.classList.remove("active"));
-        item.classList.add("active");
-        $(item.dataset.target).classList.add("active");
-        updateSlidingPill();
-        if (item.dataset.target === "screenAnalytics") renderAnalytics();
-      };
-    });
+    $("navBar").onclick = e => {
+      const item = e.target.closest(".nav-item");
+      if (!item) return;
+      if (item.id === "btnToggleSearch") {
+        if ($("searchWrap").classList.toggle("show")) $("searchInput").focus();
+        else { $("searchInput").value = searchQuery = ""; renderApp(); }
+        return;
+      }
+      $all(".nav-item").forEach(i => i.classList.remove("active"));
+      $all(".screen").forEach(s => s.classList.remove("active"));
+      item.classList.add("active");
+      $(item.dataset.target).classList.add("active");
+      updateSlidingPill();
+      if (item.dataset.target === "screenAnalytics") renderAnalytics();
+    };
 
-    $all(".chips .chip").forEach(c => c.onclick = () => {
-      $all(".chips .chip").forEach(x => x.classList.remove("active"));
-      c.classList.add("active");
-      currentFilter = c.dataset.filter;
-      renderTransactions();
-    });
+    $("filterChips").onclick = e => {
+      const chip = e.target.closest(".chip");
+      if (!chip) return;
+      $all("#filterChips .chip").forEach(x => x.classList.remove("active"));
+      chip.classList.add("active");
+      currentFilter = chip.dataset.filter;
+      renderApp();
+    };
 
-    $("searchInput").oninput = e => { searchQuery = e.target.value; renderTransactions(); };
+    $("searchInput").oninput = e => { searchQuery = e.target.value; renderApp(); };
 
-    $all(".color-dot").forEach(b => b.onclick = () => {
+    // Palette & Thème
+    $("colorPickerRow").onclick = e => {
+      const dot = e.target.closest(".color-dot");
+      if (!dot) return;
       $all(".color-dot").forEach(d => d.classList.remove("active"));
-      b.classList.add("active");
-      document.documentElement.setAttribute("data-color", b.dataset.palette);
-      localStorage.setItem("budget_pixel_color", b.dataset.palette);
+      dot.classList.add("active");
+      document.documentElement.setAttribute("data-color", dot.dataset.palette);
+      localStorage.setItem("budget_pixel_color", dot.dataset.palette);
       renderAnalytics();
-      notify(`Palette ${b.title} activée`);
-    });
+      notify(`Palette ${dot.title} activée`);
+    };
 
     $("themeSelect").onchange = e => {
       document.documentElement.setAttribute("data-theme", e.target.value);
@@ -798,12 +654,13 @@
       renderAnalytics();
     };
 
+    // CRUD Transaction
     $("openAdd").onclick = () => {
       editingId = null;
       $("modalTxTitle").textContent = "Nouvelle opération";
       $("txLabel").value = "";
-      setTPE($("txAmount"), 0);
-      $("txDate").value = new Date().toISOString().split("T")[0];
+      setTPE(0);
+      $("txDate").value = new Date().toISOString().slice(0, 10);
       $("txSwitch").checked = false;
       setModalType("expense");
       modal("modalTx", true);
@@ -814,23 +671,14 @@
 
     $("btnSaveTx").onclick = async () => {
       if (!currentUser) return notify("Veuillez vous connecter", "error");
-      const label = $("txLabel").value.trim(), amount = getTPE($("txAmount")), cat = $("txCat").value, date = $("txDate").value;
+      const label = $("txLabel").value.trim(), amount = getTPE(), cat = $("txCat").value, date = $("txDate").value;
       if (!label || amount <= 0) return notify("Veuillez saisir un libellé et montant", "error");
 
-      const isFix = modalType === "expense" && $("txSwitch").checked;
       const targetId = editingId || Date.now().toString();
-
-      const txData = {
-        label,
-        amount,
-        type: modalType,
-        category: cat,
-        isFixed: isFix,
-        date
-      };
-
       try {
-        await setDoc(doc(db, "users", currentUser.uid, "transactions", targetId), txData);
+        await setDoc(doc(db, "users", currentUser.uid, "transactions", targetId), {
+          label, amount, type: modalType, category: cat, isFixed: modalType === "expense" && $("txSwitch").checked, date
+        });
         modal("modalTx", false);
         notify("Opération enregistrée", "cloud_done");
       } catch (err) {
@@ -845,7 +693,7 @@
       editingId = t.id;
       $("modalTxTitle").textContent = "Modifier l'opération";
       $("txLabel").value = t.label;
-      setTPE($("txAmount"), t.amount);
+      setTPE(t.amount);
       $("txDate").value = t.date;
       setModalType(t.type);
       $("txCat").value = t.category;
@@ -864,47 +712,33 @@
       }
     };
 
-    // --- IMPORT & EXPORT JSON ---
+    // Import / Export JSON
     $("btnTriggerImport").onclick = () => $("jsonFileInput").click();
-
     $("jsonFileInput").onchange = e => {
       const file = e.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
-      reader.onload = async (evt) => {
+      reader.onload = async evt => {
         try {
           if (!currentUser) return notify("Connectez-vous avant d'importer", "error");
-          
           const raw = JSON.parse(evt.target.result);
-          const listToImport = Array.isArray(raw) ? raw : (raw.transactions || []);
+          const list = Array.isArray(raw) ? raw : (raw.transactions || []);
+          if (!list.length) return notify("Aucune opération trouvée", "error");
 
-          if (!listToImport.length) return notify("Aucune opération trouvée", "error");
-
-          notify(`Import de ${listToImport.length} opérations...`, "sync");
-
-          const chunkSize = 400;
-          for (let i = 0; i < listToImport.length; i += chunkSize) {
-            const chunk = listToImport.slice(i, i + chunkSize);
+          notify(`Import de ${list.length} opérations...`, "sync");
+          for (let i = 0; i < list.length; i += 400) {
             const batch = writeBatch(db);
-
-            chunk.forEach(t => {
-              const id = t.id ? String(t.id) : (Date.now() + Math.random().toString(36).substr(2, 6));
-              const ref = doc(db, "users", currentUser.uid, "transactions", id);
-              batch.set(ref, {
-                label: t.label || "Sans libellé",
-                amount: Number(t.amount) || 0,
-                type: t.type || "expense",
-                category: t.category || "supermarche",
-                isFixed: !!t.isFixed,
-                date: t.date || new Date().toISOString().split("T")[0]
+            list.slice(i, i + 400).forEach(t => {
+              const id = t.id ? String(t.id) : (Date.now() + Math.random().toString(36).slice(2, 8));
+              batch.set(doc(db, "users", currentUser.uid, "transactions", id), {
+                label: t.label || "Sans libellé", amount: Number(t.amount) || 0,
+                type: t.type || "expense", category: t.category || "supermarche",
+                isFixed: !!t.isFixed, date: t.date || new Date().toISOString().slice(0, 10)
               });
             });
-
             await batch.commit();
           }
-
-          notify(`${listToImport.length} opérations synchronisées !`, "cloud_done");
+          notify(`${list.length} opérations synchronisées !`, "cloud_done");
           $("jsonFileInput").value = "";
         } catch (err) {
           notify("Erreur de lecture du JSON : " + err.message, "error");
@@ -919,6 +753,20 @@
       a.click();
       notify("Fichier exporté", "download");
     };
+
+    // Init state
+    const savedPalette = localStorage.getItem("budget_pixel_color") || "lavender";
+    document.documentElement.setAttribute("data-color", savedPalette);
+    $all(".color-dot").forEach(dot => dot.classList.toggle("active", dot.dataset.palette === savedPalette));
+    $("themeSelect").value = localStorage.getItem("budget_theme") || "auto";
+
+    $("monthInput").value = currentMonth;
+    const updateMonth = () => {
+      const [y, m] = currentMonth.split("-");
+      $("monthLabel").textContent = new Date(y, m - 1).toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
+    };
+    updateMonth();
+    $("monthInput").onchange = e => { if (e.target.value) { currentMonth = e.target.value; updateMonth(); renderApp(); } };
 
     setTimeout(updateSlidingPill, 50);
   </script>
