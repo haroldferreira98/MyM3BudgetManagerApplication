@@ -65,6 +65,7 @@
       justify-content: space-between;
       gap: 12px;
       border: 1px solid rgba(103, 80, 164, 0.15);
+      touch-action: pan-y;
     }
     .ai-badge {
       display: inline-flex;
@@ -308,7 +309,6 @@
 
     html {
       min-height: 100%;
-      overflow-x: hidden;
       -webkit-text-size-adjust: 100%;
     }
 
@@ -330,21 +330,20 @@
       background: var(--md-sys-color-surface);
       color: var(--md-sys-color-on-surface);
       font-family: var(--font-body);
-      overflow-x: hidden;
-      display: flex;
-      justify-content: center;
+      overflow-x: clip;
       transition: background 0.3s ease, color 0.3s ease;
-      touch-action: pan-y;
       -webkit-overflow-scrolling: touch;
     }
 
     .app {
       width: 100%;
       max-width: 480px;
+      margin: 0 auto;
       min-height: 100vh;
       min-height: 100dvh;
       padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
       position: relative;
+      overflow-x: clip;
     }
 
     .ripple-target {
@@ -503,6 +502,7 @@
       box-shadow: var(--shadow-expressive);
       overflow: hidden;
       margin: 0 16px 16px;
+      touch-action: pan-y;
     }
     .balance-card::before {
       content: '';
@@ -566,6 +566,9 @@
       padding: 0 16px 14px;
       overflow-x: auto;
       scrollbar-width: none;
+      touch-action: pan-x pan-y;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
     }
     .chips-bar::-webkit-scrollbar { display: none; }
 
@@ -626,6 +629,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      touch-action: pan-y;
     }
     .tx-item {
       background: var(--md-sys-color-surface-container-lowest);
@@ -636,6 +640,11 @@
       justify-content: space-between;
       cursor: pointer;
       box-shadow: var(--shadow-ambient);
+      touch-action: pan-y;
+      transition: background-color 0.15s ease, box-shadow 0.2s ease;
+    }
+    .tx-item:active {
+      background: var(--md-sys-color-surface-container-high);
     }
     .tx-left {
       display: flex;
@@ -1100,7 +1109,7 @@
       </div>
 
       <!-- Carte Gemini AI Smart Insights -->
-      <div class="ai-gradient-card press-spring ripple-target" id="bannerAiCoach">
+      <div class="ai-gradient-card ripple-target" id="bannerAiCoach">
         <div style="min-width: 0;">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
             <span class="ai-badge"><span class="material-symbols-rounded" style="font-size: 14px;">auto_awesome</span>Gemini</span>
@@ -1562,7 +1571,7 @@
         const isExp = tx.type === "expense";
         const [, m, d] = (tx.date || "").split("-");
         return `
-          <div class="tx-item press-spring ripple-target" data-id="${tx.id}">
+          <div class="tx-item ripple-target" data-id="${tx.id}">
             <div class="tx-left">
               <div class="tx-icon-wrap"><span class="material-symbols-rounded">${cat.icon}</span></div>
               <div style="min-width:0;">
