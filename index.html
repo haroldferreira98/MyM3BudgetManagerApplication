@@ -1581,6 +1581,15 @@
         <button class="ai-chip-prompt press-spring ripple-target" id="btnQuickAudit">
           <span class="material-symbols-rounded" style="font-size: 16px; color: var(--md-sys-color-primary);">analytics</span> Lancer l'audit complet
         </button>
+        <button class="ai-chip-prompt press-spring ripple-target" id="btnSimulateScenario">
+          <span class="material-symbols-rounded" style="font-size: 16px; color: var(--md-sys-color-primary);">psychology_alt</span> 🔮 Simuler un achat ("Et si...?")
+        </button>
+        <button class="ai-chip-prompt press-spring ripple-target" id="btnGroundedEstimate">
+          <span class="material-symbols-rounded" style="font-size: 16px; color: var(--md-sys-color-primary);">travel_explore</span> 🌐 Estimer un projet (Web Search)
+        </button>
+        <button class="ai-chip-prompt press-spring ripple-target" id="btnNegotiateBills">
+          <span class="material-symbols-rounded" style="font-size: 16px; color: var(--md-sys-color-primary);">savings</span> 📉 Négocier mes charges fixes
+        </button>
         <button class="ai-chip-prompt press-spring ripple-target" data-prompt="Quels sont mes 3 plus gros postes de dépenses ce mois-ci ?">
           <span class="material-symbols-rounded" style="font-size: 16px; color: var(--md-sys-color-primary);">trending_down</span> Top dépenses
         </button>
@@ -1879,45 +1888,42 @@
       const statusEl = $("geminiKeyStatus");
       const inputEl = $("geminiApiKeyInput");
       if (key) {
-        statusEl.textContent = "Gemini Connecté";
+        statusEl.textContent = "Clé personnalisée";
         statusEl.style.background = "var(--md-sys-color-success-container)";
         statusEl.style.color = "var(--md-sys-color-on-success-container)";
         inputEl.value = key.slice(0, 7) + "••••••••••••" + key.slice(-4);
       } else {
-        statusEl.textContent = "Mode Local";
-        statusEl.style.background = "var(--md-sys-color-surface-container-high)";
-        statusEl.style.color = "var(--md-sys-color-outline)";
+        statusEl.textContent = "Gemini Auto (Actif)";
+        statusEl.style.background = "var(--md-sys-color-primary-container)";
+        statusEl.style.color = "var(--md-sys-color-on-primary-container)";
         inputEl.value = "";
       }
     }
 
-    async function callGeminiApi(payload, retries = 2, delay = 800) {
-      const key = getStoredApiKey();
-      if (!key) throw new Error("Aucune clé API configurée. Veuillez ajouter votre clé dans les Options.");
-      
-      const candidateModels = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
-      let lastError = null;
+    async function callGeminiApi(payload, retries = 3, delay = 1000) {
+      const customKey = getStoredApiKey();
+      const apiKey = customKey || ""; // Canvas injecte automatiquement la clé à l'exécution si vide
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
-      for (const model of candidateModels) {
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
-        for (let i = 0; i < retries; i++) {
-          try {
-            const res = await fetch(endpoint, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload)
-            });
-            if (res.ok) {
-              return await res.json();
-            }
-            const errBody = await res.json().catch(() => ({}));
-            lastError = new Error(errBody.error?.message || `HTTP ${res.status}`);
-            if (res.status === 404) break; // Modèle non trouvé, tester le modèle suivant
-          } catch (err) {
-            lastError = err;
-            if (i === retries - 1) break;
-            await new Promise(r => setTimeout(r, delay * Math.pow(2, i)));
+      let lastError = null;
+      for (let i = 0; i < retries; i++) {
+        try {
+          const res = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            return await res.json();
           }
+          const errBody = await res.json().catch(() => ({}));
+          lastError = new Error(errBody.error?.message || `HTTP ${res.status}`);
+          if (res.status === 400 || res.status === 403) break;
+        } catch (err) {
+          lastError = err;
+        }
+        if (i < retries - 1) {
+          await new Promise(r => setTimeout(r, delay * Math.pow(2, i)));
         }
       }
       throw lastError || new Error("Échec de communication avec Gemini");
@@ -2003,14 +2009,11 @@
 
     // 1. Saisie Magique : Analyse en Langage Naturel avec JSON Structuré
     async function parseNaturalLanguageWithGemini(userText) {
-      if (!getStoredApiKey()) {
-        return notify("Ajoutez votre clé API dans les Options pour activer la saisie IA", "key");
-      }
       if (!userText.trim()) return notify("Veuillez saisir une description", "warning");
 
       const statusEl = $("aiStatusTx");
       statusEl.style.display = "block";
-      statusEl.textContent = "✨ Analyse par Gemini en cours...";
+      statusEl.textContent = "✨ Analyse par Gemini 3 Flash en cours...";
       statusEl.className = "ai-loading-pulse";
 
       const categoriesList = ALL_CATS.map(c => `${c.id} (${c.label})`).join(", ");
@@ -2065,20 +2068,17 @@ Règles :
         statusEl.classList.remove("ai-loading-pulse");
         notify("Champs remplis par Gemini", "auto_awesome");
       } catch (err) {
-        statusEl.textContent = "Erreur d'analyse. Veuillez renseigner manuellement.";
+        statusEl.textContent = "Erreur d'analyse. Renseignement manuel disponible.";
         statusEl.classList.remove("ai-loading-pulse");
-        notify("Échec de l'analyse IA : " + err.message, "error");
+        notify("Analyse automatique : " + err.message, "info");
       }
     }
 
     // 2. Scan Multimodal de Facture / Ticket de caisse via Gemini
     async function parseReceiptImageWithGemini(file) {
-      if (!getStoredApiKey()) {
-        return notify("Ajoutez votre clé API dans les Options pour scanner les tickets", "key");
-      }
       const statusEl = $("aiStatusTx");
       statusEl.style.display = "block";
-      statusEl.textContent = "📷 Lecture du ticket par Gemini Vision...";
+      statusEl.textContent = "📷 Lecture du ticket par Gemini 3 Flash Vision...";
       statusEl.className = "ai-loading-pulse";
 
       const reader = new FileReader();
@@ -2087,11 +2087,11 @@ Règles :
         const categoriesList = ALL_CATS.map(c => `${c.id} (${c.label})`).join(", ");
         const today = new Date().toISOString().slice(0, 10);
 
-        const prompt = `Analyse cette image de ticket de caisse, reçu ou facture.
-Extrais les données de l'opération financière :
-- Nom du commerçant ou objet
+        const prompt = `Analyse cette image de ticket de caisse, facture ou note de frais.
+Extrais précisément les données financières :
+- Nom de l'enseigne / commerçant
 - Montant total TTC payé
-- Catégorie la plus appropriée parmi : [${categoriesList}]
+- Catégorie la plus exacte parmi : [${categoriesList}]
 - Date du ticket (format AAAA-MM-JJ, ou ${today} si absente)`;
 
         const payload = {
@@ -2138,16 +2138,16 @@ Extrais les données de l'opération financière :
           statusEl.classList.remove("ai-loading-pulse");
           notify("Ticket analysé par Gemini", "receipt_long");
         } catch (err) {
-          statusEl.textContent = "Erreur de numérisation du reçu.";
+          statusEl.textContent = "Échec d'analyse du ticket.";
           statusEl.classList.remove("ai-loading-pulse");
-          notify("Échec scan ticket : " + err.message, "error");
+          notify("Erreur ticket : " + err.message, "error");
         }
       };
       reader.readAsDataURL(file);
     }
 
-    // 3. Coach Financier Gemini : Audit Budgétaire Intelligent
-    async function consultFinancialCoach(customQuestion = "") {
+    // 3. Coach Financier Gemini : Audit Budgétaire, Simulations & Recherche Web
+    async function consultFinancialCoach(customQuestion = "", useGrounding = false) {
       const chat = $("coachChatContainer");
       const welcome = $("coachWelcomeCard");
       if (welcome) welcome.style.display = "none";
@@ -2160,22 +2160,12 @@ Extrais les données de l'opération financière :
       userBubble.textContent = queryText;
       chat.appendChild(userBubble);
 
-      // Ajout bulle de chargement Gemini
+      // Ajout bulle de réflexion Gemini
       const aiBubble = document.createElement("div");
       aiBubble.className = "chat-bubble-ai ai-loading-pulse";
-      aiBubble.innerHTML = `<span class="material-symbols-rounded" style="vertical-align:middle; font-size:18px;">psychology</span> <em>Gemini analyse vos comptes...</em>`;
+      aiBubble.innerHTML = `<span class="material-symbols-rounded" style="vertical-align:middle; font-size:18px;">psychology</span> <em>${useGrounding ? 'Gemini effectue des recherches sur le Web...' : 'Gemini 3 analyse vos comptes...'}</em>`;
       chat.appendChild(aiBubble);
       chat.scrollTop = chat.scrollHeight;
-
-      // Mode Local si aucune clé configurée
-      if (!getStoredApiKey()) {
-        setTimeout(() => {
-          aiBubble.classList.remove("ai-loading-pulse");
-          aiBubble.innerHTML = answerQueryLocally(queryText);
-          chat.scrollTop = chat.scrollHeight;
-        }, 300);
-        return;
-      }
 
       const mTx = getMonthTx();
       const inc = sum(mTx, t => t.type === "income");
@@ -2192,11 +2182,18 @@ Extrais les données de l'opération financière :
         categoryTotals[name] = (categoryTotals[name] || 0) + Number(t.amount);
       });
 
+      const fixedCharges = mTx.filter(t => t.isFixed).map(t => ({
+        label: t.label,
+        amount: Number(t.amount),
+        category: t.category
+      }));
+
       const budgetContext = {
         mois: currentMonth,
         revenusTotaux: inc,
         depensesTotales: exp,
-        chargesFixes: fix,
+        chargesFixesTotales: fix,
+        listeChargesFixes: fixedCharges,
         resteAVivre: inc - exp,
         regle503020: {
           obligationsReelles: obl,
@@ -2210,12 +2207,13 @@ Extrais les données de l'opération financière :
         nombreOperations: mTx.length
       };
 
-      const systemPrompt = `Tu es un coach financier personnel expert, bienveillant, clair et pragmatique, intégré dans l'application Budget Pixel M3 Expressif.
-Tu réponds en français dans un format HTML lisible (utilise des <strong> pour les points clés, des listes <ul><li> courtes, et des paragraphes nets, sans balises <html> ou <body>).
-Appuie-toi directement sur les chiffres du contexte budgétaire fourni.
-Sois direct, concret, et donne des conseils applicables sans jargon inutile.`;
+      const systemPrompt = `Tu es un conseiller financier personnel de premier plan, bienveillant, clair et pragmatique, intégré dans l'application Budget Familial Pixel M3 Expressif.
+Tu réponds en français dans un format HTML soigné (balises <strong> pour les montants et termes clés, listes à puces <ul><li> concises, tableaux simples ou paragraphes aérés, sans balises <html> ni <body>).
+Tu t'appuies avec exactitude sur les chiffres du contexte fourni.
+Quand on te demande une simulation ("Et si... ?"), calcule précisément l'impact avant/après sur le Reste à vivre et la règle 50/30/20.
+Quand on te demande une recherche de prix réels, donne des fourchettes réalistes du marché et des recommandations concrètes.`;
 
-      const userPrompt = `Voici la synthèse budgétaire de l'utilisateur pour le mois en cours :
+      const userPrompt = `Contexte budgétaire utilisateur :
 ${JSON.stringify(budgetContext, null, 2)}
 
 Demande de l'utilisateur : ${queryText}`;
@@ -2225,12 +2223,43 @@ Demande de l'utilisateur : ${queryText}`;
         systemInstruction: { parts: [{ text: systemPrompt }] }
       };
 
+      if (useGrounding) {
+        payload.tools = [{ "google_search": {} }];
+      }
+
       try {
         const res = await callGeminiApi(payload);
-        const text = res?.candidates?.[0]?.content?.parts?.[0]?.text;
+        const candidate = res?.candidates?.[0];
+        const text = candidate?.content?.parts?.[0]?.text;
         if (!text) throw new Error("Réponse vide de Gemini");
+
+        let citationsHtml = "";
+        const groundingMetadata = candidate.groundingMetadata;
+        if (groundingMetadata && groundingMetadata.groundingAttributions) {
+          const sources = groundingMetadata.groundingAttributions
+            .map(att => ({ uri: att.web?.uri, title: att.web?.title }))
+            .filter(s => s.uri && s.title);
+
+          if (sources.length) {
+            citationsHtml = `
+              <div style="margin-top:14px; padding-top:10px; border-top:1px dashed var(--md-sys-color-outline-variant); font-size:11px;">
+                <div style="font-weight:700; color:var(--md-sys-color-primary); display:flex; align-items:center; gap:4px; margin-bottom:4px;">
+                  <span class="material-symbols-rounded" style="font-size:14px;">travel_explore</span> Sources vérifiées Google Search :
+                </div>
+                <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px;">
+                  ${sources.slice(0, 3).map(s => `
+                    <li><a href="${s.uri}" target="_blank" rel="noopener noreferrer" style="color:var(--md-sys-color-primary); text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:600;">
+                      <span>• ${s.title}</span>
+                      <span class="material-symbols-rounded" style="font-size:12px;">open_in_new</span>
+                    </a></li>
+                  `).join("")}
+                </ul>
+              </div>`;
+          }
+        }
+
         aiBubble.classList.remove("ai-loading-pulse");
-        aiBubble.innerHTML = text;
+        aiBubble.innerHTML = text + citationsHtml;
       } catch (err) {
         aiBubble.classList.remove("ai-loading-pulse");
         aiBubble.innerHTML = `<div style="color:var(--md-sys-color-error);"><span class="material-symbols-rounded" style="vertical-align:middle;">error</span> ${err.message}</div><div style="margin-top:8px;">${answerQueryLocally(queryText)}</div>`;
@@ -2266,7 +2295,6 @@ Demande de l'utilisateur : ${queryText}`;
     // Événements pour le Coach Budgétaire Gemini
     $("btnOpenAiCoach").onclick = () => {
       modal("modalAiCoach", true);
-      // Ouvre proprement la modale sans forcer de calcul automatique
     };
 
     $("btnLaunchAuditFromCard").onclick = () => {
@@ -2275,6 +2303,21 @@ Demande de l'utilisateur : ${queryText}`;
 
     $("btnQuickAudit").onclick = () => {
       consultFinancialCoach("Fais-moi un audit complet de mon budget ce mois-ci.");
+    };
+
+    $("btnSimulateScenario").onclick = () => {
+      const prompt = "Simule l'impact sur mes finances si j'effectue un achat imprévu de 450€ le mois prochain. Quel impact sur mon reste à vivre et mon épargne 50/30/20 ?";
+      consultFinancialCoach(prompt);
+    };
+
+    $("btnGroundedEstimate").onclick = () => {
+      const prompt = "Recherche avec Google les coûts moyens récents en France pour l'entretien complet d'un véhicule (vidange, freins, révision) et indique-moi comment le budgéter sur 6 mois.";
+      consultFinancialCoach(prompt, true);
+    };
+
+    $("btnNegotiateBills").onclick = () => {
+      const prompt = "Analyse mes charges fixes et abonnements mensuels répertoriés. Quels postes puis-je renégocier et donne-moi des conseils ou phrases types pour obtenir une réduction ?";
+      consultFinancialCoach(prompt);
     };
 
     $all(".ai-chip-prompt[data-prompt]").forEach(btn => {
