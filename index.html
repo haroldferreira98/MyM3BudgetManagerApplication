@@ -9,6 +9,10 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
   
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
   <style>
     :root {
       --font-display: 'Google Sans Flex', 'Google Sans', -apple-system, Roboto, sans-serif;
@@ -1091,6 +1095,44 @@
       transform: translateX(-50%) translateY(0) scale(1);
     }
 
+    /* Bannière de mise à jour automatique M3 */
+    .update-banner {
+      position: fixed;
+      top: calc(14px + env(safe-area-inset-top, 0px));
+      left: 50%;
+      transform: translateX(-50%) translateY(-120%);
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      padding: 10px 16px;
+      border-radius: 9999px;
+      box-shadow: var(--shadow-expressive);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 150;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      transition: transform 0.4s var(--ease-spring);
+      max-width: calc(100% - 32px);
+    }
+    .update-banner.show {
+      transform: translateX(-50%) translateY(0);
+    }
+    .update-reload-btn {
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      border: none;
+      border-radius: 9999px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .screen { display: none; }
     .screen.active { display: block; animation: screen-in 0.3s ease; }
     @keyframes screen-in {
@@ -1343,6 +1385,20 @@
       </div>
 
       <div class="card-squircle">
+        <div style="font-size: 12px; font-weight: 800; color: var(--md-sys-color-primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Version & Déploiement GitHub</div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 700; font-size: 14px;">Mises à jour automatiques</div>
+            <div style="font-size: 11px; color: var(--md-sys-color-outline);" id="appUpdateStatusText">Détecte les pushs sans réinstaller</div>
+          </div>
+          <button id="btnCheckUpdateManual" class="btn-pill btn-tonal press-spring ripple-target" style="padding: 10px 16px; font-size: 13px;">
+            <span class="material-symbols-rounded" style="font-size: 18px;">cloud_sync</span>
+            <span>Vérifier</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-squircle">
         <div style="font-size: 12px; font-weight: 800; color: var(--md-sys-color-primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Sauvegarde de secours</div>
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -1571,6 +1627,16 @@
   <div class="snackbar" id="snackbar">
     <span class="material-symbols-rounded" id="sbIcon">info</span>
     <span id="sbMsg"></span>
+  </div>
+
+  <!-- BANNIÈRE DE MISE À JOUR DISPONIBLE (IOS / PWA) -->
+  <div class="update-banner" id="updateBanner">
+    <span class="material-symbols-rounded" style="font-size: 20px;">new_releases</span>
+    <span>Nouvelle version disponible !</span>
+    <button class="update-reload-btn press-spring" id="btnApplyUpdate">
+      <span class="material-symbols-rounded" style="font-size: 16px;">refresh</span>
+      <span>Actualiser</span>
+    </button>
   </div>
 
   <script type="module">
@@ -2552,6 +2618,70 @@ Demande de l'utilisateur : ${queryText}`;
     applyNavLift(savedLift);
 
     updateApiKeyUI();
+
+    // Système de détection de mise à jour GitHub (Solution 2)
+    async function checkAppUpdate(manual = false) {
+      const updateStatusEl = $("appUpdateStatusText");
+      if (manual && updateStatusEl) updateStatusEl.textContent = "Recherche de mise à jour en cours...";
+      
+      try {
+        const checkUrl = window.location.origin + window.location.pathname + '?_check=' + Date.now();
+        const res = await fetch(checkUrl, {
+          method: "GET",
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache",
+            "Pragma": "no-cache"
+          }
+        });
+
+        if (!res.ok) throw new Error("HTTP " + res.status);
+
+        const etag = res.headers.get("etag") || res.headers.get("last-modified");
+        const htmlText = await res.text();
+        
+        // Empreinte unique basée sur les en-têtes ou sur la taille et le contenu
+        const versionFingerprint = etag || (htmlText.length + "_" + htmlText.slice(0, 100).replace(/\s+/g, ''));
+        const storedFingerprint = localStorage.getItem("budget_app_fingerprint");
+
+        if (!storedFingerprint) {
+          localStorage.setItem("budget_app_fingerprint", versionFingerprint);
+          if (manual) notify("Votre application est à jour !", "verified");
+          if (updateStatusEl) updateStatusEl.textContent = "Application à jour";
+          return;
+        }
+
+        if (storedFingerprint !== versionFingerprint) {
+          localStorage.setItem("budget_next_fingerprint", versionFingerprint);
+          $("updateBanner").classList.add("show");
+          if (updateStatusEl) updateStatusEl.textContent = "Nouvelle version prête à être installée";
+          if (manual) notify("Nouvelle version prête !", "download");
+        } else {
+          if (manual) notify("Vous utilisez déjà la dernière version !", "verified");
+          if (updateStatusEl) updateStatusEl.textContent = "Dernière version active";
+        }
+      } catch (err) {
+        if (manual) notify("Vérification impossible hors connexion", "cloud_off");
+        if (updateStatusEl) updateStatusEl.textContent = "Vérification indisponible";
+      }
+    }
+
+    $("btnApplyUpdate").onclick = () => {
+      const nextFp = localStorage.getItem("budget_next_fingerprint");
+      if (nextFp) localStorage.setItem("budget_app_fingerprint", nextFp);
+      // Forçage de rafraîchissement Safari WebClip en contournant le cache
+      window.location.replace(window.location.origin + window.location.pathname + '?_reload=' + Date.now());
+    };
+
+    $("btnCheckUpdateManual").onclick = () => checkAppUpdate(true);
+
+    // Détection automatique en tâche de fond (au démarrage et au retour sur l'app)
+    setTimeout(() => checkAppUpdate(false), 2500);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        checkAppUpdate(false);
+      }
+    });
 
     $("monthInput").value = currentMonth;
     const updateMonth = () => {
