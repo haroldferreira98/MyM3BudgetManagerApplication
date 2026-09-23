@@ -426,14 +426,72 @@
       color: var(--md-sys-color-on-surface);
       line-height: 1.1;
     }
-    .brand-title span {
-      display: block;
-      font-size: 13px;
-      font-weight: 700;
+
+    /* Avatar et menu de compte Material 3 */
+    .account-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--md-sys-color-surface-container-high);
+      border: 2px solid var(--md-sys-color-outline-variant);
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
       color: var(--md-sys-color-primary);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-top: 2px;
+      box-shadow: var(--shadow-ambient);
+      padding: 0;
+      overflow: visible;
+    }
+    .account-btn img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+    .account-badge-dot {
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--md-sys-color-outline);
+      border: 2px solid var(--md-sys-color-surface);
+      transition: background-color 0.25s ease;
+    }
+    .account-badge-dot.online {
+      background: var(--md-sys-color-success);
+    }
+
+    .account-card-preview {
+      background: var(--md-sys-color-surface-container-high);
+      border-radius: 24px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .account-avatar-large {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      display: grid;
+      place-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .account-avatar-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .month-pill {
@@ -1039,22 +1097,16 @@
 </head>
 <body>
 
-  <div id="authOverlay">
-    <div style="background: var(--md-sys-color-primary-container); width: 72px; height: 72px; border-radius: 24px; display: grid; place-content: center; margin-bottom: 24px; box-shadow: var(--shadow-ambient);">
-      <span class="material-symbols-rounded" style="font-size: 40px; color: var(--md-sys-color-on-primary-container);">account_balance_wallet</span>
-    </div>
-    <h2 style="font-family: var(--font-display); font-size: 28px; font-weight: 800; letter-spacing: -0.6px; margin-bottom: 8px;">Budget Familial</h2>
-    <p style="font-size: 14px; color: var(--md-sys-color-on-surface-variant); margin-bottom: 32px; max-width: 280px; line-height: 1.5;">Connectez-vous pour synchroniser vos comptes et sécuriser vos données avec Firebase.</p>
-    <button class="google-btn press-spring ripple-target" id="btnLoginGoogle">
-      <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.35 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
-      <span>Continuer avec Google</span>
-    </button>
-  </div>
-
   <div class="app">
-    <!-- Header M3 Expressif -->
+    <!-- Header M3 Expressif avec avatar de compte à gauche -->
     <header>
-      <div class="brand-title">Budget</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="account-btn press-spring ripple-target" id="btnOpenAccountMenu" title="Gérer mon compte">
+          <span class="material-symbols-rounded" id="accountBtnIcon" style="font-size: 24px;">account_circle</span>
+          <div class="account-badge-dot" id="accountBadgeDot"></div>
+        </button>
+        <div class="brand-title">Budget</div>
+      </div>
       <div class="month-pill press-spring ripple-target">
         <span class="material-symbols-rounded" style="font-size: 18px; color: var(--md-sys-color-primary);">calendar_month</span>
         <span id="monthLabel">...</span>
@@ -1389,6 +1441,48 @@
     </div>
   </div>
 
+  <!-- MODAL GESTION DU COMPTE GOOGLE M3 -->
+  <div class="modal-backdrop" id="modalAccount">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      
+      <div class="account-card-preview">
+        <div class="account-avatar-large" id="accModalAvatar">
+          <span class="material-symbols-rounded" style="font-size: 28px;">person</span>
+        </div>
+        <div style="min-width: 0; flex: 1;">
+          <div id="accModalName" style="font-family: var(--font-display); font-size: 16px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Non connecté</div>
+          <div id="accModalEmail" style="font-size: 12px; color: var(--md-sys-color-outline); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Données stockées en local</div>
+          <div id="accModalStatus" style="font-size: 11px; font-weight: 700; color: var(--md-sys-color-outline); margin-top: 2px;">• Hors ligne</div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;" id="accountActionsLoggedOut">
+        <button class="google-btn press-spring ripple-target" id="btnConnectGoogle" style="width: 100%; justify-content: center;">
+          <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.35 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+          <span>Se connecter avec Google</span>
+        </button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; display: none;" id="accountActionsLoggedIn">
+        <button id="btnSwitchAccount" class="btn-pill btn-tonal press-spring ripple-target" style="justify-content: flex-start;">
+          <span class="material-symbols-rounded">switch_account</span>
+          <span>Changer de compte Google</span>
+        </button>
+        <button id="btnSyncNow" class="btn-pill btn-tonal press-spring ripple-target" style="justify-content: flex-start;">
+          <span class="material-symbols-rounded">sync</span>
+          <span>Forcer la synchronisation</span>
+        </button>
+        <button id="btnAccountLogout" class="btn-pill btn-danger press-spring ripple-target" style="justify-content: flex-start;">
+          <span class="material-symbols-rounded">logout</span>
+          <span>Se déconnecter de ce compte</span>
+        </button>
+      </div>
+
+      <button class="btn-pill btn-tonal press-spring ripple-target" style="width: 100%; margin-top: 14px;" data-close="modalAccount">Fermer</button>
+    </div>
+  </div>
+
   <!-- MODAL COACH FINANCIER GEMINI -->
   <div class="modal-backdrop" id="modalAiCoach">
     <div class="sheet" style="max-height: 92vh; display: flex; flex-direction: column;">
@@ -1456,7 +1550,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, doc, setDoc, deleteDoc, writeBatch, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     // Moteur d'effet Vaguelette (M3 Ripple Effect)
@@ -1488,7 +1582,11 @@
       messagingSenderId: "883702754992",
       appId: "1:883702754992:web:4a8be32c24c5a3d9645575"
     });
-    const auth = getAuth(app), db = getFirestore(app), provider = new GoogleAuthProvider();
+    const auth = getAuth(app), db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    // Mémorisation permanente de la session sur l'appareil (évite Face ID / reconnexion répétée)
+    setPersistence(auth, browserLocalPersistence).catch(() => {});
 
     let currentUser = null, unsubscribeFirestore = null, transactions = [];
     let currentFilter = "all", editingId = null, selectedId = null, modalType = "expense", currentSort = 0, searchQuery = "";
@@ -2101,22 +2199,109 @@ Demande de l'utilisateur : ${queryText}`;
     // Auth Firestore Observer
     onAuthStateChanged(auth, user => {
       currentUser = user;
-      $("authOverlay").classList.toggle("hidden", !!user);
+      const dot = $("accountBadgeDot");
+      const icon = $("accountBtnIcon");
+      const loggedOutActions = $("accountActionsLoggedOut");
+      const loggedInActions = $("accountActionsLoggedIn");
+
       if (unsubscribeFirestore) { unsubscribeFirestore(); unsubscribeFirestore = null; }
+
       if (user) {
+        dot.classList.add("online");
+        if (user.photoURL) {
+          $("btnOpenAccountMenu").innerHTML = `<img src="${user.photoURL}" alt="Photo de profil" referrerpolicy="no-referrer" /><div class="account-badge-dot online" id="accountBadgeDot"></div>`;
+          $("accModalAvatar").innerHTML = `<img src="${user.photoURL}" alt="Photo" referrerpolicy="no-referrer" />`;
+        } else {
+          const initials = (user.displayName || user.email || "U").charAt(0).toUpperCase();
+          $("btnOpenAccountMenu").innerHTML = `<div style="font-weight:800; font-size:16px;">${initials}</div><div class="account-badge-dot online" id="accountBadgeDot"></div>`;
+          $("accModalAvatar").innerHTML = `<span>${initials}</span>`;
+        }
+
+        $("accModalName").textContent = user.displayName || "Utilisateur Google";
+        $("accModalEmail").textContent = user.email || "";
+        $("accModalStatus").textContent = "• Synchronisé avec Firebase Cloud";
+        $("accModalStatus").style.color = "var(--md-sys-color-success)";
+
         $("userEmail").textContent = user.email || user.displayName;
+        loggedOutActions.style.display = "none";
+        loggedInActions.style.display = "flex";
+
+        // Sauvegarde de l'e-mail mémorisé
+        if (user.email) localStorage.setItem("budget_remembered_account", user.email);
+
         unsubscribeFirestore = onSnapshot(collection(db, "users", user.uid, "transactions"), snap => {
           transactions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
           renderApp();
         }, () => notify("Erreur de synchronisation Firestore", "error"));
       } else {
+        dot.classList.remove("online");
+        $("btnOpenAccountMenu").innerHTML = `<span class="material-symbols-rounded" style="font-size: 24px;">account_circle</span><div class="account-badge-dot" id="accountBadgeDot"></div>`;
+        $("accModalAvatar").innerHTML = `<span class="material-symbols-rounded" style="font-size: 28px;">person</span>`;
+
+        const remembered = localStorage.getItem("budget_remembered_account");
+        if (remembered) {
+          $("accModalName").textContent = "Dernier compte connu";
+          $("accModalEmail").textContent = remembered;
+          $("accModalStatus").textContent = "• Session en attente de reconnexion";
+          $("accModalStatus").style.color = "var(--md-sys-color-outline)";
+        } else {
+          $("accModalName").textContent = "Non connecté";
+          $("accModalEmail").textContent = "Mode local uniquement";
+          $("accModalStatus").textContent = "• Données non synchronisées";
+          $("accModalStatus").style.color = "var(--md-sys-color-outline)";
+        }
+
+        $("userEmail").textContent = "Mode hors-ligne";
+        loggedOutActions.style.display = "flex";
+        loggedInActions.style.display = "none";
         transactions = [];
         renderApp();
       }
     });
 
-    $("btnLoginGoogle").onclick = () => signInWithPopup(auth, provider).catch(err => notify("Échec de connexion : " + err.message, "error"));
-    $("btnLogout").onclick = () => signOut(auth).then(() => notify("Déconnecté", "logout")).catch(() => notify("Erreur déconnexion", "error"));
+    // Ouvrir le menu de compte via l'icône à gauche de Budget
+    $("btnOpenAccountMenu").onclick = () => modal("modalAccount", true);
+
+    // Connexion Google normale
+    $("btnConnectGoogle").onclick = async () => {
+      try {
+        await signInWithPopup(auth, provider);
+        modal("modalAccount", false);
+        notify("Connecté avec succès !", "account_circle");
+      } catch (err) {
+        notify("Échec de connexion : " + err.message, "error");
+      }
+    };
+
+    // Changer de compte Google (force l'affichage du sélecteur de comptes sans réutiliser aveuglément le précédent)
+    $("btnSwitchAccount").onclick = async () => {
+      try {
+        const switchProvider = new GoogleAuthProvider();
+        switchProvider.setCustomParameters({ prompt: 'select_account' });
+        await signInWithPopup(auth, switchProvider);
+        modal("modalAccount", false);
+        notify("Compte changé avec succès", "swap_horiz");
+      } catch (err) {
+        notify("Changement annulé : " + err.message, "info");
+      }
+    };
+
+    // Forcer la synchronisation
+    $("btnSyncNow").onclick = () => {
+      if (!currentUser) return notify("Veuillez d'abord vous connecter", "warning");
+      renderApp();
+      notify("Données synchronisées", "sync");
+      modal("modalAccount", false);
+    };
+
+    // Déconnexion
+    const handleLogout = () => signOut(auth).then(() => {
+      modal("modalAccount", false);
+      notify("Déconnecté", "logout");
+    }).catch(() => notify("Erreur lors de la déconnexion", "error"));
+
+    $("btnAccountLogout").onclick = handleLogout;
+    $("btnLogout").onclick = handleLogout;
 
     $("txContainer").onclick = e => {
       const item = e.target.closest(".tx-item");
