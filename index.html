@@ -17,7 +17,7 @@
     :root {
       --font-display: 'Google Sans Flex', 'Google Sans', -apple-system, Roboto, sans-serif;
       --font-body: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
-      --nav-lift: 0px;
+      --nav-lift: -15px;
 
       /* Palette tonale dynamique obligatoire : Lilas Expressif M3 */
       --md-sys-color-primary: #6750A4;
@@ -1364,27 +1364,6 @@
       </div>
 
       <div class="card-squircle">
-        <div style="font-size: 12px; font-weight: 800; color: var(--md-sys-color-primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Barre de navigation</div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <div>
-            <div style="font-weight: 700; font-size: 15px;">Élévation & position</div>
-            <div style="font-size: 12px; color: var(--md-sys-color-outline);">Hauteur de la barre et des icônes</div>
-          </div>
-          <span id="navLiftValueLabel" style="font-family: var(--font-display); font-size: 13px; font-weight: 800; color: var(--md-sys-color-primary);">0 px (Défaut)</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 12px; margin-top: 14px;">
-          <span class="material-symbols-rounded" style="font-size: 20px; color: var(--md-sys-color-outline);">vertical_align_bottom</span>
-          <input type="range" id="navLiftSlider" min="-12" max="24" value="0" step="1" style="flex: 1; accent-color: var(--md-sys-color-primary); cursor: pointer; height: 6px;" />
-          <span class="material-symbols-rounded" style="font-size: 20px; color: var(--md-sys-color-primary);">vertical_align_top</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--md-sys-color-outline); margin-top: 6px; font-weight: 600;">
-          <span>Plus bas (-12px)</span>
-          <span>Milieu (Défaut)</span>
-          <span>Plus haut (+24px)</span>
-        </div>
-      </div>
-
-      <div class="card-squircle">
         <div style="font-size: 12px; font-weight: 800; color: var(--md-sys-color-primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Version & Déploiement GitHub</div>
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <div>
@@ -2597,25 +2576,8 @@ Demande de l'utilisateur : ${queryText}`;
     $all(".color-dot").forEach(dot => dot.classList.toggle("active", dot.dataset.palette === savedPalette));
     $("themeSelect").value = localStorage.getItem("budget_theme") || "auto";
 
-    function applyNavLift(val) {
-      const lift = parseInt(val, 10) || 0;
-      document.documentElement.style.setProperty("--nav-lift", `${lift}px`);
-      const label = $("navLiftValueLabel");
-      if (label) {
-        label.textContent = (lift > 0 ? `+${lift}` : lift) + (lift === 0 ? " px (Défaut)" : " px");
-      }
-      const slider = $("navLiftSlider");
-      if (slider) slider.value = lift;
-    }
-
-    $("navLiftSlider").oninput = e => {
-      const v = e.target.value;
-      applyNavLift(v);
-      localStorage.setItem("budget_nav_lift", v);
-    };
-
-    const savedLift = localStorage.getItem("budget_nav_lift") || "0";
-    applyNavLift(savedLift);
+    localStorage.removeItem("budget_nav_lift");
+    document.documentElement.style.setProperty("--nav-lift", "-15px");
 
     updateApiKeyUI();
 
