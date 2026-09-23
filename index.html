@@ -56,161 +56,6 @@
       --shadow-expressive: 0 16px 36px -8px rgba(103, 80, 164, 0.22);
     }
 
-    /* Style Expressif des composants IA Gemini */
-    .ai-gradient-card {
-      background: linear-gradient(135deg, var(--md-sys-color-surface-container-high) 0%, var(--md-sys-color-primary-container) 120%);
-      border-radius: 28px;
-      padding: 18px 20px;
-      margin: 0 16px 14px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow-ambient);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border: 1px solid rgba(103, 80, 164, 0.15);
-      touch-action: pan-y;
-    }
-    .ai-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: var(--md-sys-color-primary);
-      color: var(--md-sys-color-on-primary);
-      padding: 3px 10px;
-      border-radius: 9999px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-    }
-    .ai-action-btn {
-      background: var(--md-sys-color-primary);
-      color: var(--md-sys-color-on-primary);
-      border-radius: 9999px;
-      border: none;
-      padding: 10px 18px;
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      line-height: 1;
-      gap: 6px;
-      box-shadow: var(--shadow-ambient);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .ai-action-btn span {
-      display: inline-flex;
-      align-items: center;
-      line-height: 1;
-    }
-    .magic-input-box {
-      background: var(--md-sys-color-surface-container-high);
-      border: 1.5px dashed var(--md-sys-color-primary);
-      border-radius: 22px;
-      padding: 12px 14px;
-      margin-bottom: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .ai-chip-prompt {
-      flex-shrink: 0;
-      background: var(--md-sys-color-surface-container-high);
-      color: var(--md-sys-color-on-surface);
-      border: none;
-      border-radius: 9999px;
-      padding: 8px 14px;
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .ai-loading-pulse {
-      animation: pulse-ai 1.4s infinite alternate ease-in-out;
-    }
-    @keyframes pulse-ai {
-      0% { opacity: 0.55; transform: scale(0.98); }
-      100% { opacity: 1; transform: scale(1.02); }
-    }
-    .coach-bubble {
-      background: var(--md-sys-color-surface-container-high);
-      border-radius: 24px;
-      padding: 18px;
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--md-sys-color-on-surface);
-      margin-bottom: 14px;
-    }
-    .coach-bubble strong {
-      color: var(--md-sys-color-primary);
-    }
-    .coach-bubble ul {
-      margin-left: 20px;
-      margin-top: 8px;
-    }
-
-    /* Fil de discussion interactif Coach M3 */
-    .coach-chat-container {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-height: 52vh;
-      overflow-y: auto;
-      padding: 4px 2px 14px;
-      margin-bottom: 12px;
-      -webkit-overflow-scrolling: touch;
-    }
-    .chat-bubble-user {
-      align-self: flex-end;
-      background: var(--md-sys-color-primary);
-      color: var(--md-sys-color-on-primary);
-      padding: 12px 18px;
-      border-radius: 22px 22px 4px 22px;
-      max-width: 84%;
-      font-size: 14px;
-      font-weight: 500;
-      box-shadow: var(--shadow-ambient);
-      word-break: break-word;
-      animation: screen-in 0.25s ease;
-    }
-    .chat-bubble-ai {
-      align-self: flex-start;
-      background: var(--md-sys-color-surface-container-high);
-      color: var(--md-sys-color-on-surface);
-      padding: 16px 18px;
-      border-radius: 22px 22px 22px 4px;
-      max-width: 92%;
-      font-size: 14px;
-      line-height: 1.6;
-      box-shadow: var(--shadow-ambient);
-      word-break: break-word;
-      animation: screen-in 0.25s ease;
-    }
-    .chat-bubble-ai strong {
-      color: var(--md-sys-color-primary);
-    }
-    .chat-bubble-ai ul {
-      margin-left: 18px;
-      margin-top: 6px;
-    }
-    .coach-welcome-card {
-      background: linear-gradient(135deg, var(--md-sys-color-surface-container-high) 0%, var(--md-sys-color-primary-container) 100%);
-      border-radius: 24px;
-      padding: 20px;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
     /* Déclinaisons de teintes Google Pixel tout en préservant le système M3 Expressif */
     html[data-color="blue"] {
       --md-sys-color-primary: #1B6585;
@@ -376,25 +221,6 @@
     }
     .press-spring:active {
       transform: scale(0.96) !important;
-    }
-
-    #authOverlay {
-      position: fixed;
-      inset: 0;
-      background: var(--md-sys-color-surface);
-      z-index: 200;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: calc(24px + env(safe-area-inset-top, 0px)) 24px calc(24px + env(safe-area-inset-bottom, 0px));
-      text-align: center;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
-    #authOverlay.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
     }
 
     .google-btn {
@@ -1220,22 +1046,6 @@
         </button>
       </div>
 
-      <!-- Carte Gemini AI Smart Insights -->
-      <div class="ai-gradient-card ripple-target" id="bannerAiCoach">
-        <div style="min-width: 0;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-            <span class="ai-badge"><span class="material-symbols-rounded" style="font-size: 14px;">auto_awesome</span>Gemini</span>
-            <span style="font-size: 12px; font-weight: 700; color: var(--md-sys-color-outline);">Coach Budgétaire</span>
-          </div>
-          <div style="font-family: var(--font-display); font-size: 15px; font-weight: 800; color: var(--md-sys-color-on-surface);">Audit intelligent du mois</div>
-          <div style="font-size: 12px; color: var(--md-sys-color-on-surface-variant); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Optimisez vos charges et votre épargne 50/30/20</div>
-        </div>
-        <button class="ai-action-btn press-spring ripple-target" id="btnOpenAiCoach">
-          <span class="material-symbols-rounded" style="font-size: 18px;">psychology</span>
-          <span>Analyser</span>
-        </button>
-      </div>
-
       <!-- Titre de section & Actions de Tri -->
       <div class="sec-header">
         <div>
@@ -1331,31 +1141,6 @@
       </div>
 
       <div class="card-squircle">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <div style="font-size: 12px; font-weight: 800; color: var(--md-sys-color-primary); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
-            <span class="material-symbols-rounded" style="font-size: 16px;">auto_awesome</span> Gemini AI Studio
-          </div>
-          <span id="geminiKeyStatus" style="font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 9999px; background: var(--md-sys-color-surface-container-high); color: var(--md-sys-color-outline);">Mode Local</span>
-        </div>
-        <p style="font-size: 12px; color: var(--md-sys-color-outline); margin-bottom: 12px; line-height: 1.4;">
-          Collez votre clé gratuite Google AI Studio pour débloquer la saisie en langage naturel, le scan de tickets et le coach sur-mesure.
-        </p>
-        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-          <input type="password" id="geminiApiKeyInput" class="input-m3" placeholder="AIzaSy..." style="padding: 10px 14px; font-size: 13px;" />
-          <button id="btnSaveApiKey" class="btn-pill btn-primary press-spring ripple-target" style="padding: 10px 16px; font-size: 13px; white-space: nowrap;">
-            Sauvegarder
-          </button>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
-          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
-            <span>Obtenir ma clé gratuite</span>
-            <span class="material-symbols-rounded" style="font-size: 14px;">open_in_new</span>
-          </a>
-          <button id="btnClearApiKey" style="background: none; border: none; color: var(--md-sys-color-error); cursor: pointer; font-size: 11px; font-weight: 600;">Effacer la clé</button>
-        </div>
-      </div>
-
-      <div class="card-squircle">
         <div style="font-size: 12px; font-weight: 800; color: var(--md-sys-color-primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Couleurs Google Pixel</div>
         <div class="color-picker-row" id="colorPickerRow">
           <button class="color-dot active press-spring" data-palette="lavender" style="background:#6750A4;" title="Lilas"><span class="material-symbols-rounded">check</span></button>
@@ -1444,26 +1229,6 @@
     <div class="sheet">
       <div class="sheet-handle"></div>
       <h3 style="font-family: var(--font-display); font-size: 22px; font-weight: 800; margin-bottom: 18px;" id="modalTxTitle">Nouvelle opération</h3>
-
-      <!-- Outils IA Gemini pour Saisie Rapide & Scan Reçu -->
-      <div class="magic-input-box">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 12px; font-weight: 700; color: var(--md-sys-color-primary); display: flex; align-items: center; gap: 5px;">
-            <span class="material-symbols-rounded" style="font-size: 16px;">auto_awesome</span> Saisie magique par Gemini
-          </span>
-          <button type="button" class="btn-pill press-spring ripple-target" id="btnScanReceipt" style="padding: 4px 10px; font-size: 11px; background: var(--md-sys-color-surface-container-highest); color: var(--md-sys-color-primary);">
-            <span class="material-symbols-rounded" style="font-size: 15px;">receipt_long</span> Scanner ticket
-          </button>
-          <input type="file" id="receiptFileInput" accept="image/*" style="display: none;" />
-        </div>
-        <div style="display: flex; gap: 6px;">
-          <input type="text" id="aiNaturalText" class="input-m3" style="padding: 10px 14px; font-size: 13px;" placeholder="Ex: Déjeuner boulangerie 8.50€ hier..." />
-          <button type="button" class="btn-pill btn-primary press-spring ripple-target" id="btnApplyAiParse" style="padding: 10px 14px;" title="Extraire avec l'IA">
-            <span class="material-symbols-rounded" style="font-size: 18px;">send</span>
-          </button>
-        </div>
-        <div id="aiStatusTx" style="font-size: 11px; font-weight: 600; color: var(--md-sys-color-outline); display: none;"></div>
-      </div>
 
       <!-- Toggle Dépense / Revenu -->
       <div style="display: flex; background: var(--md-sys-color-surface-container-high); padding: 4px; border-radius: 9999px; margin-bottom: 18px;">
@@ -1554,75 +1319,6 @@
       </div>
 
       <button class="btn-pill btn-tonal press-spring ripple-target" style="width: 100%; margin-top: 14px;" data-close="modalAccount">Fermer</button>
-    </div>
-  </div>
-
-  <!-- MODAL COACH FINANCIER GEMINI -->
-  <div class="modal-backdrop" id="modalAiCoach">
-    <div class="sheet" style="max-height: 92vh; display: flex; flex-direction: column;">
-      <div class="sheet-handle"></div>
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-shrink: 0;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 44px; height: 44px; border-radius: 16px; background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); display: grid; place-content: center;">
-            <span class="material-symbols-rounded" style="font-size: 26px;">auto_awesome</span>
-          </div>
-          <div>
-            <h3 style="font-family: var(--font-display); font-size: 20px; font-weight: 800;">Coach IA Gemini</h3>
-            <p style="font-size: 12px; color: var(--md-sys-color-outline);" id="coachSubTitle">Assistant budgétaire interactif</p>
-          </div>
-        </div>
-        <button class="btn-pill btn-tonal press-spring ripple-target" style="padding: 8px 12px;" data-close="modalAiCoach">
-          <span class="material-symbols-rounded" style="font-size: 18px;">close</span>
-        </button>
-      </div>
-
-      <!-- Suggestions rapides de requêtes -->
-      <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 8px; scrollbar-width: none; flex-shrink: 0;">
-        <button class="ai-chip-prompt press-spring ripple-target" id="btnQuickAudit">
-          <span class="material-symbols-rounded" style="font-size: 16px; color: var(--md-sys-color-primary);">analytics</span> Lancer l'audit complet
-        </button>
-        <button class="ai-chip-prompt press-spring ripple-target" id="btnSimulateScenario">
-          <span class="material-symbols-rounded" style="font-size: 16px; color: var(--md-sys-color-primary);">psychology_alt</span> 🔮 Simuler un achat ("Et si...?")
-        </button>
-        <button class="ai-chip-prompt press-spring ripple-target" id="btnGroundedEstimate">
-          <span class="material-symbols-rounded" style="font-size: 16px; color: var(--md-sys-color-primary);">travel_explore</span> 🌐 Estimer un projet (Web Search)
-        </button>
-        <button class="ai-chip-prompt press-spring ripple-target" id="btnNegotiateBills">
-          <span class="material-symbols-rounded" style="font-size: 16px; color: var(--md-sys-color-primary);">savings</span> 📉 Négocier mes charges fixes
-        </button>
-        <button class="ai-chip-prompt press-spring ripple-target" data-prompt="Quels sont mes 3 plus gros postes de dépenses ce mois-ci ?">
-          <span class="material-symbols-rounded" style="font-size: 16px; color: var(--md-sys-color-primary);">trending_down</span> Top dépenses
-        </button>
-        <button class="ai-chip-prompt press-spring ripple-target" data-prompt="Comment respecter la règle 50/30/20 avec mon budget actuel ?">
-          <span class="material-symbols-rounded" style="font-size: 16px; color: var(--md-sys-color-primary);">pie_chart</span> Règle 50/30/20
-        </button>
-        <button class="ai-chip-prompt press-spring ripple-target" data-prompt="Donne-moi 2 astuces concrètes pour économiser sur mes dépenses non essentielles">
-          <span class="material-symbols-rounded" style="font-size: 16px; color: var(--md-sys-color-success);">savings</span> Astuces épargne
-        </button>
-      </div>
-
-      <!-- Fil de discussion interactif -->
-      <div id="coachChatContainer" class="coach-chat-container">
-        <div class="coach-welcome-card" id="coachWelcomeCard">
-          <div style="font-family: var(--font-display); font-size: 17px; font-weight: 800; margin-bottom: 6px;">
-            Bonjour ! Que souhaitez-vous analyser ?
-          </div>
-          <p style="font-size: 13px; color: var(--md-sys-color-on-surface-variant); margin-bottom: 14px; line-height: 1.4;">
-            Lancez un audit global de vos dépenses ou posez directement une question sur votre budget.
-          </p>
-          <button class="btn-pill btn-primary press-spring ripple-target" id="btnLaunchAuditFromCard" style="font-size: 13px; padding: 10px 20px;">
-            <span class="material-symbols-rounded" style="font-size: 18px;">auto_awesome</span> Lancer l'audit de mon mois
-          </button>
-        </div>
-      </div>
-
-      <!-- Saisie de question libre à Gemini -->
-      <div style="display: flex; gap: 8px; margin-top: auto; padding-top: 4px; flex-shrink: 0;">
-        <input type="text" id="aiCustomQuery" class="input-m3" placeholder="Posez une question sur vos finances..." style="padding: 12px 16px;" />
-        <button class="btn-pill btn-primary press-spring ripple-target" id="btnSendAiQuery" style="padding: 0 18px; border-radius: 9999px;" title="Envoyer">
-          <span class="material-symbols-rounded">send</span>
-        </button>
-      </div>
     </div>
   </div>
 
@@ -1879,467 +1575,10 @@
     const getTPE = () => parseFloat(tpe.value.replace(/\s/g, '').replace(',', '.')) || 0;
     const setTPE = v => tpe.value = v ? Number(v).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
 
-    function getStoredApiKey() {
-      return localStorage.getItem("budget_gemini_api_key") || "";
-    }
-
-    function updateApiKeyUI() {
-      const key = getStoredApiKey();
-      const statusEl = $("geminiKeyStatus");
-      const inputEl = $("geminiApiKeyInput");
-      if (key) {
-        statusEl.textContent = "Clé personnalisée";
-        statusEl.style.background = "var(--md-sys-color-success-container)";
-        statusEl.style.color = "var(--md-sys-color-on-success-container)";
-        inputEl.value = key.slice(0, 7) + "••••••••••••" + key.slice(-4);
-      } else {
-        statusEl.textContent = "Gemini Auto (Actif)";
-        statusEl.style.background = "var(--md-sys-color-primary-container)";
-        statusEl.style.color = "var(--md-sys-color-on-primary-container)";
-        inputEl.value = "";
-      }
-    }
-
-    async function callGeminiApi(payload, retries = 3, delay = 1000) {
-      const customKey = getStoredApiKey();
-      const apiKey = customKey || ""; // Canvas injecte automatiquement la clé à l'exécution si vide
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-      let lastError = null;
-      for (let i = 0; i < retries; i++) {
-        try {
-          const res = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          if (res.ok) {
-            return await res.json();
-          }
-          const errBody = await res.json().catch(() => ({}));
-          lastError = new Error(errBody.error?.message || `HTTP ${res.status}`);
-          if (res.status === 400 || res.status === 403) break;
-        } catch (err) {
-          lastError = err;
-        }
-        if (i < retries - 1) {
-          await new Promise(r => setTimeout(r, delay * Math.pow(2, i)));
-        }
-      }
-      throw lastError || new Error("Échec de communication avec Gemini");
-    }
-
-    function generateLocalBudgetAudit() {
-      const mTx = getMonthTx();
-      const inc = sum(mTx, t => t.type === "income");
-      const exp = sum(mTx, t => t.type === "expense");
-      const fix = sum(mTx, t => t.isFixed && t.type === "expense");
-      const obl = sum(mTx, t => t.type === "expense" && (t.isFixed || t.category === "supermarche"));
-      const wants = sum(mTx, t => t.type === "expense" && !t.isFixed && t.category !== "supermarche");
-      const sav = Math.max(0, inc - obl - wants);
-
-      const expList = mTx.filter(t => t.type === "expense");
-      const topCatMap = {};
-      expList.forEach(t => topCatMap[t.category] = (topCatMap[t.category] || 0) + Number(t.amount));
-      const sortedCats = Object.keys(topCatMap).sort((a, b) => topCatMap[b] - topCatMap[a]);
-      const topCatName = sortedCats[0] ? (ALL_CATS.find(c => c.id === sortedCats[0])?.label || sortedCats[0]) : "Aucune";
-      const topCatAmt = sortedCats[0] ? topCatMap[sortedCats[0]] : 0;
-
-      const oblP = inc > 0 ? Math.round((obl / inc) * 100) : 0;
-      const wantsP = inc > 0 ? Math.round((wants / inc) * 100) : 0;
-      const savP = inc > 0 ? Math.round((sav / inc) * 100) : 0;
-
-      return `
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px; color:var(--md-sys-color-primary);">
-          <span class="material-symbols-rounded">analytics</span>
-          <strong>Bilan budgétaire de votre mois</strong>
-        </div>
-        <p style="margin-bottom:10px;">Voici l'état actuel calculé sur vos <strong>${mTx.length} opérations</strong> :</p>
-        <ul style="display:flex; flex-direction:column; gap:6px; margin-left:18px; margin-bottom:12px;">
-          <li><strong>Règle 50/30/20 :</strong> Besoins à <strong>${oblP}%</strong> (cible 50%), Envies à <strong>${wantsP}%</strong> (cible 30%), Épargne résiduelle à <strong>${savP}%</strong> (cible 20%).</li>
-          <li><strong>Plus grand poste :</strong> <strong>${topCatName}</strong> avec un total de <strong>${fmt(topCatAmt)}</strong>.</li>
-          <li><strong>Charges fixes engagées :</strong> <strong>${fmt(fix)}</strong> récurrentes.</li>
-          <li><strong>Reste à vivre net :</strong> <strong>${fmt(inc - exp)}</strong> disponibles.</li>
-        </ul>
-        <p style="font-size:12px; color:var(--md-sys-color-outline); margin-top:8px;">
-          💡 <em>Note : Connectez votre clé gratuite Google AI Studio dans les <strong>Options</strong> pour obtenir des recommandations d'épargne encore plus pointues et personnalisées.</em>
-        </p>
-      `;
-    }
-
-    function answerQueryLocally(query) {
-      const q = query.toLowerCase();
-      const mTx = getMonthTx();
-      const inc = sum(mTx, t => t.type === "income");
-      const exp = sum(mTx, t => t.type === "expense");
-      const fix = sum(mTx, t => t.isFixed && t.type === "expense");
-      const expList = mTx.filter(t => t.type === "expense");
-
-      if (q.includes("gros") || q.includes("poste") || q.includes("dépense") || q.includes("top")) {
-        const topCatMap = {};
-        expList.forEach(t => topCatMap[t.category] = (topCatMap[t.category] || 0) + Number(t.amount));
-        const sorted = Object.keys(topCatMap).sort((a, b) => topCatMap[b] - topCatMap[a]).slice(0, 3);
-        if (!sorted.length) return "Vous n'avez pas encore enregistré de dépenses pour ce mois-ci.";
-        const items = sorted.map((catId, i) => {
-          const label = ALL_CATS.find(c => c.id === catId)?.label || catId;
-          return `<li><strong>${i + 1}. ${label} :</strong> ${fmt(topCatMap[catId])} (${Math.round((topCatMap[catId]/exp)*100)}% du total)</li>`;
-        }).join("");
-        return `Voici vos plus gros postes de dépenses ce mois-ci :<ul style="margin-top:8px; margin-left:18px;">${items}</ul>`;
-      }
-
-      if (q.includes("50") || q.includes("règle") || q.includes("30") || q.includes("20")) {
-        const obl = sum(mTx, t => t.type === "expense" && (t.isFixed || t.category === "supermarche"));
-        const wants = sum(mTx, t => t.type === "expense" && !t.isFixed && t.category !== "supermarche");
-        const sav = Math.max(0, inc - obl - wants);
-        return `
-          <strong>Analyse 50 / 30 / 20 pour ce mois :</strong>
-          <ul style="margin-top:8px; margin-left:18px;">
-            <li><strong>Besoins essentiels (50%) :</strong> ${fmt(obl)} dépensés sur un plafond conseillé de ${fmt(inc * 0.5)}.</li>
-            <li><strong>Envies & Loisirs (30%) :</strong> ${fmt(wants)} dépensés sur un plafond conseillé de ${fmt(inc * 0.3)}.</li>
-            <li><strong>Épargne théorique (20%) :</strong> ${fmt(sav)} mis de côté sur un objectif de ${fmt(inc * 0.2)}.</li>
-          </ul>`;
-      }
-
-      if (q.includes("fixe") || q.includes("abonnement") || q.includes("charge")) {
-        return `Vos charges fixes totales s'élèvent à <strong>${fmt(fix)}</strong> pour ce mois. ${inc > 0 ? `Cela représente environ <strong>${Math.round((fix/inc)*100)}%</strong> de vos revenus déclarés.` : ''}`;
-      }
-
-      return generateLocalBudgetAudit();
-    }
-
-    // 1. Saisie Magique : Analyse en Langage Naturel avec JSON Structuré
-    async function parseNaturalLanguageWithGemini(userText) {
-      if (!userText.trim()) return notify("Veuillez saisir une description", "warning");
-
-      const statusEl = $("aiStatusTx");
-      statusEl.style.display = "block";
-      statusEl.textContent = "✨ Analyse par Gemini 3 Flash en cours...";
-      statusEl.className = "ai-loading-pulse";
-
-      const categoriesList = ALL_CATS.map(c => `${c.id} (${c.label})`).join(", ");
-      const today = new Date().toISOString().slice(0, 10);
-
-      const prompt = `Extraire les informations d'une transaction financière à partir de ce texte utilisateur: "${userText}".
-Date actuelle de référence: ${today}.
-Catégories valides disponibles: [${categoriesList}].
-Règles :
-- type doit être soit "expense" soit "income"
-- Si l'opération semble mensuelle ou un abonnement régulier, isFixed = true
-- amount doit être un nombre décimal positif
-- category doit être l'un des identifiants valides indiqués
-- date doit être au format AAAA-MM-JJ (si aucune date n'est précisée, utiliser ${today})`;
-
-      const payload = {
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "OBJECT",
-            properties: {
-              label: { type: "STRING", description: "Libellé concis et propre de l'opération" },
-              amount: { type: "NUMBER", description: "Montant numérique de l'opération" },
-              type: { type: "STRING", enum: ["expense", "income"] },
-              category: { type: "STRING", description: "Identifiant de la catégorie" },
-              isFixed: { type: "BOOLEAN", description: "Vrai si dépense fixe récurrente" },
-              date: { type: "STRING", description: "Format YYYY-MM-DD" }
-            },
-            required: ["label", "amount", "type", "category"]
-          }
-        },
-        systemInstruction: {
-          parts: [{ text: "Tu es un assistant comptable expert sous Material 3 qui structure précisément les transactions financières." }]
-        }
-      };
-
-      try {
-        const result = await callGeminiApi(payload);
-        const rawJson = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!rawJson) throw new Error("Réponse vide de l'IA");
-        const parsed = JSON.parse(rawJson);
-
-        $("txLabel").value = parsed.label || "";
-        setTPE(parsed.amount || 0);
-        setModalType(parsed.type || "expense");
-        if (parsed.category) $("txCat").value = parsed.category;
-        if (parsed.date) $("txDate").value = parsed.date;
-        $("txSwitch").checked = !!parsed.isFixed;
-
-        statusEl.textContent = "✨ Analyse réussie ! Vérifiez et validez.";
-        statusEl.classList.remove("ai-loading-pulse");
-        notify("Champs remplis par Gemini", "auto_awesome");
-      } catch (err) {
-        statusEl.textContent = "Erreur d'analyse. Renseignement manuel disponible.";
-        statusEl.classList.remove("ai-loading-pulse");
-        notify("Analyse automatique : " + err.message, "info");
-      }
-    }
-
-    // 2. Scan Multimodal de Facture / Ticket de caisse via Gemini
-    async function parseReceiptImageWithGemini(file) {
-      const statusEl = $("aiStatusTx");
-      statusEl.style.display = "block";
-      statusEl.textContent = "📷 Lecture du ticket par Gemini 3 Flash Vision...";
-      statusEl.className = "ai-loading-pulse";
-
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const base64Data = reader.result.split(",")[1];
-        const categoriesList = ALL_CATS.map(c => `${c.id} (${c.label})`).join(", ");
-        const today = new Date().toISOString().slice(0, 10);
-
-        const prompt = `Analyse cette image de ticket de caisse, facture ou note de frais.
-Extrais précisément les données financières :
-- Nom de l'enseigne / commerçant
-- Montant total TTC payé
-- Catégorie la plus exacte parmi : [${categoriesList}]
-- Date du ticket (format AAAA-MM-JJ, ou ${today} si absente)`;
-
-        const payload = {
-          contents: [{
-            role: "user",
-            parts: [
-              { text: prompt },
-              {
-                inlineData: {
-                  mimeType: file.type || "image/jpeg",
-                  data: base64Data
-                }
-              }
-            ]
-          }],
-          generationConfig: {
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: "OBJECT",
-              properties: {
-                label: { type: "STRING" },
-                amount: { type: "NUMBER" },
-                category: { type: "STRING" },
-                date: { type: "STRING" }
-              },
-              required: ["label", "amount", "category"]
-            }
-          }
-        };
-
-        try {
-          const result = await callGeminiApi(payload);
-          const rawJson = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (!rawJson) throw new Error("Aucune information détectée sur le ticket");
-          const parsed = JSON.parse(rawJson);
-
-          $("txLabel").value = parsed.label || "Ticket de caisse";
-          setTPE(parsed.amount || 0);
-          setModalType("expense");
-          if (parsed.category) $("txCat").value = parsed.category;
-          if (parsed.date) $("txDate").value = parsed.date;
-
-          statusEl.textContent = "📷 Données du ticket extraites avec succès !";
-          statusEl.classList.remove("ai-loading-pulse");
-          notify("Ticket analysé par Gemini", "receipt_long");
-        } catch (err) {
-          statusEl.textContent = "Échec d'analyse du ticket.";
-          statusEl.classList.remove("ai-loading-pulse");
-          notify("Erreur ticket : " + err.message, "error");
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // 3. Coach Financier Gemini : Audit Budgétaire, Simulations & Recherche Web
-    async function consultFinancialCoach(customQuestion = "", useGrounding = false) {
-      const chat = $("coachChatContainer");
-      const welcome = $("coachWelcomeCard");
-      if (welcome) welcome.style.display = "none";
-
-      const queryText = customQuestion || "Peux-tu faire un audit complet de mon budget ce mois-ci ?";
-
-      // Ajout bulle question utilisateur
-      const userBubble = document.createElement("div");
-      userBubble.className = "chat-bubble-user";
-      userBubble.textContent = queryText;
-      chat.appendChild(userBubble);
-
-      // Ajout bulle de réflexion Gemini
-      const aiBubble = document.createElement("div");
-      aiBubble.className = "chat-bubble-ai ai-loading-pulse";
-      aiBubble.innerHTML = `<span class="material-symbols-rounded" style="vertical-align:middle; font-size:18px;">psychology</span> <em>${useGrounding ? 'Gemini effectue des recherches sur le Web...' : 'Gemini 3 analyse vos comptes...'}</em>`;
-      chat.appendChild(aiBubble);
-      chat.scrollTop = chat.scrollHeight;
-
-      const mTx = getMonthTx();
-      const inc = sum(mTx, t => t.type === "income");
-      const exp = sum(mTx, t => t.type === "expense");
-      const fix = sum(mTx, t => t.isFixed && t.type === "expense");
-      const obl = sum(mTx, t => t.type === "expense" && (t.isFixed || t.category === "supermarche"));
-      const wants = sum(mTx, t => t.type === "expense" && !t.isFixed && t.category !== "supermarche");
-      const sav = Math.max(0, inc - obl - wants);
-
-      const categoryTotals = {};
-      mTx.filter(t => t.type === "expense").forEach(t => {
-        const catObj = ALL_CATS.find(c => c.id === t.category);
-        const name = catObj ? catObj.label : t.category;
-        categoryTotals[name] = (categoryTotals[name] || 0) + Number(t.amount);
-      });
-
-      const fixedCharges = mTx.filter(t => t.isFixed).map(t => ({
-        label: t.label,
-        amount: Number(t.amount),
-        category: t.category
-      }));
-
-      const budgetContext = {
-        mois: currentMonth,
-        revenusTotaux: inc,
-        depensesTotales: exp,
-        chargesFixesTotales: fix,
-        listeChargesFixes: fixedCharges,
-        resteAVivre: inc - exp,
-        regle503020: {
-          obligationsReelles: obl,
-          obligationsCible50: inc * 0.5,
-          enviesReelles: wants,
-          enviesCible30: inc * 0.3,
-          epargneReelle: sav,
-          epargneCible20: inc * 0.2
-        },
-        repartitionDepenses: categoryTotals,
-        nombreOperations: mTx.length
-      };
-
-      const systemPrompt = `Tu es un conseiller financier personnel de premier plan, bienveillant, clair et pragmatique, intégré dans l'application Budget Familial Pixel M3 Expressif.
-Tu réponds en français dans un format HTML soigné (balises <strong> pour les montants et termes clés, listes à puces <ul><li> concises, tableaux simples ou paragraphes aérés, sans balises <html> ni <body>).
-Tu t'appuies avec exactitude sur les chiffres du contexte fourni.
-Quand on te demande une simulation ("Et si... ?"), calcule précisément l'impact avant/après sur le Reste à vivre et la règle 50/30/20.
-Quand on te demande une recherche de prix réels, donne des fourchettes réalistes du marché et des recommandations concrètes.`;
-
-      const userPrompt = `Contexte budgétaire utilisateur :
-${JSON.stringify(budgetContext, null, 2)}
-
-Demande de l'utilisateur : ${queryText}`;
-
-      const payload = {
-        contents: [{ parts: [{ text: userPrompt }] }],
-        systemInstruction: { parts: [{ text: systemPrompt }] }
-      };
-
-      if (useGrounding) {
-        payload.tools = [{ "google_search": {} }];
-      }
-
-      try {
-        const res = await callGeminiApi(payload);
-        const candidate = res?.candidates?.[0];
-        const text = candidate?.content?.parts?.[0]?.text;
-        if (!text) throw new Error("Réponse vide de Gemini");
-
-        let citationsHtml = "";
-        const groundingMetadata = candidate.groundingMetadata;
-        if (groundingMetadata && groundingMetadata.groundingAttributions) {
-          const sources = groundingMetadata.groundingAttributions
-            .map(att => ({ uri: att.web?.uri, title: att.web?.title }))
-            .filter(s => s.uri && s.title);
-
-          if (sources.length) {
-            citationsHtml = `
-              <div style="margin-top:14px; padding-top:10px; border-top:1px dashed var(--md-sys-color-outline-variant); font-size:11px;">
-                <div style="font-weight:700; color:var(--md-sys-color-primary); display:flex; align-items:center; gap:4px; margin-bottom:4px;">
-                  <span class="material-symbols-rounded" style="font-size:14px;">travel_explore</span> Sources vérifiées Google Search :
-                </div>
-                <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px;">
-                  ${sources.slice(0, 3).map(s => `
-                    <li><a href="${s.uri}" target="_blank" rel="noopener noreferrer" style="color:var(--md-sys-color-primary); text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:600;">
-                      <span>• ${s.title}</span>
-                      <span class="material-symbols-rounded" style="font-size:12px;">open_in_new</span>
-                    </a></li>
-                  `).join("")}
-                </ul>
-              </div>`;
-          }
-        }
-
-        aiBubble.classList.remove("ai-loading-pulse");
-        aiBubble.innerHTML = text + citationsHtml;
-      } catch (err) {
-        aiBubble.classList.remove("ai-loading-pulse");
-        aiBubble.innerHTML = `<div style="color:var(--md-sys-color-error);"><span class="material-symbols-rounded" style="vertical-align:middle;">error</span> ${err.message}</div><div style="margin-top:8px;">${answerQueryLocally(queryText)}</div>`;
-      }
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    function handleSendUserCoachMessage() {
-      const input = $("aiCustomQuery");
-      const q = input.value.trim();
-      if (!q) return;
-      input.value = "";
-      consultFinancialCoach(q);
-    }
-
-    // Événements pour la Saisie Magique et le Scan Reçu
-    $("btnApplyAiParse").onclick = () => {
-      parseNaturalLanguageWithGemini($("aiNaturalText").value);
-    };
-    $("aiNaturalText").onkeydown = e => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        parseNaturalLanguageWithGemini($("aiNaturalText").value);
-      }
-    };
-
-    $("btnScanReceipt").onclick = () => $("receiptFileInput").click();
-    $("receiptFileInput").onchange = e => {
-      const file = e.target.files[0];
-      if (file) parseReceiptImageWithGemini(file);
-    };
-
-    // Événements pour le Coach Budgétaire Gemini
-    $("btnOpenAiCoach").onclick = () => {
-      modal("modalAiCoach", true);
-    };
-
-    $("btnLaunchAuditFromCard").onclick = () => {
-      consultFinancialCoach("Fais-moi un audit complet de mon budget ce mois-ci.");
-    };
-
-    $("btnQuickAudit").onclick = () => {
-      consultFinancialCoach("Fais-moi un audit complet de mon budget ce mois-ci.");
-    };
-
-    $("btnSimulateScenario").onclick = () => {
-      const prompt = "Simule l'impact sur mes finances si j'effectue un achat imprévu de 450€ le mois prochain. Quel impact sur mon reste à vivre et mon épargne 50/30/20 ?";
-      consultFinancialCoach(prompt);
-    };
-
-    $("btnGroundedEstimate").onclick = () => {
-      const prompt = "Recherche avec Google les coûts moyens récents en France pour l'entretien complet d'un véhicule (vidange, freins, révision) et indique-moi comment le budgéter sur 6 mois.";
-      consultFinancialCoach(prompt, true);
-    };
-
-    $("btnNegotiateBills").onclick = () => {
-      const prompt = "Analyse mes charges fixes et abonnements mensuels répertoriés. Quels postes puis-je renégocier et donne-moi des conseils ou phrases types pour obtenir une réduction ?";
-      consultFinancialCoach(prompt);
-    };
-
-    $all(".ai-chip-prompt[data-prompt]").forEach(btn => {
-      btn.onclick = () => {
-        const prompt = btn.dataset.prompt;
-        consultFinancialCoach(prompt);
-      };
-    });
-
-    $("btnSendAiQuery").onclick = handleSendUserCoachMessage;
-    $("aiCustomQuery").onkeydown = e => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleSendUserCoachMessage();
-      }
-    };
-
     // Auth Firestore Observer
     onAuthStateChanged(auth, user => {
       currentUser = user;
       const dot = $("accountBadgeDot");
-      const icon = $("accountBtnIcon");
       const loggedOutActions = $("accountActionsLoggedOut");
       const loggedInActions = $("accountActionsLoggedIn");
 
@@ -2365,7 +1604,6 @@ Demande de l'utilisateur : ${queryText}`;
         loggedOutActions.style.display = "none";
         loggedInActions.style.display = "flex";
 
-        // Sauvegarde de l'e-mail mémorisé
         if (user.email) localStorage.setItem("budget_remembered_account", user.email);
 
         unsubscribeFirestore = onSnapshot(collection(db, "users", user.uid, "transactions"), snap => {
@@ -2398,10 +1636,8 @@ Demande de l'utilisateur : ${queryText}`;
       }
     });
 
-    // Ouvrir le menu de compte via l'icône à gauche de Budget
     $("btnOpenAccountMenu").onclick = () => modal("modalAccount", true);
 
-    // Connexion Google normale
     $("btnConnectGoogle").onclick = async () => {
       try {
         await signInWithPopup(auth, provider);
@@ -2412,7 +1648,6 @@ Demande de l'utilisateur : ${queryText}`;
       }
     };
 
-    // Changer de compte Google (force l'affichage du sélecteur de comptes sans réutiliser aveuglément le précédent)
     $("btnSwitchAccount").onclick = async () => {
       try {
         const switchProvider = new GoogleAuthProvider();
@@ -2425,7 +1660,6 @@ Demande de l'utilisateur : ${queryText}`;
       }
     };
 
-    // Forcer la synchronisation
     $("btnSyncNow").onclick = () => {
       if (!currentUser) return notify("Veuillez d'abord vous connecter", "warning");
       renderApp();
@@ -2433,7 +1667,6 @@ Demande de l'utilisateur : ${queryText}`;
       modal("modalAccount", false);
     };
 
-    // Déconnexion
     const handleLogout = () => signOut(auth).then(() => {
       modal("modalAccount", false);
       notify("Déconnecté", "logout");
@@ -2462,7 +1695,6 @@ Demande de l'utilisateur : ${queryText}`;
       notify(`Tri : ${SORT_MODES[currentSort].label}`, "swap_vert");
     };
 
-    // Navigation bar clicks avec toggle recherche
     $("navBar").onclick = e => {
       const item = e.target.closest(".nav-item");
       if (!item) return;
@@ -2485,7 +1717,6 @@ Demande de l'utilisateur : ${queryText}`;
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
 
-      // Afficher le FAB uniquement sur l'écran des opérations
       $("openAdd").style.display = (item.dataset.target === "screenOperations") ? "flex" : "none";
 
       if (item.dataset.target === "screenAnalytics") renderAnalytics();
@@ -2502,7 +1733,6 @@ Demande de l'utilisateur : ${queryText}`;
 
     $("searchInput").oninput = e => { searchQuery = e.target.value; renderApp(); };
 
-    // Palette & Thème Pixel
     $("colorPickerRow").onclick = e => {
       const dot = e.target.closest(".color-dot");
       if (!dot) return;
@@ -2520,21 +1750,6 @@ Demande de l'utilisateur : ${queryText}`;
       renderAnalytics();
     };
 
-    $("btnSaveApiKey").onclick = () => {
-      const val = $("geminiApiKeyInput").value.trim();
-      if (!val || val.includes("••••")) return notify("Veuillez saisir une clé valide", "warning");
-      localStorage.setItem("budget_gemini_api_key", val);
-      updateApiKeyUI();
-      notify("Clé Gemini enregistrée avec succès !", "check_circle");
-    };
-
-    $("btnClearApiKey").onclick = () => {
-      localStorage.removeItem("budget_gemini_api_key");
-      updateApiKeyUI();
-      notify("Clé Gemini effacée (Mode local réactivé)", "info");
-    };
-
-    // CRUD Transaction Firestore
     $("openAdd").onclick = () => {
       editingId = null;
       $("modalTxTitle").textContent = "Nouvelle opération";
@@ -2639,7 +1854,6 @@ Demande de l'utilisateur : ${queryText}`;
       notify("Fichier exporté", "download");
     };
 
-    // Initialisation
     const savedPalette = localStorage.getItem("budget_pixel_color") || "lavender";
     document.documentElement.setAttribute("data-color", savedPalette);
     $all(".color-dot").forEach(dot => dot.classList.toggle("active", dot.dataset.palette === savedPalette));
@@ -2648,9 +1862,6 @@ Demande de l'utilisateur : ${queryText}`;
     localStorage.removeItem("budget_nav_lift");
     document.documentElement.style.setProperty("--nav-lift", "-15px");
 
-    updateApiKeyUI();
-
-    // Système de détection de mise à jour GitHub (Solution 2)
     async function checkAppUpdate(manual = false) {
       const updateStatusEl = $("appUpdateStatusText");
       if (manual && updateStatusEl) updateStatusEl.textContent = "Recherche de mise à jour en cours...";
@@ -2670,8 +1881,6 @@ Demande de l'utilisateur : ${queryText}`;
 
         const etag = res.headers.get("etag") || res.headers.get("last-modified");
         const htmlText = await res.text();
-        
-        // Empreinte unique basée sur les en-têtes ou sur la taille et le contenu
         const versionFingerprint = etag || (htmlText.length + "_" + htmlText.slice(0, 100).replace(/\s+/g, ''));
         const storedFingerprint = localStorage.getItem("budget_app_fingerprint");
 
@@ -2700,7 +1909,6 @@ Demande de l'utilisateur : ${queryText}`;
     $("btnApplyUpdate").onclick = () => {
       const nextFp = localStorage.getItem("budget_next_fingerprint");
       if (nextFp) localStorage.setItem("budget_app_fingerprint", nextFp);
-      // Forçage de rafraîchissement Safari WebClip en contournant le cache
       window.location.replace(window.location.origin + window.location.pathname + '?_reload=' + Date.now());
     };
 
@@ -2710,7 +1918,6 @@ Demande de l'utilisateur : ${queryText}`;
 
     $("btnCheckUpdateManual").onclick = () => checkAppUpdate(true);
 
-    // Détection automatique en tâche de fond (au démarrage et au retour sur l'app)
     setTimeout(() => checkAppUpdate(false), 2500);
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
