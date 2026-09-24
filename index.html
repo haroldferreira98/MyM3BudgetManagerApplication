@@ -598,6 +598,15 @@
       font-weight: 700;
       text-transform: uppercase;
     }
+    .tag-reimbursed {
+      background: var(--md-sys-color-success-container);
+      color: var(--md-sys-color-on-success-container);
+      border-radius: 8px;
+      padding: 1px 7px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
     .tx-amount {
       font-family: var(--font-display);
       font-size: 15px;
@@ -607,6 +616,10 @@
     }
     .tx-amount.income {
       color: var(--md-sys-color-success);
+    }
+    .tx-amount.reimbursed {
+      text-decoration: line-through;
+      opacity: 0.55;
     }
 
     .nav-bar {
@@ -1261,6 +1274,18 @@
             <span class="m3-slider"></span>
           </label>
         </div>
+
+        <!-- Commutateur Frais Remboursé (exclusif catégorie Santé) -->
+        <div id="switchReimbursedRow" class="switch-wrap" style="display: none;">
+          <div>
+            <div style="font-weight: 700; font-size: 14px;">Frais remboursé</div>
+            <div style="font-size: 12px; color: var(--md-sys-color-outline);">Exclu du reste à vivre et des dépenses</div>
+          </div>
+          <label class="m3-switch">
+            <input type="checkbox" id="txReimbursedSwitch">
+            <span class="m3-slider"></span>
+          </label>
+        </div>
       </div>
 
       <div style="display: flex; gap: 12px; margin-top: 24px;">
@@ -1395,6 +1420,12 @@
     const auth = getAuth(app), db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
+    // Accès sécurisé à localStorage pour prévenir tout crash en environnement sandbox
+    const safeStore = {
+      get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+      set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }
+    };
+
     // Mémorisation permanente de la session sur l'appareil (évite Face ID / reconnexion répétée)
     setPersistence(auth, browserLocalPersistence).catch(() => {});
 
@@ -1405,13 +1436,19 @@
     const $ = id => document.getElementById(id);
     const $all = sel => document.querySelectorAll(sel);
     const fmt = n => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n || 0);
-    const modal = (id, show) => $(id).classList.toggle("show", show);
+    const modal = (id, show) => {
+      const el = $(id);
+      if (el) el.classList.toggle("show", !!show);
+    };
 
     const notify = (msg, icon = "info") => {
-      $("sbMsg").textContent = msg; $("sbIcon").textContent = icon;
-      $("snackbar").classList.add("show");
+      const sbMsg = $("sbMsg"), sbIcon = $("sbIcon"), sb = $("snackbar");
+      if (!sb) return;
+      if (sbMsg) sbMsg.textContent = msg;
+      if (sbIcon) sbIcon.textContent = icon;
+      sb.classList.add("show");
       clearTimeout(window._sb);
-      window._sb = setTimeout(() => $("snackbar").classList.remove("show"), 3200);
+      window._sb = setTimeout(() => sb.classList.remove("show"), 3200);
     };
 
     const SORT_MODES = [
@@ -1576,30 +1613,35 @@
     function setModalType(type) {
       modalType = type;
       const isExp = type === "expense";
-      $("btnTypeExp").className = `btn-pill ${isExp ? 'btn-primary' : 'btn-unselected'} press-spring ripple-target`;
-      $("btnTypeInc").className = `btn-pill ${!isExp ? 'btn-primary' : 'btn-unselected'} press-spring ripple-target`;
-      $("switchRow").style.display = isExp ? "flex" : "none";
-      $("txCat").innerHTML = CATS[type].map(c => `<option value="${c.id}">${c.label}</option>`).join("");
+      const bExp = $("btnTypeExp"), bInc = $("btnTypeInc"), swRow = $("switchRow"), txCat = $("txCat");
+      if (bExp) bExp.className = `btn-pill ${isExp ? 'btn-primary' : 'btn-unselected'} press-spring ripple-target`;
+      if (bInc) bInc.className = `btn-pill ${!isExp ? 'btn-primary' : 'btn-unselected'} press-spring ripple-target`;
+      if (swRow) swRow.style.display = isExp ? "flex" : "none";
+      if (txCat) txCat.innerHTML = (CATS[type] || []).map(c => `<option value="${c.id}">${c.label}</option>`).join("");
       updateReimbursedVisibility();
     }
 
     function updateReimbursedVisibility() {
-      const isSante = modalType === "expense" && $("txCat").value === "sante";
-      $("switchReimbursedRow").style.display = isSante ? "flex" : "none";
-      if (!isSante) {
-        $("txReimbursedSwitch").checked = false;
-      }
+      const catEl = $("txCat");
+      const isSante = modalType === "expense" && catEl && catEl.value === "sante";
+      const reimbRow = $("switchReimbursedRow");
+      const reimbSw = $("txReimbursedSwitch");
+      if (reimbRow) reimbRow.style.display = isSante ? "flex" : "none";
+      if (reimbSw && !isSante) reimbSw.checked = false;
     }
 
-    $("txCat").onchange = updateReimbursedVisibility;
+    const txCatEl = $("txCat");
+    if (txCatEl) txCatEl.onchange = updateReimbursedVisibility;
 
     const tpe = $("txAmount");
-    tpe.oninput = () => {
-      const d = tpe.value.replace(/\D/g, "");
-      tpe.value = d ? (parseInt(d, 10) / 100).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
-    };
-    const getTPE = () => parseFloat(tpe.value.replace(/\s/g, '').replace(',', '.')) || 0;
-    const setTPE = v => tpe.value = v ? Number(v).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
+    if (tpe) {
+      tpe.oninput = () => {
+        const d = tpe.value.replace(/\D/g, "");
+        tpe.value = d ? (parseInt(d, 10) / 100).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
+      };
+    }
+    const getTPE = () => tpe ? (parseFloat(tpe.value.replace(/\s/g, '').replace(',', '.')) || 0) : 0;
+    const setTPE = v => { if (tpe) tpe.value = v ? Number(v).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ""; };
 
     // Auth Firestore Observer
     onAuthStateChanged(auth, user => {
@@ -1611,288 +1653,361 @@
       if (unsubscribeFirestore) { unsubscribeFirestore(); unsubscribeFirestore = null; }
 
       if (user) {
-        dot.classList.add("online");
+        if (dot) dot.classList.add("online");
+        const btnAcc = $("btnOpenAccountMenu");
+        const modalAv = $("accModalAvatar");
         if (user.photoURL) {
-          $("btnOpenAccountMenu").innerHTML = `<img src="${user.photoURL}" alt="Photo de profil" referrerpolicy="no-referrer" /><div class="account-badge-dot online" id="accountBadgeDot"></div>`;
-          $("accModalAvatar").innerHTML = `<img src="${user.photoURL}" alt="Photo" referrerpolicy="no-referrer" />`;
+          if (btnAcc) btnAcc.innerHTML = `<img src="${user.photoURL}" alt="Photo de profil" referrerpolicy="no-referrer" /><div class="account-badge-dot online" id="accountBadgeDot"></div>`;
+          if (modalAv) modalAv.innerHTML = `<img src="${user.photoURL}" alt="Photo" referrerpolicy="no-referrer" />`;
         } else {
           const initials = (user.displayName || user.email || "U").charAt(0).toUpperCase();
-          $("btnOpenAccountMenu").innerHTML = `<div style="font-weight:800; font-size:16px;">${initials}</div><div class="account-badge-dot online" id="accountBadgeDot"></div>`;
-          $("accModalAvatar").innerHTML = `<span>${initials}</span>`;
+          if (btnAcc) btnAcc.innerHTML = `<div style="font-weight:800; font-size:16px;">${initials}</div><div class="account-badge-dot online" id="accountBadgeDot"></div>`;
+          if (modalAv) modalAv.innerHTML = `<span>${initials}</span>`;
         }
 
-        $("accModalName").textContent = user.displayName || "Utilisateur Google";
-        $("accModalEmail").textContent = user.email || "";
-        $("accModalStatus").textContent = "• Synchronisé avec Firebase Cloud";
-        $("accModalStatus").style.color = "var(--md-sys-color-success)";
+        if ($("accModalName")) $("accModalName").textContent = user.displayName || "Utilisateur Google";
+        if ($("accModalEmail")) $("accModalEmail").textContent = user.email || "";
+        const st = $("accModalStatus");
+        if (st) {
+          st.textContent = "• Synchronisé avec Firebase Cloud";
+          st.style.color = "var(--md-sys-color-success)";
+        }
 
-        loggedOutActions.style.display = "none";
-        loggedInActions.style.display = "flex";
+        if (loggedOutActions) loggedOutActions.style.display = "none";
+        if (loggedInActions) loggedInActions.style.display = "flex";
 
-        if (user.email) localStorage.setItem("budget_remembered_account", user.email);
+        if (user.email) safeStore.set("budget_remembered_account", user.email);
 
         unsubscribeFirestore = onSnapshot(collection(db, "users", user.uid, "transactions"), snap => {
           transactions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
           renderApp();
         }, () => notify("Erreur de synchronisation Firestore", "error"));
       } else {
-        dot.classList.remove("online");
-        $("btnOpenAccountMenu").innerHTML = `<span class="material-symbols-rounded" style="font-size: 24px;">account_circle</span><div class="account-badge-dot" id="accountBadgeDot"></div>`;
-        $("accModalAvatar").innerHTML = `<span class="material-symbols-rounded" style="font-size: 28px;">person</span>`;
+        if (dot) dot.classList.remove("online");
+        const btnAcc = $("btnOpenAccountMenu");
+        if (btnAcc) btnAcc.innerHTML = `<span class="material-symbols-rounded" style="font-size: 24px;">account_circle</span><div class="account-badge-dot" id="accountBadgeDot"></div>`;
+        const modalAv = $("accModalAvatar");
+        if (modalAv) modalAv.innerHTML = `<span class="material-symbols-rounded" style="font-size: 28px;">person</span>`;
 
-        const remembered = localStorage.getItem("budget_remembered_account");
+        const remembered = safeStore.get("budget_remembered_account");
         if (remembered) {
-          $("accModalName").textContent = "Dernier compte connu";
-          $("accModalEmail").textContent = remembered;
-          $("accModalStatus").textContent = "• Session en attente de reconnexion";
-          $("accModalStatus").style.color = "var(--md-sys-color-outline)";
+          if ($("accModalName")) $("accModalName").textContent = "Dernier compte connu";
+          if ($("accModalEmail")) $("accModalEmail").textContent = remembered;
+          const st = $("accModalStatus");
+          if (st) {
+            st.textContent = "• Session en attente de reconnexion";
+            st.style.color = "var(--md-sys-color-outline)";
+          }
         } else {
-          $("accModalName").textContent = "Non connecté";
-          $("accModalEmail").textContent = "Mode local uniquement";
-          $("accModalStatus").textContent = "• Données non synchronisées";
-          $("accModalStatus").style.color = "var(--md-sys-color-outline)";
+          if ($("accModalName")) $("accModalName").textContent = "Non connecté";
+          if ($("accModalEmail")) $("accModalEmail").textContent = "Mode local uniquement";
+          const st = $("accModalStatus");
+          if (st) {
+            st.textContent = "• Données non synchronisées";
+            st.style.color = "var(--md-sys-color-outline)";
+          }
         }
 
-        loggedOutActions.style.display = "flex";
-        loggedInActions.style.display = "none";
+        if (loggedOutActions) loggedOutActions.style.display = "flex";
+        if (loggedInActions) loggedInActions.style.display = "none";
         transactions = [];
         renderApp();
       }
     });
 
-    $("btnOpenAccountMenu").onclick = () => modal("modalAccount", true);
+    if ($("btnOpenAccountMenu")) $("btnOpenAccountMenu").onclick = () => modal("modalAccount", true);
 
-    $("btnConnectGoogle").onclick = async () => {
-      try {
-        await signInWithPopup(auth, provider);
+    if ($("btnConnectGoogle")) {
+      $("btnConnectGoogle").onclick = async () => {
+        try {
+          await signInWithPopup(auth, provider);
+          modal("modalAccount", false);
+          notify("Connecté avec succès !", "account_circle");
+        } catch (err) {
+          notify("Échec de connexion : " + err.message, "error");
+        }
+      };
+    }
+
+    if ($("btnSwitchAccount")) {
+      $("btnSwitchAccount").onclick = async () => {
+        try {
+          const switchProvider = new GoogleAuthProvider();
+          switchProvider.setCustomParameters({ prompt: 'select_account' });
+          await signInWithPopup(auth, switchProvider);
+          modal("modalAccount", false);
+          notify("Compte changé avec succès", "swap_horiz");
+        } catch (err) {
+          notify("Changement annulé : " + err.message, "info");
+        }
+      };
+    }
+
+    if ($("btnSyncNow")) {
+      $("btnSyncNow").onclick = () => {
+        if (!currentUser) return notify("Veuillez d'abord vous connecter", "warning");
+        renderApp();
+        notify("Données synchronisées", "sync");
         modal("modalAccount", false);
-        notify("Connecté avec succès !", "account_circle");
-      } catch (err) {
-        notify("Échec de connexion : " + err.message, "error");
-      }
-    };
-
-    $("btnSwitchAccount").onclick = async () => {
-      try {
-        const switchProvider = new GoogleAuthProvider();
-        switchProvider.setCustomParameters({ prompt: 'select_account' });
-        await signInWithPopup(auth, switchProvider);
-        modal("modalAccount", false);
-        notify("Compte changé avec succès", "swap_horiz");
-      } catch (err) {
-        notify("Changement annulé : " + err.message, "info");
-      }
-    };
-
-    $("btnSyncNow").onclick = () => {
-      if (!currentUser) return notify("Veuillez d'abord vous connecter", "warning");
-      renderApp();
-      notify("Données synchronisées", "sync");
-      modal("modalAccount", false);
-    };
+      };
+    }
 
     const handleLogout = () => signOut(auth).then(() => {
       modal("modalAccount", false);
       notify("Déconnecté", "logout");
     }).catch(() => notify("Erreur lors de la déconnexion", "error"));
 
-    $("btnAccountLogout").onclick = handleLogout;
+    if ($("btnAccountLogout")) $("btnAccountLogout").onclick = handleLogout;
 
-    $("txContainer").onclick = e => {
-      const item = e.target.closest(".tx-item");
-      if (!item) return;
-      selectedId = item.dataset.id;
-      const t = transactions.find(x => x.id === selectedId);
-      if (!t) return;
-      $("actTitle").textContent = t.label;
-      $("actSub").textContent = `${t.type === 'expense' ? 'Dépense de' : 'Revenu de'} ${fmt(t.amount)}`;
-      modal("modalAction", true);
-    };
+    if ($("txContainer")) {
+      $("txContainer").onclick = e => {
+        const item = e.target.closest(".tx-item");
+        if (!item) return;
+        selectedId = item.dataset.id;
+        const t = transactions.find(x => x.id === selectedId);
+        if (!t) return;
+        if ($("actTitle")) $("actTitle").textContent = t.label;
+        if ($("actSub")) $("actSub").textContent = `${t.type === 'expense' ? 'Dépense de' : 'Revenu de'} ${fmt(t.amount)}`;
+        modal("modalAction", true);
+      };
+    }
 
     $all("[data-close]").forEach(b => b.onclick = () => modal(b.dataset.close, false));
 
-    $("btnSort").onclick = () => {
-      currentSort = (currentSort + 1) % SORT_MODES.length;
-      $("sortIcon").textContent = SORT_MODES[currentSort].icon;
-      renderApp();
-      notify(`Tri : ${SORT_MODES[currentSort].label}`, "swap_vert");
-    };
+    if ($("btnSort")) {
+      $("btnSort").onclick = () => {
+        currentSort = (currentSort + 1) % SORT_MODES.length;
+        if ($("sortIcon")) $("sortIcon").textContent = SORT_MODES[currentSort].icon;
+        renderApp();
+        notify(`Tri : ${SORT_MODES[currentSort].label}`, "swap_vert");
+      };
+    }
 
-    $("navBar").onclick = e => {
-      const item = e.target.closest(".nav-item");
-      if (!item) return;
-      if (item.id === "btnToggleSearch") {
-        const opened = $("searchWrap").classList.toggle("show");
-        if (opened) {
-          $("searchInput").focus();
-        } else {
-          $("searchInput").value = searchQuery = "";
-          renderApp();
-        }
-        return;
+    // Gestion de la recherche avec repli automatique au blur du clavier
+    function closeSearchBar() {
+      const wrap = $("searchWrap");
+      if (wrap && wrap.classList.contains("show")) {
+        wrap.classList.remove("show");
+        const inp = $("searchInput");
+        if (inp) inp.value = "";
+        searchQuery = "";
+        renderApp();
       }
-      $all(".nav-item").forEach(i => i.classList.remove("active"));
-      $all(".screen").forEach(s => s.classList.remove("active"));
-      item.classList.add("active");
-      $(item.dataset.target).classList.add("active");
+    }
 
-      window.scrollTo({ top: 0, behavior: 'instant' });
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
+    let isSearchToggling = false;
+    const searchInp = $("searchInput");
+    if (searchInp) {
+      searchInp.oninput = e => { searchQuery = e.target.value; renderApp(); };
+      searchInp.addEventListener("blur", () => {
+        setTimeout(() => {
+          if (!isSearchToggling) closeSearchBar();
+        }, 220);
+      });
+      searchInp.addEventListener("keydown", e => {
+        if (e.key === "Enter") searchInp.blur();
+      });
+    }
 
-      $("openAdd").style.display = (item.dataset.target === "screenOperations") ? "flex" : "none";
-
-      if (item.dataset.target === "screenAnalytics") renderAnalytics();
-    };
-
-    $("filterChips").onclick = e => {
-      const chip = e.target.closest(".chip-expressive");
-      if (!chip) return;
-      $all("#filterChips .chip-expressive").forEach(x => x.classList.remove("active"));
-      chip.classList.add("active");
-      currentFilter = chip.dataset.filter;
-      renderApp();
-    };
-
-    $("searchInput").oninput = e => { searchQuery = e.target.value; renderApp(); };
-
-    $("colorPickerRow").onclick = e => {
-      const dot = e.target.closest(".color-dot");
-      if (!dot) return;
-      $all(".color-dot").forEach(d => d.classList.remove("active"));
-      dot.classList.add("active");
-      document.documentElement.setAttribute("data-color", dot.dataset.palette);
-      localStorage.setItem("budget_pixel_color", dot.dataset.palette);
-      renderAnalytics();
-      notify(`Palette ${dot.title} activée`, "palette");
-    };
-
-    $("themeSelect").onchange = e => {
-      document.documentElement.setAttribute("data-theme", e.target.value);
-      localStorage.setItem("budget_theme", e.target.value);
-      renderAnalytics();
-    };
-
-    $("openAdd").onclick = () => {
-      editingId = null;
-      $("modalTxTitle").textContent = "Nouvelle opération";
-      $("txLabel").value = "";
-      setTPE(0);
-      $("txDate").value = new Date().toISOString().slice(0, 10);
-      $("txSwitch").checked = false;
-      $("txReimbursedSwitch").checked = false;
-      setModalType("expense");
-      updateReimbursedVisibility();
-      modal("modalTx", true);
-    };
-
-    $("btnTypeExp").onclick = () => setModalType("expense");
-    $("btnTypeInc").onclick = () => setModalType("income");
-
-    $("btnSaveTx").onclick = async () => {
-      if (!currentUser) return notify("Veuillez vous connecter", "error");
-      const label = $("txLabel").value.trim(), amount = getTPE(), cat = $("txCat").value, date = $("txDate").value;
-      if (!label || amount <= 0) return notify("Veuillez saisir un libellé et un montant", "error");
-
-      const isReimbursed = modalType === "expense" && cat === "sante" && $("txReimbursedSwitch").checked;
-      const targetId = editingId || Date.now().toString();
-      try {
-        await setDoc(doc(db, "users", currentUser.uid, "transactions", targetId), {
-          label,
-          amount,
-          type: modalType,
-          category: cat,
-          isFixed: modalType === "expense" && $("txSwitch").checked,
-          isReimbursed,
-          date
-        });
-        modal("modalTx", false);
-        notify("Opération enregistrée", "cloud_done");
-      } catch (err) {
-        notify("Erreur Firestore : " + err.message, "error");
-      }
-    };
-
-    $("btnActEdit").onclick = () => {
-      modal("modalAction", false);
-      const t = transactions.find(x => x.id === selectedId);
-      if (!t) return;
-      editingId = t.id;
-      $("modalTxTitle").textContent = "Modifier l'opération";
-      $("txLabel").value = t.label;
-      setTPE(t.amount);
-      $("txDate").value = t.date;
-      setModalType(t.type);
-      $("txCat").value = t.category;
-      $("txSwitch").checked = !!t.isFixed;
-      $("txReimbursedSwitch").checked = !!t.isReimbursed;
-      updateReimbursedVisibility();
-      modal("modalTx", true);
-    };
-
-    $("btnActDel").onclick = async () => {
-      if (!currentUser || !selectedId) return;
-      try {
-        await deleteDoc(doc(db, "users", currentUser.uid, "transactions", selectedId));
-        modal("modalAction", false);
-        notify("Opération supprimée", "delete");
-      } catch (err) {
-        notify("Erreur lors de la suppression", "error");
-      }
-    };
-
-    $("btnTriggerImport").onclick = () => $("jsonFileInput").click();
-    $("jsonFileInput").onchange = e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async evt => {
-        try {
-          if (!currentUser) return notify("Connectez-vous avant d'importer", "error");
-          const raw = JSON.parse(evt.target.result);
-          const list = Array.isArray(raw) ? raw : (raw.transactions || []);
-          if (!list.length) return notify("Aucune opération trouvée", "error");
-
-          notify(`Import de ${list.length} opérations...`, "sync");
-          for (let i = 0; i < list.length; i += 400) {
-            const batch = writeBatch(db);
-            list.slice(i, i + 400).forEach(t => {
-              const id = t.id ? String(t.id) : (Date.now() + Math.random().toString(36).slice(2, 8));
-              batch.set(doc(db, "users", currentUser.uid, "transactions", id), {
-                label: t.label || "Sans libellé",
-                amount: Number(t.amount) || 0,
-                type: t.type || "expense",
-                category: t.category || "supermarche",
-                isFixed: !!t.isFixed,
-                isReimbursed: !!t.isReimbursed,
-                date: t.date || new Date().toISOString().slice(0, 10)
-              });
-            });
-            await batch.commit();
+    if ($("navBar")) {
+      $("navBar").onclick = e => {
+        const item = e.target.closest(".nav-item");
+        if (!item) return;
+        if (item.id === "btnToggleSearch") {
+          isSearchToggling = true;
+          setTimeout(() => { isSearchToggling = false; }, 300);
+          const wrap = $("searchWrap");
+          if (wrap) {
+            const isShown = wrap.classList.toggle("show");
+            if (isShown && searchInp) searchInp.focus();
+            else closeSearchBar();
           }
-          notify(`${list.length} opérations synchronisées !`, "cloud_done");
-          $("jsonFileInput").value = "";
+          return;
+        }
+        $all(".nav-item").forEach(i => i.classList.remove("active"));
+        $all(".screen").forEach(s => s.classList.remove("active"));
+        item.classList.add("active");
+        const targetScreen = $(item.dataset.target);
+        if (targetScreen) targetScreen.classList.add("active");
+
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
+        if ($("openAdd")) $("openAdd").style.display = (item.dataset.target === "screenOperations") ? "flex" : "none";
+        if (item.dataset.target === "screenAnalytics") renderAnalytics();
+      };
+    }
+
+    if ($("filterChips")) {
+      $("filterChips").onclick = e => {
+        const chip = e.target.closest(".chip-expressive");
+        if (!chip) return;
+        $all("#filterChips .chip-expressive").forEach(x => x.classList.remove("active"));
+        chip.classList.add("active");
+        currentFilter = chip.dataset.filter;
+        renderApp();
+      };
+    }
+
+    if ($("colorPickerRow")) {
+      $("colorPickerRow").onclick = e => {
+        const dot = e.target.closest(".color-dot");
+        if (!dot) return;
+        $all(".color-dot").forEach(d => d.classList.remove("active"));
+        dot.classList.add("active");
+        document.documentElement.setAttribute("data-color", dot.dataset.palette);
+        safeStore.set("budget_pixel_color", dot.dataset.palette);
+        renderAnalytics();
+        notify(`Palette ${dot.title} activée`, "palette");
+      };
+    }
+
+    if ($("themeSelect")) {
+      $("themeSelect").onchange = e => {
+        document.documentElement.setAttribute("data-theme", e.target.value);
+        safeStore.set("budget_theme", e.target.value);
+        renderAnalytics();
+      };
+    }
+
+    if ($("openAdd")) {
+      $("openAdd").onclick = () => {
+        editingId = null;
+        if ($("modalTxTitle")) $("modalTxTitle").textContent = "Nouvelle opération";
+        if ($("txLabel")) $("txLabel").value = "";
+        setTPE(0);
+        if ($("txDate")) $("txDate").value = new Date().toISOString().slice(0, 10);
+        if ($("txSwitch")) $("txSwitch").checked = false;
+        if ($("txReimbursedSwitch")) $("txReimbursedSwitch").checked = false;
+        setModalType("expense");
+        updateReimbursedVisibility();
+        modal("modalTx", true);
+      };
+    }
+
+    if ($("btnTypeExp")) $("btnTypeExp").onclick = () => setModalType("expense");
+    if ($("btnTypeInc")) $("btnTypeInc").onclick = () => setModalType("income");
+
+    if ($("btnSaveTx")) {
+      $("btnSaveTx").onclick = async () => {
+        if (!currentUser) return notify("Veuillez vous connecter", "error");
+        const label = $("txLabel") ? $("txLabel").value.trim() : "";
+        const amount = getTPE();
+        const cat = $("txCat") ? $("txCat").value : "divers";
+        const date = $("txDate") ? $("txDate").value : new Date().toISOString().slice(0, 10);
+        if (!label || amount <= 0) return notify("Veuillez saisir un libellé et un montant", "error");
+
+        const swFix = $("txSwitch");
+        const swReimb = $("txReimbursedSwitch");
+        const isReimbursed = modalType === "expense" && cat === "sante" && !!(swReimb && swReimb.checked);
+        const targetId = editingId || Date.now().toString();
+        try {
+          await setDoc(doc(db, "users", currentUser.uid, "transactions", targetId), {
+            label,
+            amount,
+            type: modalType,
+            category: cat,
+            isFixed: modalType === "expense" && !!(swFix && swFix.checked),
+            isReimbursed,
+            date
+          });
+          modal("modalTx", false);
+          notify("Opération enregistrée", "cloud_done");
         } catch (err) {
-          notify("Erreur de lecture du JSON : " + err.message, "error");
+          notify("Erreur Firestore : " + err.message, "error");
         }
       };
-      reader.readAsText(file);
-    };
+    }
 
-    $("btnExport").onclick = () => {
-      const blob = new Blob([JSON.stringify(transactions, null, 2)], { type: "application/json" });
-      const a = Object.assign(document.createElement("a"), {
-        href: URL.createObjectURL(blob),
-        download: `budget_${currentMonth}.json`
-      });
-      a.click();
-      notify("Fichier exporté", "download");
-    };
+    if ($("btnActEdit")) {
+      $("btnActEdit").onclick = () => {
+        modal("modalAction", false);
+        const t = transactions.find(x => x.id === selectedId);
+        if (!t) return;
+        editingId = t.id;
+        if ($("modalTxTitle")) $("modalTxTitle").textContent = "Modifier l'opération";
+        if ($("txLabel")) $("txLabel").value = t.label;
+        setTPE(t.amount);
+        if ($("txDate")) $("txDate").value = t.date;
+        setModalType(t.type);
+        if ($("txCat")) $("txCat").value = t.category;
+        if ($("txSwitch")) $("txSwitch").checked = !!t.isFixed;
+        if ($("txReimbursedSwitch")) $("txReimbursedSwitch").checked = !!t.isReimbursed;
+        updateReimbursedVisibility();
+        modal("modalTx", true);
+      };
+    }
 
-    const savedPalette = localStorage.getItem("budget_pixel_color") || "lavender";
+    if ($("btnActDel")) {
+      $("btnActDel").onclick = async () => {
+        if (!currentUser || !selectedId) return;
+        try {
+          await deleteDoc(doc(db, "users", currentUser.uid, "transactions", selectedId));
+          modal("modalAction", false);
+          notify("Opération supprimée", "delete");
+        } catch (err) {
+          notify("Erreur lors de la suppression", "error");
+        }
+      };
+    }
+
+    if ($("btnTriggerImport")) $("btnTriggerImport").onclick = () => { if ($("jsonFileInput")) $("jsonFileInput").click(); };
+    if ($("jsonFileInput")) {
+      $("jsonFileInput").onchange = e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async evt => {
+          try {
+            if (!currentUser) return notify("Connectez-vous avant d'importer", "error");
+            const raw = JSON.parse(evt.target.result);
+            const list = Array.isArray(raw) ? raw : (raw.transactions || []);
+            if (!list.length) return notify("Aucune opération trouvée", "error");
+
+            notify(`Import de ${list.length} opérations...`, "sync");
+            for (let i = 0; i < list.length; i += 400) {
+              const batch = writeBatch(db);
+              list.slice(i, i + 400).forEach(t => {
+                const id = t.id ? String(t.id) : (Date.now() + Math.random().toString(36).slice(2, 8));
+                batch.set(doc(db, "users", currentUser.uid, "transactions", id), {
+                  label: t.label || "Sans libellé",
+                  amount: Number(t.amount) || 0,
+                  type: t.type || "expense",
+                  category: t.category || "supermarche",
+                  isFixed: !!t.isFixed,
+                  isReimbursed: !!t.isReimbursed,
+                  date: t.date || new Date().toISOString().slice(0, 10)
+                });
+              });
+              await batch.commit();
+            }
+            notify(`${list.length} opérations synchronisées !`, "cloud_done");
+            $("jsonFileInput").value = "";
+          } catch (err) {
+            notify("Erreur de lecture du JSON : " + err.message, "error");
+          }
+        };
+        reader.readAsText(file);
+      };
+    }
+
+    if ($("btnExport")) {
+      $("btnExport").onclick = () => {
+        const blob = new Blob([JSON.stringify(transactions, null, 2)], { type: "application/json" });
+        const a = Object.assign(document.createElement("a"), {
+          href: URL.createObjectURL(blob),
+          download: `budget_${currentMonth}.json`
+        });
+        a.click();
+        notify("Fichier exporté", "download");
+      };
+    }
+
+    const savedPalette = safeStore.get("budget_pixel_color") || "lavender";
     document.documentElement.setAttribute("data-color", savedPalette);
     $all(".color-dot").forEach(dot => dot.classList.toggle("active", dot.dataset.palette === savedPalette));
-    $("themeSelect").value = localStorage.getItem("budget_theme") || "auto";
+    if ($("themeSelect")) $("themeSelect").value = safeStore.get("budget_theme") || "auto";
 
     async function checkAppUpdate(manual = false) {
       const updateStatusEl = $("appUpdateStatusText");
@@ -1914,18 +2029,18 @@
         const etag = res.headers.get("etag") || res.headers.get("last-modified");
         const htmlText = await res.text();
         const versionFingerprint = etag || (htmlText.length + "_" + htmlText.slice(0, 100).replace(/\s+/g, ''));
-        const storedFingerprint = localStorage.getItem("budget_app_fingerprint");
+        const storedFingerprint = safeStore.get("budget_app_fingerprint");
 
         if (!storedFingerprint) {
-          localStorage.setItem("budget_app_fingerprint", versionFingerprint);
+          safeStore.set("budget_app_fingerprint", versionFingerprint);
           if (manual) notify("Votre application est à jour !", "verified");
           if (updateStatusEl) updateStatusEl.textContent = "Application à jour";
           return;
         }
 
         if (storedFingerprint !== versionFingerprint) {
-          localStorage.setItem("budget_next_fingerprint", versionFingerprint);
-          $("updateBanner").classList.add("show");
+          safeStore.set("budget_next_fingerprint", versionFingerprint);
+          if ($("updateBanner")) $("updateBanner").classList.add("show");
           if (updateStatusEl) updateStatusEl.textContent = "Nouvelle version prête à être installée";
           if (manual) notify("Nouvelle version prête !", "download");
         } else {
@@ -1938,38 +2053,42 @@
       }
     }
 
-    $("btnApplyUpdate").onclick = () => {
-      const nextFp = localStorage.getItem("budget_next_fingerprint");
-      if (nextFp) localStorage.setItem("budget_app_fingerprint", nextFp);
-      window.location.replace(window.location.origin + window.location.pathname + '?_reload=' + Date.now());
-    };
+    if ($("btnApplyUpdate")) {
+      $("btnApplyUpdate").onclick = () => {
+        const nextFp = safeStore.get("budget_next_fingerprint");
+        if (nextFp) safeStore.set("budget_app_fingerprint", nextFp);
+        window.location.replace(window.location.origin + window.location.pathname + '?_reload=' + Date.now());
+      };
+    }
 
-    $("btnDismissUpdate").onclick = () => {
-      $("updateBanner").classList.remove("show");
-    };
+    if ($("btnDismissUpdate")) {
+      $("btnDismissUpdate").onclick = () => {
+        if ($("updateBanner")) $("updateBanner").classList.remove("show");
+      };
+    }
 
-    $("btnCheckUpdateManual").onclick = () => checkAppUpdate(true);
+    if ($("btnCheckUpdateManual")) $("btnCheckUpdateManual").onclick = () => checkAppUpdate(true);
 
     setTimeout(() => checkAppUpdate(false), 2500);
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") {
-        checkAppUpdate(false);
-      }
+      if (document.visibilityState === "visible") checkAppUpdate(false);
     });
 
-    $("monthInput").value = currentMonth;
+    if ($("monthInput")) $("monthInput").value = currentMonth;
     const updateMonth = () => {
       const [y, m] = currentMonth.split("-");
-      $("monthLabel").textContent = new Date(y, m - 1).toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
+      if ($("monthLabel")) $("monthLabel").textContent = new Date(y, m - 1).toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
     };
     updateMonth();
-    $("monthInput").onchange = e => {
-      if (e.target.value) {
-        currentMonth = e.target.value;
-        updateMonth();
-        renderApp();
-      }
-    };
+    if ($("monthInput")) {
+      $("monthInput").onchange = e => {
+        if (e.target.value) {
+          currentMonth = e.target.value;
+          updateMonth();
+          renderApp();
+        }
+      };
+    }
   </script>
 </body>
 </html>
