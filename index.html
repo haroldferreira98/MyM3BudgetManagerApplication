@@ -1748,12 +1748,16 @@
       setRule({ pb: "pbSav", st: "stSav", sp: "spSav", ceil: "ceilSav" }, sav, inc * 0.2, true);
 
       // Traçage réutilisable de Donut M3 Expressive
-      const renderDonutSection = (canvasId, totalElId, breakdownElId, items, palette, emptyMsg) => {
+      const renderDonutSection = (canvasId, totalElId, badgeElId, breakdownElId, items, palette, emptyMsg) => {
         const data = {};
         const total = items.reduce((acc, t) => {
-          data[t.category] = (data[t.category] || 0) + Number(t.amount);
-          return acc + Number(t.amount);
+          const amt = parseFloat(t.amount) || 0;
+          data[t.category] = (data[t.category] || 0) + amt;
+          return acc + amt;
         }, 0);
+
+        if ($(totalElId)) $(totalElId).textContent = fmt(total);
+        if ($(badgeElId)) $(badgeElId).textContent = fmt(total);
 
         const canvas = $(canvasId);
         if (!canvas) return;
@@ -1761,8 +1765,6 @@
         canvas.width = canvas.height = 240 * dpr;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, 240, 240);
-
-        if ($(totalElId)) $(totalElId).textContent = fmt(total);
 
         const bd = $(breakdownElId);
         if (!bd) return;
@@ -1824,11 +1826,11 @@
       const NORMAL_PALETTE = ["#6750A4", "#8F4C36", "#1E6C38", "#1B6585", "#7D5260", "#625B71"];
 
       const allExpenses = mTx.filter(t => t.type === "expense" && !t.isReimbursed);
-      const fixedExpenses = allExpenses.filter(t => t.isFixed);
-      const normalExpenses = allExpenses.filter(t => !t.isFixed);
+      const fixedExpenses = allExpenses.filter(t => t.isFixed === true || t.isFixed === "true" || t.isFixed === 1);
+      const normalExpenses = allExpenses.filter(t => !t.isFixed || t.isFixed === "false" || t.isFixed === 0);
 
-      renderDonutSection("donutFixedChart", "donutFixedTotal", "donutFixedBreakdown", fixedExpenses, FIXED_PALETTE, "Aucune charge enregistrée ce mois-ci");
-      renderDonutSection("donutNormalChart", "donutNormalTotal", "donutNormalBreakdown", normalExpenses, NORMAL_PALETTE, "Aucune dépense courante ce mois-ci");
+      renderDonutSection("donutFixedChart", "donutFixedTotal", "donutFixedBadge", "donutFixedBreakdown", fixedExpenses, FIXED_PALETTE, "Aucune charge enregistrée ce mois-ci");
+      renderDonutSection("donutNormalChart", "donutNormalTotal", "donutNormalBadge", "donutNormalBreakdown", normalExpenses, NORMAL_PALETTE, "Aucune dépense courante ce mois-ci");
     }
 
     function setModalType(type) {
