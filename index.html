@@ -1452,8 +1452,8 @@
     function renderApp() {
       const mTx = getMonthTx();
       const inc = sum(mTx, t => t.type === "income");
-      const exp = sum(mTx, t => t.type === "expense");
-      const fix = sum(mTx, t => t.isFixed && t.type === "expense");
+      const exp = sum(mTx, t => t.type === "expense" && !t.isReimbursed);
+      const fix = sum(mTx, t => t.isFixed && t.type === "expense" && !t.isReimbursed);
 
       $("kpiNet").textContent = fmt(inc - exp);
       $("kpiIncome").textContent = `+${fmt(inc)}`;
@@ -1481,6 +1481,7 @@
       $("txContainer").innerHTML = list.length ? list.map(tx => {
         const cat = ALL_CATS.find(x => x.id === tx.category) || { label: "Divers", icon: "category" };
         const isExp = tx.type === "expense";
+        const isReimbursed = !!tx.isReimbursed;
         const [, m, d] = (tx.date || "").split("-");
         return `
           <div class="tx-item ripple-target" data-id="${tx.id}">
@@ -1491,10 +1492,11 @@
                 <div class="tx-meta">
                   <span>${d}/${m}</span><span>•</span><span>${cat.label}</span>
                   ${tx.isFixed ? `<span class="tag-fixed">Fixe</span>` : ""}
+                  ${isReimbursed ? `<span class="tag-reimbursed">Remboursé</span>` : ""}
                 </div>
               </div>
             </div>
-            <div class="tx-amount ${isExp ? '' : 'income'}">${isExp ? '-' : '+'}${fmt(tx.amount)}</div>
+            <div class="tx-amount ${isExp ? '' : 'income'} ${isReimbursed ? 'reimbursed' : ''}">${isExp ? '-' : '+'}${fmt(tx.amount)}</div>
           </div>`;
       }).join("") : `
         <div style="text-align:center; padding:48px 20px; color:var(--md-sys-color-outline);">
@@ -1506,8 +1508,8 @@
     }
 
     function renderAnalytics(mTx = getMonthTx(), inc = sum(mTx, t => t.type === "income")) {
-      const obl = sum(mTx, t => t.type === "expense" && (t.isFixed || t.category === "supermarche"));
-      const wants = sum(mTx, t => t.type === "expense" && !t.isFixed && t.category !== "supermarche");
+      const obl = sum(mTx, t => t.type === "expense" && !t.isReimbursed && (t.isFixed || t.category === "supermarche"));
+      const wants = sum(mTx, t => t.type === "expense" && !t.isReimbursed && !t.isFixed && t.category !== "supermarche");
       const sav = Math.max(0, inc - obl - wants);
 
       const setRule = (id, cur, tgt, isSav = false) => {
@@ -1526,7 +1528,7 @@
       setRule({ pb: "pbSav", st: "stSav", sp: "spSav", ceil: "ceilSav" }, sav, inc * 0.2, true);
 
       // Donut Chart Canvas
-      const data = {}, exps = mTx.filter(t => t.type === "expense");
+      const data = {}, exps = mTx.filter(t => t.type === "expense" && !t.isReimbursed);
       const totalExp = exps.reduce((acc, t) => {
         data[t.category] = (data[t.category] || 0) + Number(t.amount);
         return acc + Number(t.amount);
@@ -1578,7 +1580,18 @@
       $("btnTypeInc").className = `btn-pill ${!isExp ? 'btn-primary' : 'btn-unselected'} press-spring ripple-target`;
       $("switchRow").style.display = isExp ? "flex" : "none";
       $("txCat").innerHTML = CATS[type].map(c => `<option value="${c.id}">${c.label}</option>`).join("");
+      updateReimbursedVisibility();
     }
+
+    function updateReimbursedVisibility() {
+      const isSante = modalType === "expense" && $("txCat").value === "sante";
+      $("switchReimbursedRow").style.display = isSante ? "flex" : "none";
+      if (!isSante) {
+        $("txReimbursedSwitch").checked = false;
+      }
+    }
+
+    $("txCat").onchange = updateReimbursedVisibility;
 
     const tpe = $("txAmount");
     tpe.oninput = () => {
@@ -1767,7 +1780,9 @@
       setTPE(0);
       $("txDate").value = new Date().toISOString().slice(0, 10);
       $("txSwitch").checked = false;
+      $("txReimbursedSwitch").checked = false;
       setModalType("expense");
+      updateReimbursedVisibility();
       modal("modalTx", true);
     };
 
@@ -1779,10 +1794,17 @@
       const label = $("txLabel").value.trim(), amount = getTPE(), cat = $("txCat").value, date = $("txDate").value;
       if (!label || amount <= 0) return notify("Veuillez saisir un libellé et un montant", "error");
 
+      const isReimbursed = modalType === "expense" && cat === "sante" && $("txReimbursedSwitch").checked;
       const targetId = editingId || Date.now().toString();
       try {
         await setDoc(doc(db, "users", currentUser.uid, "transactions", targetId), {
-          label, amount, type: modalType, category: cat, isFixed: modalType === "expense" && $("txSwitch").checked, date
+          label,
+          amount,
+          type: modalType,
+          category: cat,
+          isFixed: modalType === "expense" && $("txSwitch").checked,
+          isReimbursed,
+          date
         });
         modal("modalTx", false);
         notify("Opération enregistrée", "cloud_done");
@@ -1803,6 +1825,8 @@
       setModalType(t.type);
       $("txCat").value = t.category;
       $("txSwitch").checked = !!t.isFixed;
+      $("txReimbursedSwitch").checked = !!t.isReimbursed;
+      updateReimbursedVisibility();
       modal("modalTx", true);
     };
 
@@ -1840,6 +1864,7 @@
                 type: t.type || "expense",
                 category: t.category || "supermarche",
                 isFixed: !!t.isFixed,
+                isReimbursed: !!t.isReimbursed,
                 date: t.date || new Date().toISOString().slice(0, 10)
               });
             });
