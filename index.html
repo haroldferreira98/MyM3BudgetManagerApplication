@@ -1793,15 +1793,16 @@
         let angle = -0.5 * Math.PI;
         segs.forEach(seg => {
           const slice = (seg.amt / total) * (2 * Math.PI);
+          const endAngle = angle + (segs.length > 1 ? Math.max(0.02, slice - 0.04) : slice);
           ctx.beginPath();
-          ctx.arc(120, 120, 96, angle, angle + slice - 0.04);
+          ctx.arc(120, 120, 96, angle, endAngle);
           ctx.strokeStyle = seg.color;
           ctx.lineWidth = 24;
           ctx.lineCap = "round";
           ctx.stroke();
           angle += slice;
 
-          const cat = ALL_CATS.find(c => c.id === seg.id) || { label: "Autres dépenses", icon: "more_horiz" };
+          const cat = ALL_CATS.find(c => c.id === seg.id) || { label: "Autres", icon: "more_horiz" };
           const percent = Math.round((seg.amt / total) * 100);
 
           bd.insertAdjacentHTML("beforeend", `
