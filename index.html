@@ -2050,7 +2050,9 @@
 
         if ($("openAdd")) $("openAdd").style.display = (item.dataset.target === "screenOperations") ? "flex" : "none";
         if (item.dataset.target === "screenOperations") setTimeout(updateFilterIndicator, 50);
-        if (item.dataset.target === "screenAnalytics") renderAnalytics();
+        if (item.dataset.target === "screenAnalytics") {
+          setTimeout(() => renderAnalytics(), 50);
+        }
       };
     }
 
