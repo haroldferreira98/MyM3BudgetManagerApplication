@@ -1747,56 +1747,88 @@
       setRule({ pb: "pbWants", st: "stWants", sp: "spWants", ceil: "ceilWants" }, wants, inc * 0.3);
       setRule({ pb: "pbSav", st: "stSav", sp: "spSav", ceil: "ceilSav" }, sav, inc * 0.2, true);
 
-      // Donut Chart
-      const data = {}, exps = mTx.filter(t => t.type === "expense" && !t.isReimbursed);
-      const totalExp = exps.reduce((acc, t) => {
-        data[t.category] = (data[t.category] || 0) + Number(t.amount);
-        return acc + Number(t.amount);
-      }, 0);
+      // Traçage réutilisable de Donut M3 Expressive
+      const renderDonutSection = (canvasId, totalElId, breakdownElId, items, palette, emptyMsg) => {
+        const data = {};
+        const total = items.reduce((acc, t) => {
+          data[t.category] = (data[t.category] || 0) + Number(t.amount);
+          return acc + Number(t.amount);
+        }, 0);
 
-      const canvas = $("donutChart");
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d"), dpr = window.devicePixelRatio || 1;
-      canvas.width = canvas.height = 240 * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, 240, 240);
-      if ($("donutTotal")) $("donutTotal").textContent = fmt(totalExp);
+        const canvas = $(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d"), dpr = window.devicePixelRatio || 1;
+        canvas.width = canvas.height = 240 * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, 240, 240);
 
-      const bd = $("donutBreakdown"), keys = Object.keys(data).sort((a, b) => data[b] - data[a]);
-      if (!bd) return;
-      bd.innerHTML = "";
+        if ($(totalElId)) $(totalElId).textContent = fmt(total);
 
-      if (!keys.length || !totalExp) {
-        ctx.beginPath(); ctx.arc(120, 120, 96, 0, 2 * Math.PI);
-        ctx.strokeStyle = "rgba(103,80,164,0.12)"; ctx.lineWidth = 24; ctx.stroke();
-        return;
-      }
+        const bd = $(breakdownElId);
+        if (!bd) return;
+        bd.innerHTML = "";
 
-      const segs = keys.slice(0, 5).map((k, i) => ({ id: k, amt: data[k], color: DONUT_COLORS[i % DONUT_COLORS.length] }));
-      if (keys.length > 5) segs.push({ id: "autres", amt: keys.slice(5).reduce((a, k) => a + data[k], 0), color: DONUT_COLORS[5] });
+        if (!total || !Object.keys(data).length) {
+          ctx.beginPath();
+          ctx.arc(120, 120, 96, 0, 2 * Math.PI);
+          ctx.strokeStyle = "rgba(103, 80, 164, 0.12)";
+          ctx.lineWidth = 24;
+          ctx.stroke();
 
-      let angle = -0.5 * Math.PI;
-      segs.forEach(seg => {
-        const slice = (seg.amt / totalExp) * (2 * Math.PI);
-        ctx.beginPath(); ctx.arc(120, 120, 96, angle, angle + slice - .04);
-        ctx.strokeStyle = seg.color; ctx.lineWidth = 24; ctx.lineCap = "round"; ctx.stroke();
-        angle += slice;
+          bd.innerHTML = `
+            <div style="text-align: center; padding: 18px 12px; color: var(--md-sys-color-outline); font-size: 13px; font-weight: 500;">
+              ${emptyMsg}
+            </div>`;
+          return;
+        }
 
-        const cat = ALL_CATS.find(c => c.id === seg.id) || { label: "Autres dépenses", icon: "more_horiz" };
-        bd.insertAdjacentHTML("beforeend", `
-          <div class="breakdown-row">
-            <div class="breakdown-left">
-              <div style="background:${seg.color}; width:34px; height:34px; border-radius:12px; display:grid; place-content:center; color:#fff; flex-shrink:0;">
-                <span class="material-symbols-rounded" style="font-size:18px;">${cat.icon}</span>
+        const keys = Object.keys(data).sort((a, b) => data[b] - data[a]);
+        const segs = keys.slice(0, 5).map((k, i) => ({ id: k, amt: data[k], color: palette[i % palette.length] }));
+        if (keys.length > 5) {
+          segs.push({ id: "autres", amt: keys.slice(5).reduce((a, k) => a + data[k], 0), color: palette[5 % palette.length] });
+        }
+
+        let angle = -0.5 * Math.PI;
+        segs.forEach(seg => {
+          const slice = (seg.amt / total) * (2 * Math.PI);
+          ctx.beginPath();
+          ctx.arc(120, 120, 96, angle, angle + slice - 0.04);
+          ctx.strokeStyle = seg.color;
+          ctx.lineWidth = 24;
+          ctx.lineCap = "round";
+          ctx.stroke();
+          angle += slice;
+
+          const cat = ALL_CATS.find(c => c.id === seg.id) || { label: "Autres dépenses", icon: "more_horiz" };
+          const percent = Math.round((seg.amt / total) * 100);
+
+          bd.insertAdjacentHTML("beforeend", `
+            <div class="breakdown-row">
+              <div class="breakdown-left">
+                <div style="background:${seg.color}; width:34px; height:34px; border-radius:12px; display:grid; place-content:center; color:#fff; flex-shrink:0;">
+                  <span class="material-symbols-rounded" style="font-size:18px;">${cat.icon}</span>
+                </div>
+                <span style="font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--md-sys-color-on-surface); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cat.label}</span>
               </div>
-              <span style="font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--md-sys-color-on-surface); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cat.label}</span>
-            </div>
-            <div class="breakdown-right">
-              <strong style="font-family:var(--font-display); font-size:14px; font-weight:800; color:var(--md-sys-color-on-surface);">${fmt(seg.amt)}</strong>
-              <span class="sec-badge" style="padding:4px 8px; font-size:11px; font-weight:700;">${Math.round((seg.amt/totalExp)*100)}%</span>
-            </div>
-          </div>`);
-      });
+              <div class="breakdown-right">
+                <strong style="font-family:var(--font-display); font-size:14px; font-weight:800; color:var(--md-sys-color-on-surface);">${fmt(seg.amt)}</strong>
+                <span class="sec-badge" style="padding:4px 8px; font-size:11px; font-weight:700;">${percent}%</span>
+              </div>
+            </div>`);
+        });
+      };
+
+      // Palette dédiée aux Charges (tonalités profondes et stables M3)
+      const FIXED_PALETTE = ["#5B4294", "#70578F", "#3A5F7D", "#4F6354", "#845366", "#5A5D72"];
+      // Palette dédiée aux Dépenses courantes (tonalités vibrantes et expressives M3)
+      const NORMAL_PALETTE = ["#6750A4", "#8F4C36", "#1E6C38", "#1B6585", "#7D5260", "#625B71"];
+
+      const allExpenses = mTx.filter(t => t.type === "expense" && !t.isReimbursed);
+      const fixedExpenses = allExpenses.filter(t => t.isFixed);
+      const normalExpenses = allExpenses.filter(t => !t.isFixed);
+
+      renderDonutSection("donutFixedChart", "donutFixedTotal", "donutFixedBreakdown", fixedExpenses, FIXED_PALETTE, "Aucune charge enregistrée ce mois-ci");
+      renderDonutSection("donutNormalChart", "donutNormalTotal", "donutNormalBreakdown", normalExpenses, NORMAL_PALETTE, "Aucune dépense courante ce mois-ci");
     }
 
     function setModalType(type) {
