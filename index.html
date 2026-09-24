@@ -596,6 +596,24 @@
       text-overflow: ellipsis;
       color: var(--md-sys-color-on-surface);
     }
+    .date-group-header {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--md-sys-color-outline);
+      padding: 14px 6px 4px;
+      letter-spacing: -0.2px;
+      display: flex;
+      align-items: center;
+    }
+    .date-group-header:first-of-type {
+      padding-top: 2px;
+    }
+    .tx-cat-label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .tx-meta {
       font-size: 12px;
       color: var(--md-sys-color-on-surface-variant);
@@ -603,6 +621,7 @@
       align-items: center;
       gap: 6px;
       margin-top: 3px;
+      min-width: 0;
     }
     .tag-fixed {
       background: var(--md-sys-color-secondary-container);
@@ -1561,11 +1580,18 @@
     };
 
     const SORT_MODES = [
-      { id: "date", icon: "schedule", label: "Date (récent)", fn: (a, b) => new Date(b.date) - new Date(a.date) },
+      { id: "date", icon: "schedule", label: "Date (récent)", fn: (a, b) => (b.date || "").localeCompare(a.date || "") },
       { id: "alpha", icon: "sort_by_alpha", label: "Ordre alphabétique", fn: (a, b) => (a.label || "").localeCompare(b.label || "", "fr", { sensitivity: "base" }) },
       { id: "amt_desc", icon: "arrow_downward", label: "Montant décroissant", fn: (a, b) => b.amount - a.amount },
       { id: "cat", icon: "category", label: "Catégorie", fn: (a, b) => ((ALL_CATS.find(c => c.id === a.category) || {}).label || "").localeCompare(((ALL_CATS.find(c => c.id === b.category) || {}).label || ""), "fr", { sensitivity: "base" }) }
     ];
+
+    function formatDateHeader(dateStr) {
+      if (!dateStr) return "Date indéfinie";
+      const [y, m, d] = dateStr.split("-");
+      const dObj = new Date(Number(y), Number(m) - 1, Number(d));
+      return dObj.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+    }
 
     const CATS = {
       expense: [
@@ -1626,31 +1652,47 @@
 
       const txCont = $("txContainer");
       if (txCont) {
-        txCont.innerHTML = list.length ? list.map(tx => {
-          const cat = ALL_CATS.find(x => x.id === tx.category) || { label: "Divers", icon: "category" };
-          const isExp = tx.type === "expense";
-          const isReimbursed = !!tx.isReimbursed;
-          const [, m, d] = (tx.date || "").split("-");
-          return `
-            <div class="tx-item ripple-target" data-id="${tx.id}">
-              <div class="tx-left">
-                <div class="tx-icon-wrap"><span class="material-symbols-rounded">${cat.icon}</span></div>
-                <div style="min-width:0;">
-                  <div class="tx-title">${tx.label}</div>
-                  <div class="tx-meta">
-                    <span>${d}/${m}</span><span>•</span><span>${cat.label}</span>
-                    ${tx.isFixed ? `<span class="tag-fixed">Charge</span>` : ""}
-                    ${isReimbursed ? `<span class="tag-reimbursed">Remboursé</span>` : ""}
+        if (!list.length) {
+          txCont.innerHTML = `
+            <div style="text-align:center; padding:48px 20px; color:var(--md-sys-color-outline);">
+              <span class="material-symbols-rounded" style="font-size:52px; opacity:.35;">search_off</span>
+              <p style="margin-top:10px; font-weight:700;">Aucune opération trouvée</p>
+            </div>`;
+        } else {
+          let lastDate = null;
+          let html = "";
+          list.forEach(tx => {
+            const cat = ALL_CATS.find(x => x.id === tx.category) || { label: "Divers", icon: "category" };
+            const isExp = tx.type === "expense";
+            const isReimbursed = !!tx.isReimbursed;
+            const [, m, d] = (tx.date || "").split("-");
+
+            if (SORT_MODES[currentSort].id === "date") {
+              if (tx.date !== lastDate) {
+                lastDate = tx.date;
+                html += `<div class="date-group-header">${formatDateHeader(tx.date)}</div>`;
+              }
+            }
+
+            html += `
+              <div class="tx-item ripple-target press-spring" data-id="${tx.id}">
+                <div class="tx-left">
+                  <div class="tx-icon-wrap"><span class="material-symbols-rounded">${cat.icon}</span></div>
+                  <div style="min-width:0; flex:1;">
+                    <div class="tx-title">${tx.label}</div>
+                    <div class="tx-meta">
+                      ${SORT_MODES[currentSort].id !== "date" ? `<span>${d}/${m}</span><span>•</span>` : ""}
+                      <span class="tx-cat-label">${cat.label}</span>
+                      ${tx.isFixed ? `<span class="tag-fixed">Charge</span>` : ""}
+                      ${isReimbursed ? `<span class="tag-reimbursed">Remboursé</span>` : ""}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="tx-amount ${isExp ? '' : 'income'} ${isReimbursed ? 'reimbursed' : ''}">${isExp ? '-' : '+'}${fmt(tx.amount)}</div>
-            </div>`;
-        }).join("") : `
-          <div style="text-align:center; padding:48px 20px; color:var(--md-sys-color-outline);">
-            <span class="material-symbols-rounded" style="font-size:52px; opacity:.35;">search_off</span>
-            <p style="margin-top:10px; font-weight:700;">Aucune opération trouvée</p>
-          </div>`;
+                <div class="tx-amount ${isExp ? '' : 'income'} ${isReimbursed ? 'reimbursed' : ''}">${isExp ? '-' : '+'}${fmt(tx.amount)}</div>
+              </div>`;
+          });
+          txCont.innerHTML = html;
+        }
       }
 
       renderAnalytics(mTx, inc);
