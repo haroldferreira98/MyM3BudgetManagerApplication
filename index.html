@@ -244,10 +244,13 @@
     }
 
     header {
-      padding: calc(18px + env(safe-area-inset-top, 0px)) 20px 14px;
+      padding: calc(16px + env(safe-area-inset-top, 0px)) 16px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
+      box-sizing: border-box;
+      max-width: 100%;
     }
     .brand-title {
       font-family: var(--font-display);
@@ -329,22 +332,35 @@
       position: relative;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       background: var(--md-sys-color-surface-container-high);
       color: var(--md-sys-color-on-surface);
       border-radius: 9999px;
-      padding: 8px 16px;
+      padding: 8px 12px;
       font-family: var(--font-display);
       font-size: 13px;
       font-weight: 700;
       box-shadow: var(--shadow-ambient);
+      flex-shrink: 0;
+      max-width: calc(100% - 150px);
+      box-sizing: border-box;
     }
     .month-pill input {
       position: absolute;
       inset: 0;
       opacity: 0;
       width: 100%;
+      height: 100%;
       cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="date"], input[type="month"] {
+      -webkit-appearance: none;
+      appearance: none;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .search-wrap {
@@ -815,6 +831,10 @@
       background: var(--md-sys-color-secondary-container);
       color: var(--md-sys-color-on-secondary-container);
     }
+    .btn-unselected {
+      background: transparent;
+      color: var(--md-sys-color-on-surface-variant);
+    }
     .btn-danger {
       background: var(--md-sys-color-error-container);
       color: var(--md-sys-color-on-error-container);
@@ -986,7 +1006,7 @@
   <div class="app">
     <!-- Header M3 Expressif avec avatar de compte à gauche -->
     <header>
-      <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
         <button class="account-btn press-spring ripple-target" id="btnOpenAccountMenu" title="Gérer mon compte">
           <span class="material-symbols-rounded" id="accountBtnIcon" style="font-size: 24px;">account_circle</span>
           <div class="account-badge-dot" id="accountBadgeDot"></div>
@@ -994,8 +1014,8 @@
         <div class="brand-title">Budget</div>
       </div>
       <div class="month-pill press-spring ripple-target">
-        <span class="material-symbols-rounded" style="font-size: 18px; color: var(--md-sys-color-primary);">calendar_month</span>
-        <span id="monthLabel">...</span>
+        <span class="material-symbols-rounded" style="font-size: 18px; color: var(--md-sys-color-primary); flex-shrink: 0;">calendar_month</span>
+        <span id="monthLabel" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">...</span>
         <input type="month" id="monthInput" />
       </div>
     </header>
@@ -1219,7 +1239,7 @@
       <!-- Toggle Dépense / Revenu -->
       <div style="display: flex; background: var(--md-sys-color-surface-container-high); padding: 4px; border-radius: 9999px; margin-bottom: 18px;">
         <button id="btnTypeExp" class="btn-pill btn-primary press-spring ripple-target" style="flex: 1;">Dépense</button>
-        <button id="btnTypeInc" class="btn-pill btn-tonal press-spring ripple-target" style="flex: 1;">Revenu</button>
+        <button id="btnTypeInc" class="btn-pill btn-unselected press-spring ripple-target" style="flex: 1;">Revenu</button>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 14px;">
@@ -1411,9 +1431,13 @@
         { id: "loisir", label: "Loisirs & Sorties", icon: "sports_esports" }
       ],
       income: [
-        { id: "salaire", label: "Salaire & Prime", icon: "payments" }, { id: "loyer_recu", label: "Revenu locatif", icon: "real_estate_agent" },
-        { id: "investissement", label: "Investissements / Dividendes", icon: "trending_up" }, { id: "aides", label: "Aides / Remboursements", icon: "savings" },
-        { id: "autre_revenu", label: "Autre revenu", icon: "attach_money" }
+        { id: "salaire", label: "Salaire & Prime", icon: "payments" },
+        { id: "caf", label: "Caisse d'allocations familiales", icon: "family_restroom" },
+        { id: "chomage", label: "Chômage", icon: "work_off" },
+        { id: "aah", label: "Allocation aux adultes handicapés", icon: "accessible" },
+        { id: "rsa", label: "Revenu de solidarité active", icon: "handshake" },
+        { id: "remboursement", label: "Remboursement", icon: "currency_exchange" },
+        { id: "indemnites_maladie", label: "Indemnités maladie", icon: "health_and_safety" }
       ]
     };
     const ALL_CATS = [...CATS.expense, ...CATS.income];
@@ -1547,8 +1571,8 @@
     function setModalType(type) {
       modalType = type;
       const isExp = type === "expense";
-      $("btnTypeExp").className = `btn-pill ${isExp ? 'btn-primary' : 'btn-tonal'} press-spring ripple-target`;
-      $("btnTypeInc").className = `btn-pill ${!isExp ? 'btn-primary' : 'btn-tonal'} press-spring ripple-target`;
+      $("btnTypeExp").className = `btn-pill ${isExp ? 'btn-primary' : 'btn-unselected'} press-spring ripple-target`;
+      $("btnTypeInc").className = `btn-pill ${!isExp ? 'btn-primary' : 'btn-unselected'} press-spring ripple-target`;
       $("switchRow").style.display = isExp ? "flex" : "none";
       $("txCat").innerHTML = CATS[type].map(c => `<option value="${c.id}">${c.label}</option>`).join("");
     }
