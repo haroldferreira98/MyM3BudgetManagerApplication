@@ -462,10 +462,15 @@
       letter-spacing: -0.2px;
     }
 
+    /* Indicateur de glissement fluide M3 pour la barre de filtres */
     .chips-bar {
+      position: relative;
       display: flex;
-      gap: 8px;
-      padding: 0 16px 14px;
+      background: var(--md-sys-color-surface-container-high);
+      border-radius: 9999px;
+      padding: 4px;
+      margin: 0 16px 14px;
+      isolation: isolate;
       overflow-x: auto;
       scrollbar-width: none;
       touch-action: pan-x pan-y;
@@ -474,34 +479,43 @@
     }
     .chips-bar::-webkit-scrollbar { display: none; }
 
+    .filter-chip-indicator {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 0;
+      background: var(--md-sys-color-primary);
+      border-radius: 9999px;
+      box-shadow: 0 6px 18px -4px rgba(103, 80, 164, 0.45);
+      transition: transform 0.32s var(--ease-spring), width 0.32s var(--ease-spring);
+      z-index: 1;
+      pointer-events: none;
+    }
+
     .chip-expressive {
+      position: relative;
+      z-index: 2;
+      flex: 1;
       flex-shrink: 0;
-      height: 40px;
-      background: var(--md-sys-color-surface-container-high);
+      height: 38px;
+      background: transparent;
       border: none;
       color: var(--md-sys-color-on-surface-variant);
       border-radius: 9999px;
-      padding: 0 16px;
+      padding: 0 14px;
       font-family: var(--font-display);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      white-space: nowrap;
+      transition: color 0.25s ease;
     }
     .chip-expressive.active {
-      background: var(--md-sys-color-primary);
       color: var(--md-sys-color-on-primary);
-      box-shadow: 0 6px 18px -4px rgba(103, 80, 164, 0.45);
-      padding-left: 12px;
-    }
-    .chip-expressive .chip-icon {
-      font-size: 18px;
-      display: none;
-    }
-    .chip-expressive.active .chip-icon {
-      display: inline-block;
+      font-weight: 800;
     }
 
     .sec-header {
@@ -872,6 +886,101 @@
       color: var(--md-sys-color-on-error-container);
     }
 
+    /* Indicateur de glissement fluide M3 pour le sélecteur de mode */
+    .theme-switch-group {
+      position: relative;
+      display: flex;
+      background: var(--md-sys-color-surface-container-high);
+      border-radius: 9999px;
+      padding: 4px;
+      margin-top: 12px;
+      isolation: isolate;
+    }
+    .theme-switch-indicator {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 4px;
+      width: calc((100% - 8px) / 3);
+      background: var(--md-sys-color-primary);
+      border-radius: 9999px;
+      box-shadow: var(--shadow-ambient);
+      transition: transform 0.32s var(--ease-spring);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .theme-switch-btn {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 12px;
+      border: none;
+      background: transparent;
+      border-radius: 9999px;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface-variant);
+      cursor: pointer;
+      transition: color 0.25s ease;
+    }
+    .theme-switch-btn.active {
+      color: var(--md-sys-color-on-primary);
+      font-weight: 800;
+    }
+
+    /* Indicateur de glissement fluide M3 pour le sélecteur Dépense / Revenu */
+    .type-switch-group {
+      position: relative;
+      display: flex;
+      background: var(--md-sys-color-surface-container-high);
+      border-radius: 9999px;
+      padding: 4px;
+      margin-bottom: 18px;
+      isolation: isolate;
+    }
+    .type-switch-indicator {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 4px;
+      width: calc((100% - 8px) / 2);
+      background: var(--md-sys-color-primary);
+      border-radius: 9999px;
+      box-shadow: var(--shadow-ambient);
+      transition: transform 0.32s var(--ease-spring);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .type-switch-btn {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 9999px;
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface-variant);
+      cursor: pointer;
+      transition: color 0.25s ease;
+    }
+    .type-switch-btn.active {
+      color: var(--md-sys-color-on-primary);
+      font-weight: 800;
+    }
+
     .switch-wrap {
       display: flex;
       justify-content: space-between;
@@ -1074,7 +1183,7 @@
             <strong id="kpiExpense" style="color: var(--md-sys-color-on-primary-container);">-0 €</strong>
           </div>
           <div class="kpi-cell">
-            <span>Fixes</span>
+            <span>Charges</span>
             <strong id="kpiFixed" style="color: var(--md-sys-color-on-primary-container);">0 €</strong>
           </div>
         </div>
@@ -1082,18 +1191,11 @@
 
       <!-- Filtres en Pilules M3 -->
       <div class="chips-bar" id="filterChips">
-        <button class="chip-expressive press-spring ripple-target active" data-filter="all">
-          <span class="material-symbols-rounded chip-icon">check</span>Toutes
-        </button>
-        <button class="chip-expressive press-spring ripple-target" data-filter="income">
-          <span class="material-symbols-rounded chip-icon">check</span>Revenus
-        </button>
-        <button class="chip-expressive press-spring ripple-target" data-filter="expense">
-          <span class="material-symbols-rounded chip-icon">check</span>Dépenses
-        </button>
-        <button class="chip-expressive press-spring ripple-target" data-filter="fixed">
-          <span class="material-symbols-rounded chip-icon">check</span>Charges fixes
-        </button>
+        <div class="filter-chip-indicator" id="filterChipIndicator"></div>
+        <button class="chip-expressive press-spring ripple-target active" data-filter="all">Toutes</button>
+        <button class="chip-expressive press-spring ripple-target" data-filter="income">Revenus</button>
+        <button class="chip-expressive press-spring ripple-target" data-filter="expense">Dépenses</button>
+        <button class="chip-expressive press-spring ripple-target" data-filter="fixed">Charges</button>
       </div>
 
       <!-- Titre de section & Actions de Tri -->
@@ -1177,37 +1279,23 @@
     <!-- Écran 3 : Options -->
     <div id="screenSettings" class="screen">
       <div class="card-squircle">
-        <div style="font-size: 12px; font-weight: 800; color: var(--md-sys-color-primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Couleurs Google Pixel</div>
-        <div class="color-picker-row" id="colorPickerRow">
-          <button class="color-dot active press-spring" data-palette="lavender" style="background:#6750A4;" title="Lilas"><span class="material-symbols-rounded">check</span></button>
-          <button class="color-dot press-spring" data-palette="blue" style="background:#1B6585;" title="Bleu"><span class="material-symbols-rounded">check</span></button>
-          <button class="color-dot press-spring" data-palette="sage" style="background:#386A3B;" title="Sauge"><span class="material-symbols-rounded">check</span></button>
-          <button class="color-dot press-spring" data-palette="peach" style="background:#8F4C36;" title="Pêche"><span class="material-symbols-rounded">check</span></button>
+        <div>
+          <div style="font-weight: 700; font-size: 15px;">Mode d'affichage</div>
+          <div style="font-size: 12px; color: var(--md-sys-color-outline);">Basculement direct en un clic</div>
         </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px;">
-          <div>
-            <div style="font-weight: 700; font-size: 15px;">Mode d'affichage</div>
-            <div style="font-size: 12px; color: var(--md-sys-color-outline);">Thème clair ou sombre adaptatif</div>
-          </div>
-          <select id="themeSelect" class="input-m3" style="width: auto; padding: 10px 16px; border-radius: 16px;">
-            <option value="auto">Automatique</option>
-            <option value="light">Clair</option>
-            <option value="dark">Sombre</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="card-squircle">
-        <div style="font-size: 12px; font-weight: 800; color: var(--md-sys-color-primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Version & Déploiement GitHub</div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div style="font-weight: 700; font-size: 14px;">Mises à jour automatiques</div>
-            <div style="font-size: 11px; color: var(--md-sys-color-outline);" id="appUpdateStatusText">Détecte les pushs sans réinstaller</div>
-          </div>
-          <button id="btnCheckUpdateManual" class="btn-pill btn-tonal press-spring ripple-target" style="padding: 10px 16px; font-size: 13px;">
-            <span class="material-symbols-rounded" style="font-size: 18px;">cloud_sync</span>
-            <span>Vérifier</span>
+        <div class="theme-switch-group" id="themeSwitchGroup">
+          <div class="theme-switch-indicator" id="themeSwitchIndicator"></div>
+          <button type="button" class="theme-switch-btn press-spring ripple-target active" data-theme-val="auto">
+            <span class="material-symbols-rounded" style="font-size: 18px;">brightness_auto</span>
+            <span>Auto</span>
+          </button>
+          <button type="button" class="theme-switch-btn press-spring ripple-target" data-theme-val="light">
+            <span class="material-symbols-rounded" style="font-size: 18px;">light_mode</span>
+            <span>Clair</span>
+          </button>
+          <button type="button" class="theme-switch-btn press-spring ripple-target" data-theme-val="dark">
+            <span class="material-symbols-rounded" style="font-size: 18px;">dark_mode</span>
+            <span>Sombre</span>
           </button>
         </div>
       </div>
@@ -1228,10 +1316,7 @@
               <div style="font-weight: 700; font-size: 14px;">Exporter vos données</div>
               <div style="font-size: 11px; color: var(--md-sys-color-outline);">Enregistre directement dans Fichiers</div>
             </div>
-            <button id="btnExport" class="btn-pill btn-tonal press-spring ripple-target">
-              <span class="material-symbols-rounded" style="font-size: 18px;">share</span>
-              <span>Exporter</span>
-            </button>
+            <button id="btnExport" class="btn-pill btn-tonal press-spring ripple-target">Exporter</button>
           </div>
         </div>
       </div>
@@ -1270,10 +1355,17 @@
       <div class="sheet-handle"></div>
       <h3 style="font-family: var(--font-display); font-size: 22px; font-weight: 800; margin-bottom: 18px;" id="modalTxTitle">Nouvelle opération</h3>
 
-      <!-- Toggle Dépense / Revenu -->
-      <div style="display: flex; background: var(--md-sys-color-surface-container-high); padding: 4px; border-radius: 9999px; margin-bottom: 18px;">
-        <button id="btnTypeExp" class="btn-pill btn-primary press-spring ripple-target" style="flex: 1;">Dépense</button>
-        <button id="btnTypeInc" class="btn-pill btn-unselected press-spring ripple-target" style="flex: 1;">Revenu</button>
+      <!-- Toggle Dépense / Revenu glissant M3 -->
+      <div class="type-switch-group" id="typeSwitchGroup">
+        <div class="type-switch-indicator" id="typeSwitchIndicator"></div>
+        <button type="button" id="btnTypeExp" class="type-switch-btn press-spring ripple-target active">
+          <span class="material-symbols-rounded" style="font-size: 18px;">arrow_downward</span>
+          <span>Dépense</span>
+        </button>
+        <button type="button" id="btnTypeInc" class="type-switch-btn press-spring ripple-target">
+          <span class="material-symbols-rounded" style="font-size: 18px;">arrow_upward</span>
+          <span>Revenu</span>
+        </button>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 14px;">
@@ -1284,7 +1376,7 @@
         
         <div id="switchRow" class="switch-wrap">
           <div>
-            <div style="font-weight: 700; font-size: 14px;">Charge Fixe</div>
+            <div style="font-weight: 700; font-size: 14px;">Charge</div>
             <div style="font-size: 12px; color: var(--md-sys-color-outline);">Récurrente chaque mois (loyer, abonnements...)</div>
           </div>
           <label class="m3-switch">
@@ -1547,7 +1639,7 @@
                   <div class="tx-title">${tx.label}</div>
                   <div class="tx-meta">
                     <span>${d}/${m}</span><span>•</span><span>${cat.label}</span>
-                    ${tx.isFixed ? `<span class="tag-fixed">Fixe</span>` : ""}
+                    ${tx.isFixed ? `<span class="tag-fixed">Charge</span>` : ""}
                     ${isReimbursed ? `<span class="tag-reimbursed">Remboursé</span>` : ""}
                   </div>
                 </div>
@@ -1640,9 +1732,13 @@
     function setModalType(type) {
       modalType = type;
       const isExp = type === "expense";
+      const ind = $("typeSwitchIndicator");
+      if (ind) {
+        ind.style.transform = isExp ? "translateX(0%)" : "translateX(100%)";
+      }
       const bExp = $("btnTypeExp"), bInc = $("btnTypeInc"), swRow = $("switchRow"), txCat = $("txCat");
-      if (bExp) bExp.className = `btn-pill ${isExp ? 'btn-primary' : 'btn-unselected'} press-spring ripple-target`;
-      if (bInc) bInc.className = `btn-pill ${!isExp ? 'btn-primary' : 'btn-unselected'} press-spring ripple-target`;
+      if (bExp) bExp.classList.toggle("active", isExp);
+      if (bInc) bInc.classList.toggle("active", !isExp);
       if (swRow) swRow.style.display = isExp ? "flex" : "none";
       if (txCat) txCat.innerHTML = (CATS[type] || []).map(c => `<option value="${c.id}">${c.label}</option>`).join("");
       updateReimbursedVisibility();
@@ -1860,8 +1956,18 @@
         document.body.scrollTop = 0;
 
         if ($("openAdd")) $("openAdd").style.display = (item.dataset.target === "screenOperations") ? "flex" : "none";
+        if (item.dataset.target === "screenOperations") setTimeout(updateFilterIndicator, 50);
         if (item.dataset.target === "screenAnalytics") renderAnalytics();
       };
+    }
+
+    function updateFilterIndicator() {
+      const activeChip = document.querySelector("#filterChips .chip-expressive.active");
+      const indicator = $("filterChipIndicator");
+      if (activeChip && indicator) {
+        indicator.style.transform = `translateX(${activeChip.offsetLeft}px)`;
+        indicator.style.width = `${activeChip.offsetWidth}px`;
+      }
     }
 
     if ($("filterChips")) {
@@ -1871,6 +1977,7 @@
         $all("#filterChips .chip-expressive").forEach(x => x.classList.remove("active"));
         chip.classList.add("active");
         currentFilter = chip.dataset.filter;
+        updateFilterIndicator();
         renderApp();
       };
     }
@@ -1888,11 +1995,28 @@
       };
     }
 
-    if ($("themeSelect")) {
-      $("themeSelect").onchange = e => {
-        document.documentElement.setAttribute("data-theme", e.target.value);
-        safeStore.set("budget_theme", e.target.value);
-        renderAnalytics();
+    function applyTheme(themeVal) {
+      document.documentElement.setAttribute("data-theme", themeVal);
+      safeStore.set("budget_theme", themeVal);
+      
+      const themeOrder = ["auto", "light", "dark"];
+      const idx = themeOrder.indexOf(themeVal);
+      const ind = $("themeSwitchIndicator");
+      if (ind && idx !== -1) {
+        ind.style.transform = `translateX(${idx * 100}%)`;
+      }
+
+      $all("#themeSwitchGroup .theme-switch-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.themeVal === themeVal);
+      });
+      renderAnalytics();
+    }
+
+    if ($("themeSwitchGroup")) {
+      $("themeSwitchGroup").onclick = e => {
+        const btn = e.target.closest(".theme-switch-btn");
+        if (!btn) return;
+        applyTheme(btn.dataset.themeVal);
       };
     }
 
@@ -2069,19 +2193,50 @@
     const savedPalette = safeStore.get("budget_pixel_color") || "lavender";
     document.documentElement.setAttribute("data-color", savedPalette);
     $all(".color-dot").forEach(dot => dot.classList.toggle("active", dot.dataset.palette === savedPalette));
-    if ($("themeSelect")) $("themeSelect").value = safeStore.get("budget_theme") || "auto";
+    applyTheme(safeStore.get("budget_theme") || "auto");
+
+    function formatLastCheck(date) {
+      if (!date) return "Jamais vérifié";
+      const d = new Date(date);
+      const isToday = d.toDateString() === new Date().toDateString();
+      const timeStr = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+      return isToday ? `Dernière vérification : aujourd'hui à ${timeStr}` : `Dernière vérification : le ${d.toLocaleDateString("fr-FR")} à ${timeStr}`;
+    }
+
+    const lastCheckSaved = safeStore.get("budget_last_update_check");
+    if ($("appUpdateStatusText") && lastCheckSaved) {
+      $("appUpdateStatusText").textContent = formatLastCheck(Number(lastCheckSaved));
+    }
 
     async function checkAppUpdate(manual = false) {
       const updateStatusEl = $("appUpdateStatusText");
-      if (manual && updateStatusEl) updateStatusEl.textContent = "Recherche de mise à jour en cours...";
+      const updateTitleEl = $("appUpdateTitle");
+      const btnIcon = $("updateBtnIcon");
+      const btnLabel = $("updateBtnLabel");
+      const btn = $("btnCheckUpdateManual");
+
+      if (manual) {
+        if (updateStatusEl) updateStatusEl.textContent = "Recherche d'une nouvelle version...";
+        if (btnIcon) {
+          btnIcon.textContent = "progress_activity";
+          btnIcon.style.animation = "spin 0.8s linear infinite";
+        }
+        if (btnLabel) btnLabel.textContent = "Recherche...";
+        if (btn) btn.style.pointerEvents = "none";
+      }
       
       try {
+        if ('serviceWorker' in navigator) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (const reg of regs) { await reg.update(); }
+        }
+
         const checkUrl = window.location.origin + window.location.pathname + '?_check=' + Date.now();
         const res = await fetch(checkUrl, {
           method: "GET",
           cache: "no-store",
           headers: {
-            "Cache-Control": "no-cache",
+            "Cache-Control": "no-cache, no-store, must-revalidate",
             "Pragma": "no-cache"
           }
         });
@@ -2092,26 +2247,42 @@
         const htmlText = await res.text();
         const versionFingerprint = etag || (htmlText.length + "_" + htmlText.slice(0, 100).replace(/\s+/g, ''));
         const storedFingerprint = safeStore.get("budget_app_fingerprint");
+        const now = Date.now();
+        safeStore.set("budget_last_update_check", String(now));
 
         if (!storedFingerprint) {
           safeStore.set("budget_app_fingerprint", versionFingerprint);
-          if (manual) notify("Votre application est à jour !", "verified");
-          if (updateStatusEl) updateStatusEl.textContent = "Application à jour";
+          if (updateStatusEl) updateStatusEl.textContent = formatLastCheck(now);
+          if (updateTitleEl) updateTitleEl.textContent = "Système à jour";
+          if (manual) notify("Votre application est à jour", "check_circle");
           return;
         }
 
         if (storedFingerprint !== versionFingerprint) {
           safeStore.set("budget_next_fingerprint", versionFingerprint);
           if ($("updateBanner")) $("updateBanner").classList.add("show");
-          if (updateStatusEl) updateStatusEl.textContent = "Nouvelle version prête à être installée";
-          if (manual) notify("Nouvelle version prête !", "download");
+          if (updateTitleEl) updateTitleEl.textContent = "Mise à jour disponible";
+          if (updateStatusEl) updateStatusEl.textContent = "Une nouvelle version est prête à être installée";
+          if (manual) notify("Nouvelle mise à jour disponible !", "download");
         } else {
-          if (manual) notify("Vous utilisez déjà la dernière version !", "verified");
-          if (updateStatusEl) updateStatusEl.textContent = "Dernière version active";
+          if (updateTitleEl) updateTitleEl.textContent = "Système à jour";
+          if (updateStatusEl) updateStatusEl.textContent = formatLastCheck(now);
+          if (manual) notify("Votre application est à jour", "check_circle");
         }
       } catch (err) {
         if (manual) notify("Vérification impossible hors connexion", "cloud_off");
-        if (updateStatusEl) updateStatusEl.textContent = "Vérification indisponible";
+        if (updateStatusEl) updateStatusEl.textContent = "Impossible de joindre le serveur";
+      } finally {
+        if (manual) {
+          setTimeout(() => {
+            if (btnIcon) {
+              btnIcon.textContent = "sync";
+              btnIcon.style.animation = "";
+            }
+            if (btnLabel) btnLabel.textContent = "Vérifier";
+            if (btn) btn.style.pointerEvents = "auto";
+          }, 400);
+        }
       }
     }
 
@@ -2151,6 +2322,9 @@
         }
       };
     }
+
+    setTimeout(updateFilterIndicator, 60);
+    window.addEventListener("resize", updateFilterIndicator);
   </script>
 </body>
 </html>
