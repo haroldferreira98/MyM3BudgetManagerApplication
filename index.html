@@ -406,17 +406,6 @@
       touch-action: pan-y;
       position: relative;
     }
-    .balance-card::before {
-      content: '';
-      position: absolute;
-      right: -30px;
-      bottom: -30px;
-      width: 150px;
-      height: 150px;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
     .balance-label {
       font-family: var(--font-display);
       font-size: 13px;
@@ -759,22 +748,50 @@
 
     .rule-card {
       background: var(--md-sys-color-surface-container-lowest);
-      border-radius: 24px;
-      padding: 16px 18px;
-      margin-bottom: 12px;
+      border-radius: 26px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
       box-shadow: var(--shadow-ambient);
+    }
+    .rule-card:last-child {
+      margin-bottom: 0;
+    }
+    .rule-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .rule-status {
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .progress-track {
       height: 8px;
       background: var(--md-sys-color-surface-container-highest);
       border-radius: 9999px;
       overflow: hidden;
-      margin: 10px 0 8px;
+      margin: 14px 0 10px;
     }
     .progress-fill {
       height: 100%;
       border-radius: 9999px;
       transition: width 0.4s var(--ease-spring), background-color 0.3s ease;
+    }
+    .rule-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--md-sys-color-outline);
+      white-space: nowrap;
     }
 
     .donut-wrap {
@@ -1234,29 +1251,29 @@
     <div id="screenAnalytics" class="screen">
       <div class="card-squircle">
         <h3 style="font-family: var(--font-display); font-size: 20px; font-weight: 800; margin-bottom: 4px;">Règle 50 / 30 / 20</h3>
-        <p style="font-size: 13px; color: var(--md-sys-color-outline); margin-bottom: 18px;">Calculée sur vos revenus mensuels perçus.</p>
+        <p style="font-size: 13px; color: var(--md-sys-color-outline); margin-bottom: 20px;">Calculée sur vos revenus mensuels perçus.</p>
 
         <!-- Obligations (50%) -->
         <div class="rule-card">
-          <div style="display: flex; justify-content: space-between; font-family: var(--font-display); font-weight: 700; font-size: 14px;">
-            <span>Obligations & Besoins (50%)</span>
-            <span id="stObl" style="color: var(--md-sys-color-primary);">...</span>
+          <div class="rule-header">
+            <span>Obligations (50%)</span>
+            <span id="stObl" class="rule-status" style="color: var(--md-sys-color-primary);">...</span>
           </div>
           <div class="progress-track"><div class="progress-fill" id="pbObl" style="width:0%;"></div></div>
-          <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--md-sys-color-outline);">
+          <div class="rule-footer">
             <span id="spObl">0 € dépensés</span>
             <span id="ceilObl">Plafond : 0 €</span>
           </div>
         </div>
 
-        <!-- Non essentiel (30%) -->
+        <!-- Envies (30%) -->
         <div class="rule-card">
-          <div style="display: flex; justify-content: space-between; font-family: var(--font-display); font-weight: 700; font-size: 14px;">
-            <span>Non essentiel & Envies (30%)</span>
-            <span id="stWants" style="color: var(--md-sys-color-primary);">...</span>
+          <div class="rule-header">
+            <span>Envies (30%)</span>
+            <span id="stWants" class="rule-status" style="color: var(--md-sys-color-primary);">...</span>
           </div>
           <div class="progress-track"><div class="progress-fill" id="pbWants" style="width:0%;"></div></div>
-          <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--md-sys-color-outline);">
+          <div class="rule-footer">
             <span id="spWants">0 € dépensés</span>
             <span id="ceilWants">Plafond : 0 €</span>
           </div>
@@ -1264,13 +1281,13 @@
 
         <!-- Épargne (20%) -->
         <div class="rule-card">
-          <div style="display: flex; justify-content: space-between; font-family: var(--font-display); font-weight: 700; font-size: 14px;">
-            <span>Épargne & Projets (20%)</span>
-            <span id="stSav" style="color: var(--md-sys-color-success);">...</span>
+          <div class="rule-header">
+            <span>Épargne (20%)</span>
+            <span id="stSav" class="rule-status" style="color: var(--md-sys-color-success);">...</span>
           </div>
           <div class="progress-track"><div class="progress-fill" id="pbSav" style="width:0%;"></div></div>
-          <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--md-sys-color-outline);">
-            <span id="spSav">0 € mis de côté</span>
+          <div class="rule-footer">
+            <span id="spSav">0 € épargnés</span>
             <span id="ceilSav">Objectif : 0 €</span>
           </div>
         </div>
@@ -1712,9 +1729,17 @@
         const over = cur > tgt;
         $(id.pb).style.width = `${Math.min(100, p)}%`;
         $(id.pb).style.background = isSav ? "var(--md-sys-color-success)" : (over ? "var(--md-sys-color-error)" : "var(--md-sys-color-primary)");
-        $(id.st).style.color = isSav ? "var(--md-sys-color-success)" : (over ? "var(--md-sys-color-error)" : "var(--md-sys-color-primary)");
-        $(id.st).textContent = isSav ? (cur >= tgt && tgt > 0 ? `Atteint (+${fmt(cur - tgt)})` : `Manque ${fmt(Math.max(0, tgt - cur))}`) : (over ? `+${fmt(cur - tgt)} dépassés` : `${fmt(tgt - cur)} restants`);
-        $(id.sp).textContent = `${fmt(cur)} ${isSav ? 'mis de côté' : 'dépensés'}`;
+        
+        const stEl = $(id.st);
+        if (isSav) {
+          const reached = cur >= tgt && tgt > 0;
+          stEl.style.color = "var(--md-sys-color-success)";
+          stEl.textContent = reached ? `Atteint (+${fmt(cur - tgt)})` : `Reste ${fmt(Math.max(0, tgt - cur))}`;
+        } else {
+          stEl.style.color = over ? "var(--md-sys-color-error)" : "var(--md-sys-color-primary)";
+          stEl.textContent = over ? `+${fmt(cur - tgt)} dépassé` : `Reste ${fmt(tgt - cur)}`;
+        }
+        $(id.sp).textContent = `${fmt(cur)} ${isSav ? 'épargnés' : 'dépensés'}`;
         $(id.ceil).textContent = `${isSav ? 'Objectif' : 'Plafond'} : ${fmt(tgt)}`;
       };
 
