@@ -1,819 +1,341 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="auto" data-color="lavender">
+<html lang="fr" data-theme="auto" data-color="blue">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Budget Familial • M3 Expressive</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <title>Budget — iOS</title>
+  <!-- Apple system typography + Material Symbols only as a web fallback for SF Symbols. -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..500,0..1,-25..0&display=swap">
 
   <style>
     :root {
-      --font-display: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-      --font-body: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+      color-scheme: light;
+      --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+      --ios-bg: #F2F2F7;
+      --ios-secondary-bg: #FFFFFF;
+      --ios-tertiary-bg: #F2F2F7;
+      --ios-elevated: rgba(255,255,255,.76);
+      --ios-glass: rgba(248,248,250,.68);
+      --ios-label: #000000;
+      --ios-secondary-label: rgba(60,60,67,.68);
+      --ios-tertiary-label: rgba(60,60,67,.42);
+      --ios-quaternary-label: rgba(60,60,67,.22);
+      --ios-separator: rgba(60,60,67,.20);
+      --ios-fill: rgba(120,120,128,.16);
+      --ios-fill-secondary: rgba(120,120,128,.12);
+      --ios-fill-tertiary: rgba(118,118,128,.08);
+      --ios-accent: #007AFF;
+      --ios-accent-soft: rgba(0,122,255,.12);
+      --ios-accent-strong: #0057B8;
+      --ios-on-accent: #FFFFFF;
+      --ios-red: #FF3B30;
+      --ios-red-soft: rgba(255,59,48,.12);
+      --ios-green: #34C759;
+      --ios-green-soft: rgba(52,199,89,.12);
+      --ios-orange: #FF9500;
+      --ios-purple: #AF52DE;
+      --ios-blue: #007AFF;
+      --ios-radius-card: 22px;
+      --ios-radius-control: 12px;
+      --ios-shadow-float: 0 10px 30px rgba(0,0,0,.12), 0 1px 0 rgba(255,255,255,.6) inset;
+      --ios-shadow-control: 0 1px 2px rgba(0,0,0,.08);
 
-      --md-sys-color-primary: #6750A4;
-      --md-sys-color-on-primary: #FFFFFF;
-      --md-sys-color-primary-container: #EADDFF;
-      --md-sys-color-on-primary-container: #21005D;
-      --md-sys-color-secondary: #625B71;
-      --md-sys-color-secondary-container: #E8DEF8;
-      --md-sys-color-on-secondary-container: #1D192B;
-      --md-sys-color-surface: #FEF7FF;
-      --md-sys-color-surface-container: #F3EDF7;
-      --md-sys-color-surface-container-high: #ECE6F0;
-      --md-sys-color-surface-container-highest: #E6E0E9;
-      --md-sys-color-surface-container-lowest: #FFFFFF;
-      --md-sys-color-on-surface: #1D1B20;
-      --md-sys-color-on-surface-variant: #49454F;
-      --md-sys-color-outline: #79747E;
-      --md-sys-color-outline-variant: #CAC4D0;
-      --md-sys-color-error: #BA1A1A;
-      --md-sys-color-error-container: #FFDAD6;
-      --md-sys-color-on-error-container: #410002;
-      --md-sys-color-success: #1E6C38;
-      --md-sys-color-success-container: #D1F3D5;
-      --md-sys-color-on-success-container: #00210A;
-
-      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --shadow-ambient: 0 4px 16px -2px rgba(103, 80, 164, 0.08);
-      --shadow-expressive: 0 10px 28px -4px rgba(103, 80, 164, 0.18);
+      /* Compatibility aliases for business logic / inline styles kept intact. */
+      --md-sys-color-primary: var(--ios-accent);
+      --md-sys-color-on-primary: var(--ios-on-accent);
+      --md-sys-color-primary-container: var(--ios-accent-soft);
+      --md-sys-color-on-primary-container: var(--ios-accent-strong);
+      --md-sys-color-secondary: var(--ios-secondary-label);
+      --md-sys-color-secondary-container: var(--ios-fill-secondary);
+      --md-sys-color-on-secondary-container: var(--ios-label);
+      --md-sys-color-surface: var(--ios-bg);
+      --md-sys-color-surface-container: var(--ios-secondary-bg);
+      --md-sys-color-surface-container-high: var(--ios-fill-secondary);
+      --md-sys-color-surface-container-highest: var(--ios-fill);
+      --md-sys-color-surface-container-lowest: var(--ios-secondary-bg);
+      --md-sys-color-on-surface: var(--ios-label);
+      --md-sys-color-on-surface-variant: var(--ios-secondary-label);
+      --md-sys-color-outline: var(--ios-tertiary-label);
+      --md-sys-color-outline-variant: var(--ios-separator);
+      --md-sys-color-error: var(--ios-red);
+      --md-sys-color-error-container: var(--ios-red-soft);
+      --md-sys-color-on-error-container: var(--ios-red);
+      --md-sys-color-success: var(--ios-green);
+      --md-sys-color-success-container: var(--ios-green-soft);
+      --md-sys-color-on-success-container: var(--ios-green);
     }
 
-    html[data-color="blue"] {
-      --md-sys-color-primary: #1B6585;
-      --md-sys-color-primary-container: #C3E7FF;
-      --md-sys-color-on-primary-container: #001E2D;
-      --md-sys-color-secondary-container: #D6E4ED;
-      --md-sys-color-surface: #F6FAFE;
-      --md-sys-color-surface-container: #EDF2F7;
-      --md-sys-color-surface-container-high: #E2E8EE;
-    }
-    html[data-color="sage"] {
-      --md-sys-color-primary: #386A3B;
-      --md-sys-color-primary-container: #B9F2B6;
-      --md-sys-color-on-primary-container: #002206;
-      --md-sys-color-secondary-container: #D3E6D2;
-      --md-sys-color-surface: #F7FAF5;
-      --md-sys-color-surface-container: #EEF3EC;
-      --md-sys-color-surface-container-high: #E3E9E1;
-    }
-    html[data-color="peach"] {
-      --md-sys-color-primary: #8F4C36;
-      --md-sys-color-primary-container: #FFDBCF;
-      --md-sys-color-on-primary-container: #380D00;
-      --md-sys-color-secondary-container: #F3DFD8;
-      --md-sys-color-surface: #FFF8F6;
-      --md-sys-color-surface-container: #F9EFEA;
-      --md-sys-color-surface-container-high: #EFE3DD;
-    }
+    html[data-color="lavender"] { --ios-accent:#AF52DE; --ios-accent-soft:rgba(175,82,222,.13); --ios-accent-strong:#7C2A9E; }
+    html[data-color="blue"]     { --ios-accent:#007AFF; --ios-accent-soft:rgba(0,122,255,.13); --ios-accent-strong:#0057B8; }
+    html[data-color="sage"]     { --ios-accent:#34C759; --ios-accent-soft:rgba(52,199,89,.13); --ios-accent-strong:#248A3D; }
+    html[data-color="peach"]    { --ios-accent:#FF9500; --ios-accent-soft:rgba(255,149,0,.14); --ios-accent-strong:#C66E00; }
 
     @media (prefers-color-scheme: dark) {
       html[data-theme="auto"] {
-        --md-sys-color-primary: #D0BCFF;
-        --md-sys-color-on-primary: #381E72;
-        --md-sys-color-primary-container: #4F378B;
-        --md-sys-color-on-primary-container: #EADDFF;
-        --md-sys-color-secondary-container: #4A4458;
-        --md-sys-color-on-secondary-container: #E8DEF8;
-        --md-sys-color-surface: #141218;
-        --md-sys-color-surface-container-lowest: #0F0D13;
-        --md-sys-color-surface-container: #211F26;
-        --md-sys-color-surface-container-high: #2B2930;
-        --md-sys-color-surface-container-highest: #36343B;
-        --md-sys-color-on-surface: #E6E0E9;
-        --md-sys-color-on-surface-variant: #CAC4D0;
-        --md-sys-color-outline: #938F99;
-        --md-sys-color-outline-variant: #49454F;
-        --md-sys-color-error: #FFB4AB;
-        --md-sys-color-error-container: #93000A;
-        --md-sys-color-on-error-container: #FFDAD6;
-        --md-sys-color-success: #88D897;
-        --shadow-ambient: 0 4px 16px -2px rgba(0, 0, 0, 0.5);
-        --shadow-expressive: 0 10px 28px -4px rgba(0, 0, 0, 0.7);
+        color-scheme: dark;
+        --ios-bg:#000000;
+        --ios-secondary-bg:#1C1C1E;
+        --ios-tertiary-bg:#2C2C2E;
+        --ios-elevated:rgba(44,44,46,.74);
+        --ios-glass:rgba(28,28,30,.70);
+        --ios-label:#FFFFFF;
+        --ios-secondary-label:rgba(235,235,245,.66);
+        --ios-tertiary-label:rgba(235,235,245,.40);
+        --ios-quaternary-label:rgba(235,235,245,.18);
+        --ios-separator:rgba(84,84,88,.60);
+        --ios-fill:rgba(120,120,128,.36);
+        --ios-fill-secondary:rgba(120,120,128,.26);
+        --ios-fill-tertiary:rgba(118,118,128,.18);
+        --ios-accent-soft:color-mix(in srgb, var(--ios-accent) 22%, transparent);
+        --ios-accent-strong:var(--ios-accent);
+        --ios-red-soft:rgba(255,69,58,.18);
+        --ios-green-soft:rgba(48,209,88,.18);
+        --ios-red:#FF453A;
+        --ios-green:#30D158;
+        --ios-shadow-float:0 12px 34px rgba(0,0,0,.46), 0 1px 0 rgba(255,255,255,.10) inset;
+        --ios-shadow-control:0 1px 2px rgba(0,0,0,.35);
       }
     }
+
     html[data-theme="dark"] {
-      --md-sys-color-primary: #D0BCFF;
-      --md-sys-color-on-primary: #381E72;
-      --md-sys-color-primary-container: #4F378B;
-      --md-sys-color-on-primary-container: #EADDFF;
-      --md-sys-color-secondary-container: #4A4458;
-      --md-sys-color-on-secondary-container: #E8DEF8;
-      --md-sys-color-surface: #141218;
-      --md-sys-color-surface-container-lowest: #0F0D13;
-      --md-sys-color-surface-container: #211F26;
-      --md-sys-color-surface-container-high: #2B2930;
-      --md-sys-color-surface-container-highest: #36343B;
-      --md-sys-color-on-surface: #E6E0E9;
-      --md-sys-color-on-surface-variant: #CAC4D0;
-      --md-sys-color-outline: #938F99;
-      --md-sys-color-outline-variant: #49454F;
-      --md-sys-color-error: #FFB4AB;
-      --md-sys-color-error-container: #93000A;
-      --md-sys-color-on-error-container: #FFDAD6;
-      --md-sys-color-success: #88D897;
-      --shadow-ambient: 0 4px 16px -2px rgba(0, 0, 0, 0.5);
-      --shadow-expressive: 0 10px 28px -4px rgba(0, 0, 0, 0.7);
+      color-scheme: dark;
+      --ios-bg:#000000;
+      --ios-secondary-bg:#1C1C1E;
+      --ios-tertiary-bg:#2C2C2E;
+      --ios-elevated:rgba(44,44,46,.74);
+      --ios-glass:rgba(28,28,30,.70);
+      --ios-label:#FFFFFF;
+      --ios-secondary-label:rgba(235,235,245,.66);
+      --ios-tertiary-label:rgba(235,235,245,.40);
+      --ios-quaternary-label:rgba(235,235,245,.18);
+      --ios-separator:rgba(84,84,88,.60);
+      --ios-fill:rgba(120,120,128,.36);
+      --ios-fill-secondary:rgba(120,120,128,.26);
+      --ios-fill-tertiary:rgba(118,118,128,.18);
+      --ios-accent-soft:color-mix(in srgb, var(--ios-accent) 22%, transparent);
+      --ios-accent-strong:var(--ios-accent);
+      --ios-red:#FF453A;
+      --ios-red-soft:rgba(255,69,58,.18);
+      --ios-green:#30D158;
+      --ios-green-soft:rgba(48,209,88,.18);
+      --ios-shadow-float:0 12px 34px rgba(0,0,0,.46), 0 1px 0 rgba(255,255,255,.10) inset;
+      --ios-shadow-control:0 1px 2px rgba(0,0,0,.35);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+    html { background:var(--ios-bg); }
     body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      background: var(--md-sys-color-surface);
-      color: var(--md-sys-color-on-surface);
-      font-family: var(--font-body);
-      overflow-x: hidden;
-      touch-action: pan-y;
-      transition: background 0.25s ease, color 0.25s ease;
+      min-height:100vh; min-height:100dvh;
+      background:var(--ios-bg); color:var(--ios-label);
+      font-family:var(--ios-font); font-size:17px;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+      overflow-x:hidden; touch-action:pan-y;
+      transition:background .22s ease,color .22s ease;
     }
+    button,input,select { font:inherit; }
+    button { -webkit-user-select:none; user-select:none; }
     .app {
-      width: 100%;
-      max-width: 480px;
-      margin: 0 auto;
-      min-height: 100vh;
-      min-height: 100dvh;
-      padding-bottom: calc(105px + env(safe-area-inset-bottom, 0px));
-      position: relative;
+      width:100%; max-width:480px; margin:0 auto;
+      min-height:100vh; min-height:100dvh;
+      padding-bottom:calc(96px + env(safe-area-inset-bottom,0px));
+      position:relative;
     }
 
     .material-symbols-rounded {
-      font-family: 'Material Symbols Rounded' !important;
-      font-weight: normal;
-      font-style: normal;
-      font-size: 24px;
-      line-height: 1;
-      display: inline-block;
-      vertical-align: middle;
-      -webkit-font-smoothing: antialiased;
+      font-family:'Material Symbols Rounded' !important;
+      font-weight:400; font-style:normal; font-size:22px; line-height:1;
+      display:inline-block; vertical-align:middle; -webkit-font-smoothing:antialiased;
+      font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
     }
 
-    .press-spring {
-      transition: transform 0.2s var(--ease-spring), background-color 0.2s ease, opacity 0.2s ease;
-    }
-    .press-spring:active {
-      transform: scale(0.96) !important;
-    }
+    .ios-press { transition:transform .12s ease,opacity .12s ease,background-color .18s ease; }
+    .ios-press:active { transform:scale(.97); opacity:.72; }
 
-    header {
-      padding: calc(16px + env(safe-area-inset-top, 0px)) 16px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
+    /* Navigation bar / toolbar layer */
+    .ios-nav {
+      position:sticky; top:0; z-index:40;
+      padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;
+      background:linear-gradient(to bottom,var(--ios-bg) 75%,color-mix(in srgb,var(--ios-bg) 0%,transparent));
     }
-    .brand-title {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: var(--md-sys-color-on-surface);
+    .ios-nav-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .brand-title { font-size:34px; line-height:1.12; font-weight:700; letter-spacing:-1.1px; color:var(--ios-label); }
+    .ios-nav-actions { display:flex; align-items:center; gap:8px; }
+    .ios-circle-button,.fab,.month-pill {
+      border:1px solid color-mix(in srgb,var(--ios-separator) 70%,transparent);
+      background:var(--ios-glass);
+      -webkit-backdrop-filter:blur(22px) saturate(180%);
+      backdrop-filter:blur(22px) saturate(180%);
+      box-shadow:var(--ios-shadow-control);
+      color:var(--ios-accent);
     }
-
-    .account-badge-dot {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--md-sys-color-outline);
-      border: 2px solid var(--md-sys-color-surface-container);
-      transition: background-color 0.25s ease;
+    .ios-circle-button,.fab {
+      width:40px; height:40px; padding:0; border-radius:50%;
+      display:grid; place-items:center; cursor:pointer; flex:0 0 auto;
     }
-    .account-badge-dot.online { background: var(--md-sys-color-success); }
-
+    .fab { position:static; z-index:auto; }
+    .fab .material-symbols-rounded { font-size:25px; }
     .month-pill {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--md-sys-color-surface-container-high);
-      color: var(--md-sys-color-on-surface);
-      border-radius: 9999px;
-      padding: 8px 14px;
-      font-size: 13px;
-      font-weight: 700;
-      box-shadow: var(--shadow-ambient);
+      position:relative; display:inline-flex; align-items:center; gap:5px;
+      height:40px; border-radius:20px; padding:0 12px;
+      color:var(--ios-label); font-size:13px; font-weight:600; white-space:nowrap;
     }
-    .month-pill input {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-      -webkit-appearance: none;
-    }
+    .month-pill .material-symbols-rounded { font-size:17px; color:var(--ios-accent); }
+    .month-pill input { position:absolute; inset:0; opacity:0; width:100%; height:100%; cursor:pointer; -webkit-appearance:none; }
+    #navAccountIndicator { width:100%; height:100%; display:grid; place-items:center; position:relative; }
+    #navAccountIcon { font-size:24px; color:var(--ios-accent); }
+    .account-badge-dot { position:absolute; width:9px; height:9px; border-radius:50%; background:var(--ios-tertiary-label); border:2px solid var(--ios-secondary-bg); right:5px; bottom:5px; }
+    .account-badge-dot.online { background:var(--ios-green); }
 
-    .card-squircle {
-      background: var(--md-sys-color-surface-container);
-      border-radius: 28px;
-      padding: 20px;
-      margin: 0 16px 14px;
-      position: relative;
-      box-shadow: var(--shadow-ambient);
+    /* Content surfaces */
+    .balance-card,.ios-card {
+      margin:0 16px 14px; background:var(--ios-secondary-bg); color:var(--ios-label);
+      border-radius:var(--ios-radius-card); border:1px solid color-mix(in srgb,var(--ios-separator) 55%,transparent);
+      box-shadow:0 1px 2px rgba(0,0,0,.025); position:relative;
     }
+    .balance-card { padding:20px; }
+    .ios-card { padding:18px; }
+    .balance-label { font-size:13px; font-weight:600; color:var(--ios-secondary-label); text-transform:none; letter-spacing:0; }
+    .balance-val { font-size:38px; font-weight:700; letter-spacing:-1.3px; margin:5px 0 18px; line-height:1.05; }
+    .kpi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0; background:var(--ios-fill-tertiary); border-radius:14px; padding:10px 4px; }
+    .kpi-cell { text-align:center; padding:2px 6px; min-width:0; }
+    .kpi-cell + .kpi-cell { border-left:1px solid var(--ios-separator); }
+    .kpi-cell span { font-size:11px; font-weight:500; color:var(--ios-secondary-label); text-transform:none; letter-spacing:0; display:block; margin-bottom:2px; }
+    .kpi-cell strong { font-size:13px; font-weight:650; letter-spacing:-.15px; }
 
-    .balance-card {
-      background: linear-gradient(135deg, var(--md-sys-color-primary-container) 0%, var(--md-sys-color-secondary-container) 100%);
-      color: var(--md-sys-color-on-primary-container);
-      border-radius: 32px;
-      padding: 24px 20px 20px;
-      box-shadow: var(--shadow-expressive);
-      margin: 0 16px 14px;
-    }
-    .balance-label {
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      opacity: 0.85;
-    }
-    .balance-val {
-      font-size: 38px;
-      font-weight: 800;
-      letter-spacing: -1.2px;
-      margin: 6px 0 16px;
-      line-height: 1;
-    }
+    /* Segmented filter */
+    .chips-bar { display:flex; gap:2px; margin:0 16px 13px; padding:2px; overflow:visible; background:var(--ios-fill); border-radius:10px; }
+    .chips-bar::-webkit-scrollbar { display:none; }
+    .ios-filter { flex:1; min-width:0; height:32px; border:0; border-radius:8px; padding:0 8px; background:transparent; color:var(--ios-label); font-size:13px; font-weight:500; cursor:pointer; white-space:nowrap; }
+    .ios-filter.active { background:var(--ios-secondary-bg); color:var(--ios-label); font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,.16); }
 
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.35);
-      border-radius: 20px;
-      padding: 12px 8px;
-    }
-    @media (prefers-color-scheme: dark) {
-      .kpi-grid { background: rgba(0, 0, 0, 0.25); }
-    }
-    .kpi-cell { text-align: center; }
-    .kpi-cell span {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      opacity: 0.8;
-      display: block;
-      margin-bottom: 2px;
-    }
-    .kpi-cell strong {
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-    }
+    .sec-header { padding:5px 16px 8px; min-height:56px; display:flex; align-items:center; position:relative; overflow:hidden; }
+    .sec-header-default { width:100%; display:flex; justify-content:space-between; align-items:center; transition:opacity .18s ease,transform .18s ease; }
+    .sec-header.searching .sec-header-default { opacity:0; pointer-events:none; transform:translateY(-4px); }
+    .sec-header-right { display:flex; align-items:center; gap:8px; }
+    .sec-header h3 { font-size:20px; font-weight:700; letter-spacing:-.35px; }
+    .sec-search-trigger { width:34px; height:34px; border-radius:50%; border:0; background:var(--ios-fill-secondary); color:var(--ios-accent); display:grid; place-items:center; cursor:pointer; }
+    .ios-badge { height:26px; padding:0 9px; border-radius:13px; background:var(--ios-fill-secondary); color:var(--ios-secondary-label); display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; white-space:nowrap; }
+    .sec-search-bar { position:absolute; inset:5px 16px 7px; display:flex; align-items:center; gap:7px; padding:0 8px 0 11px; background:var(--ios-fill); border-radius:11px; opacity:0; pointer-events:none; transform:scale(.98); transition:opacity .16s ease,transform .16s ease; }
+    .sec-header.searching .sec-search-bar { opacity:1; pointer-events:auto; transform:scale(1); }
+    .sec-search-input { flex:1; height:100%; background:transparent; border:0; outline:0; color:var(--ios-label); font-family:inherit; font-size:15px; font-weight:400; }
+    .sec-search-input::placeholder { color:var(--ios-tertiary-label); }
+    .sec-search-close { width:28px; height:28px; border-radius:50%; border:0; background:var(--ios-fill-secondary); color:var(--ios-secondary-label); display:grid; place-items:center; cursor:pointer; }
 
-    .chips-bar {
-      display: flex;
-      gap: 6px;
-      padding: 0 16px 12px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .chips-bar::-webkit-scrollbar { display: none; }
-    .chip-expressive {
-      flex: 1;
-      height: 38px;
-      background: var(--md-sys-color-surface-container-high);
-      border: none;
-      color: var(--md-sys-color-on-surface-variant);
-      border-radius: 9999px;
-      padding: 0 14px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
-    .chip-expressive.active {
-      background: var(--md-sys-color-primary);
-      color: var(--md-sys-color-on-primary);
-      font-weight: 800;
-      box-shadow: 0 4px 12px -2px rgba(103, 80, 164, 0.35);
-    }
+    /* Lists */
+    .tx-list { padding:0 16px; display:flex; flex-direction:column; gap:7px; }
+    .date-group-header { font-size:13px; font-weight:600; color:var(--ios-secondary-label); padding:12px 4px 2px; letter-spacing:-.15px; }
+    .tx-item { background:var(--ios-secondary-bg); border-radius:16px; min-height:68px; padding:11px 13px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; border:1px solid color-mix(in srgb,var(--ios-separator) 45%,transparent); }
+    .tx-item:active { background:var(--ios-tertiary-bg); }
+    .tx-left { display:flex; align-items:center; gap:11px; min-width:0; }
+    .tx-icon-wrap { width:40px; height:40px; border-radius:12px; display:grid; place-items:center; background:var(--ios-accent-soft); color:var(--ios-accent); flex-shrink:0; }
+    .tx-icon-wrap .material-symbols-rounded { font-size:21px; }
+    .tx-title { font-size:16px; line-height:1.2; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--ios-label); }
+    .tx-meta { margin-top:3px; display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ios-secondary-label); }
+    .tag-pill { border-radius:6px; padding:2px 6px; font-size:10px; font-weight:600; text-transform:none; }
+    .tag-fixed { background:var(--ios-fill-secondary); color:var(--ios-secondary-label); }
+    .tag-reimbursed { background:var(--ios-green-soft); color:var(--ios-green); }
+    .tx-amount { font-size:15px; font-weight:600; white-space:nowrap; color:var(--ios-label); }
+    .tx-amount.income { color:var(--ios-green); }
+    .tx-amount.reimbursed { text-decoration:line-through; opacity:.45; }
 
-    .sec-header {
-      padding: 6px 16px 10px;
-      position: relative;
-      min-height: 48px;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-    }
-    .sec-header-default {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: opacity 0.22s ease, transform 0.25s var(--ease-spring);
-    }
-    .sec-header.searching .sec-header-default {
-      opacity: 0;
-      pointer-events: none;
-      transform: scale(0.96) translateX(-8px);
-    }
-    .sec-header-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .sec-search-trigger {
-      height: 26px;
-      width: 32px;
-      border-radius: 9999px;
-      background: var(--md-sys-color-surface-container-highest);
-      color: var(--md-sys-color-on-surface-variant);
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      padding: 0;
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
-    .sec-search-trigger:active {
-      background: var(--md-sys-color-primary-container);
-      color: var(--md-sys-color-on-primary-container);
-    }
-    .sec-header h3 {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.4px;
-    }
-    .sec-badge {
-      background: var(--md-sys-color-surface-container-highest);
-      color: var(--md-sys-color-on-surface-variant);
-      padding: 0 10px;
-      height: 26px;
-      border-radius: 9999px;
-      font-size: 11px;
-      font-weight: 700;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
+    /* Analytics */
+    .rule-card,.breakdown-row { background:var(--ios-tertiary-bg); border-radius:14px; border:0; box-shadow:none; }
+    .rule-card { padding:14px; margin-bottom:9px; }
+    .rule-card:last-child { margin-bottom:0; }
+    .rule-header,.rule-footer { display:flex; justify-content:space-between; align-items:center; gap:10px; white-space:nowrap; font-size:13px; font-weight:600; }
+    .rule-footer { margin-top:8px; font-size:11px; font-weight:400; color:var(--ios-secondary-label); }
+    .progress-track { height:7px; background:var(--ios-fill); border-radius:4px; overflow:hidden; margin:9px 0; }
+    .progress-fill { height:100%; border-radius:4px; transition:width .25s ease; }
+    .donut-wrap { position:relative; width:220px; height:220px; margin:10px auto; display:flex; align-items:center; justify-content:center; }
+    .donut-center { position:relative; z-index:2; text-align:center; pointer-events:none; }
+    .breakdown-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; margin-bottom:6px; font-size:13px; }
+    .breakdown-row:last-child { margin-bottom:0; }
 
-    .sec-search-bar {
-      position: absolute;
-      inset: 4px 16px 8px;
-      background: var(--md-sys-color-surface-container-high);
-      border-radius: 9999px;
-      padding: 0 6px 0 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: var(--shadow-expressive);
-      opacity: 0;
-      pointer-events: none;
-      transform: scaleX(0.2) scaleY(0.7);
-      transform-origin: calc(100% - 65px) center;
-      transition: transform 0.3s cubic-bezier(0.34, 1.45, 0.64, 1), opacity 0.22s ease;
-      z-index: 5;
-    }
-    .sec-header.searching .sec-search-bar {
-      opacity: 1;
-      pointer-events: auto;
-      transform: scale(1);
-    }
-    .sec-search-input {
-      flex: 1;
-      height: 100%;
-      background: transparent;
-      border: none;
-      outline: none;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--md-sys-color-on-surface);
-      font-family: inherit;
-    }
-    .sec-search-close {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: transparent;
-      border: none;
-      display: grid;
-      place-content: center;
-      color: var(--md-sys-color-on-surface-variant);
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: background-color 0.2s ease;
-    }
-    .sec-search-close:active {
-      background: var(--md-sys-color-surface-container-highest);
-    }
+    /* Bottom tab bar = Liquid Glass navigation layer */
+    .nav-bar { position:fixed; left:50%; bottom:calc(8px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); width:calc(100% - 24px); max-width:456px; min-height:64px; padding:5px 10px; display:flex; align-items:center; justify-content:space-around; z-index:50; border-radius:32px; background:var(--ios-glass); -webkit-backdrop-filter:blur(28px) saturate(190%); backdrop-filter:blur(28px) saturate(190%); border:1px solid color-mix(in srgb,var(--ios-separator) 60%,transparent); box-shadow:var(--ios-shadow-float); }
+    .nav-item { flex:1; min-width:0; height:54px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; border:0; background:transparent; cursor:pointer; color:var(--ios-secondary-label); }
+    .nav-indicator { width:34px; height:30px; border-radius:15px; display:grid; place-items:center; color:inherit; transition:background-color .18s ease,color .18s ease; }
+    .nav-item.active { color:var(--ios-accent); }
+    .nav-item.active .nav-indicator { background:var(--ios-accent-soft); color:var(--ios-accent); transform:none; }
+    .nav-item.active .material-symbols-rounded { font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
+    .nav-label { font-size:10px; line-height:1.1; font-weight:500; color:inherit; }
+    .nav-item.active .nav-label { color:var(--ios-accent); font-weight:600; }
 
-    .tx-list {
-      padding: 0 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .date-group-header {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--md-sys-color-outline);
-      padding: 12px 6px 2px;
-      letter-spacing: -0.2px;
-    }
-    .tx-item {
-      background: var(--md-sys-color-surface-container-lowest);
-      border-radius: 22px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      box-shadow: var(--shadow-ambient);
-    }
-    .tx-item:active { background: var(--md-sys-color-surface-container-high); }
-    .tx-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
-    .tx-icon-wrap {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      display: grid;
-      place-content: center;
-      background: var(--md-sys-color-surface-container-high);
-      color: var(--md-sys-color-primary);
-      flex-shrink: 0;
-    }
-    .tx-title {
-      font-size: 15px;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: var(--md-sys-color-on-surface);
-    }
-    .tx-meta {
-      font-size: 12px;
-      color: var(--md-sys-color-on-surface-variant);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 2px;
-    }
-    .tag-pill {
-      border-radius: 6px;
-      padding: 1px 6px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    .tag-fixed { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
-    .tag-reimbursed { background: var(--md-sys-color-success-container); color: var(--md-sys-color-on-success-container); }
-    
-    .tx-amount {
-      font-size: 15px;
-      font-weight: 800;
-      white-space: nowrap;
-      color: var(--md-sys-color-on-surface);
-    }
-    .tx-amount.income { color: var(--md-sys-color-success); }
-    .tx-amount.reimbursed { text-decoration: line-through; opacity: 0.5; }
+    /* Sheets */
+    .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.32); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); z-index:100; display:none; align-items:flex-end; justify-content:center; }
+    .modal-backdrop.show { display:flex; }
+    .sheet { width:100%; max-width:480px; max-height:92vh; overflow-y:auto; background:var(--ios-secondary-bg); color:var(--ios-label); border-radius:28px 28px 0 0; padding:10px 20px calc(22px + env(safe-area-inset-bottom,0px)); box-shadow:0 -12px 40px rgba(0,0,0,.18); }
+    .sheet-handle { width:36px; height:5px; border-radius:3px; background:var(--ios-fill); margin:0 auto 14px; }
 
-    .rule-card {
-      background: var(--md-sys-color-surface-container-lowest);
-      border-radius: 22px;
-      padding: 16px 18px;
-      margin-bottom: 12px;
-      box-shadow: var(--shadow-ambient);
-    }
-    .rule-card:last-child { margin-bottom: 0; }
-    .rule-header, .rule-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      white-space: nowrap;
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .rule-footer {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--md-sys-color-outline);
-      margin-top: 8px;
-    }
-    .progress-track {
-      height: 8px;
-      background: var(--md-sys-color-surface-container-highest);
-      border-radius: 9999px;
-      overflow: hidden;
-      margin: 10px 0;
-    }
-    .progress-fill {
-      height: 100%;
-      border-radius: 9999px;
-      transition: width 0.3s ease;
-    }
+    /* Forms */
+    .ios-input { width:100%; min-height:48px; padding:11px 13px; border-radius:12px; background:var(--ios-fill-tertiary); border:1px solid transparent; color:var(--ios-label); font-size:16px; font-weight:400; outline:none; -webkit-appearance:none; appearance:none; }
+    .ios-input:focus { border-color:color-mix(in srgb,var(--ios-accent) 68%,transparent); background:var(--ios-secondary-bg); box-shadow:0 0 0 3px var(--ios-accent-soft); }
+    .ios-input::placeholder { color:var(--ios-tertiary-label); }
+    select.ios-input { padding-right:34px; }
 
-    .donut-wrap {
-      position: relative;
-      width: 220px;
-      height: 220px;
-      margin: 12px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .donut-center {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      pointer-events: none;
-    }
-    .breakdown-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 14px;
-      border-radius: 16px;
-      background: var(--md-sys-color-surface-container-lowest);
-      margin-bottom: 6px;
-      box-shadow: var(--shadow-ambient);
-      font-size: 13px;
-    }
-    .breakdown-row:last-child { margin-bottom: 0; }
+    .ios-button { min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:0 16px; border-radius:12px; border:0; cursor:pointer; font-size:15px; font-weight:600; }
+    .ios-primary { background:var(--ios-accent); color:#fff; }
+    .ios-secondary { background:var(--ios-fill-secondary); color:var(--ios-accent); }
+    .ios-danger { background:var(--ios-red-soft); color:var(--ios-red); }
 
-    .nav-bar {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 480px;
-      padding: 8px 6px calc(10px + env(safe-area-inset-bottom, 0px));
-      background: var(--md-sys-color-surface-container);
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      z-index: 50;
-      border-radius: 28px 28px 0 0;
-      border-top: 1px solid var(--md-sys-color-outline-variant);
-      box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.08);
-    }
-    .nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: var(--md-sys-color-on-surface-variant);
-    }
-    .nav-indicator {
-      width: 56px;
-      height: 30px;
-      border-radius: 9999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.25s var(--ease-spring);
-      color: inherit;
-    }
-    .nav-item.active .nav-indicator {
-      background: var(--md-sys-color-secondary-container);
-      color: var(--md-sys-color-on-secondary-container);
-      transform: scale(1.05);
-    }
-    .nav-item.active .material-symbols-rounded {
-      font-variation-settings: 'FILL' 1, 'wght' 600;
-    }
-    .nav-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: inherit;
-    }
-    .nav-item.active .nav-label {
-      color: var(--md-sys-color-on-surface);
-      font-weight: 800;
-    }
+    .ios-segmented { display:flex; gap:2px; padding:2px; border-radius:10px; background:var(--ios-fill); }
+    .ios-segmented-btn { flex:1; min-height:34px; border:0; border-radius:8px; background:transparent; color:var(--ios-label); font-size:13px; font-weight:500; display:flex; align-items:center; justify-content:center; gap:5px; cursor:pointer; }
+    .ios-segmented-btn.active { background:var(--ios-secondary-bg); color:var(--ios-label); font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,.14); }
 
-    .fab {
-      position: fixed;
-      bottom: calc(88px + env(safe-area-inset-bottom, 0px));
-      right: calc(50% - 240px + 18px);
-      background: var(--md-sys-color-primary-container);
-      color: var(--md-sys-color-on-primary-container);
-      border: none;
-      border-radius: 20px;
-      height: 52px;
-      padding: 0 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 700;
-      box-shadow: var(--shadow-expressive);
-      cursor: pointer;
-      z-index: 45;
-    }
-    @media (max-width: 480px) { .fab { right: 18px; } }
+    .switch-wrap { display:flex; justify-content:space-between; align-items:center; min-height:48px; padding:5px 2px; }
+    .ios-switch { position:relative; width:51px; height:31px; flex:0 0 auto; }
+    .ios-switch input { opacity:0; width:0; height:0; }
+    .ios-slider { position:absolute; inset:0; border:0; border-radius:16px; background:#E9E9EA; cursor:pointer; transition:background .18s ease; }
+    .ios-slider::before { content:""; position:absolute; width:27px; height:27px; left:2px; top:2px; border-radius:50%; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,.28); transition:transform .18s cubic-bezier(.2,.8,.2,1); }
+    .ios-switch input:checked + .ios-slider { background:var(--ios-green); }
+    .ios-switch input:checked + .ios-slider::before { transform:translateX(20px); }
+    html[data-theme="dark"] .ios-slider { background:#39393D; }
+    @media (prefers-color-scheme:dark) { html[data-theme="auto"] .ios-slider { background:#39393D; } }
 
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(20, 18, 24, 0.45);
-      backdrop-filter: blur(6px);
-      z-index: 100;
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-    }
-    .modal-backdrop.show { display: flex; }
-    .sheet {
-      width: 100%;
-      max-width: 480px;
-      background: var(--md-sys-color-surface-container-lowest);
-      border-radius: 32px 32px 0 0;
-      padding: 20px 20px calc(24px + env(safe-area-inset-bottom, 0px));
-      box-shadow: var(--shadow-expressive);
-      max-height: 88vh;
-      overflow-y: auto;
-    }
-    .sheet-handle {
-      width: 36px;
-      height: 4px;
-      border-radius: 9999px;
-      background: var(--md-sys-color-outline-variant);
-      margin: 0 auto 16px;
-    }
+    .color-picker-row { display:flex; gap:14px; padding:6px 0; }
+    .color-dot { width:38px; height:38px; border-radius:50%; border:3px solid var(--ios-secondary-bg); outline:1px solid var(--ios-separator); cursor:pointer; display:grid; place-items:center; color:#fff; box-shadow:0 1px 2px rgba(0,0,0,.12); }
+    .color-dot.active { outline:3px solid var(--ios-accent); outline-offset:2px; transform:none; }
 
-    .input-m3 {
-      width: 100%;
-      padding: 13px 16px;
-      border-radius: 18px;
-      background: var(--md-sys-color-surface-container-high);
-      border: 2px solid transparent;
-      color: var(--md-sys-color-on-surface);
-      font-size: 15px;
-      font-weight: 500;
-      outline: none;
-    }
-    .input-m3:focus {
-      border-color: var(--md-sys-color-primary);
-      background: var(--md-sys-color-surface-container-lowest);
-    }
+    /* Toast-style transient feedback */
+    .snackbar { position:fixed; bottom:calc(86px + env(safe-area-inset-bottom,0px)); left:50%; transform:translateX(-50%) translateY(10px); max-width:calc(100% - 32px); min-height:44px; padding:10px 14px; border-radius:22px; background:rgba(28,28,30,.88); color:#fff; -webkit-backdrop-filter:blur(18px) saturate(160%); backdrop-filter:blur(18px) saturate(160%); display:flex; align-items:center; gap:8px; z-index:120; opacity:0; pointer-events:none; transition:opacity .18s ease,transform .18s ease; box-shadow:0 8px 28px rgba(0,0,0,.22); font-size:13px; font-weight:500; }
+    .snackbar.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-    .btn-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 20px;
-      border-radius: 9999px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 700;
-    }
-    .btn-primary { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
-    .btn-tonal { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
-    .btn-danger { background: var(--md-sys-color-error-container); color: var(--md-sys-color-on-error-container); }
+    .screen { display:none; }
+    .screen.active { display:block; }
 
-    .segmented-switch {
-      display: flex;
-      background: var(--md-sys-color-surface-container-high);
-      border-radius: 9999px;
-      padding: 4px;
-      gap: 4px;
+    @media (max-width:380px) {
+      .brand-title { font-size:31px; }
+      .month-pill { padding:0 9px; }
+      .ios-nav-actions { gap:6px; }
     }
-    .segmented-btn {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 10px 12px;
-      border: none;
-      background: transparent;
-      border-radius: 9999px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--md-sys-color-on-surface-variant);
-      cursor: pointer;
-      transition: background-color 0.2s ease, color 0.2s ease;
+    @media (prefers-reduced-motion:reduce) {
+      *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
     }
-    .segmented-btn.active {
-      background: var(--md-sys-color-primary);
-      color: var(--md-sys-color-on-primary);
-      font-weight: 800;
-    }
-
-    .switch-wrap {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 2px;
-    }
-    .m3-switch {
-      position: relative;
-      width: 50px;
-      height: 30px;
-    }
-    .m3-switch input { opacity: 0; width: 0; height: 0; }
-    .m3-slider {
-      position: absolute;
-      inset: 0;
-      background: var(--md-sys-color-surface-container-highest);
-      border-radius: 9999px;
-      border: 2px solid var(--md-sys-color-outline);
-      cursor: pointer;
-      transition: 0.25s ease;
-    }
-    .m3-slider::before {
-      position: absolute;
-      content: "";
-      height: 16px;
-      width: 16px;
-      left: 5px;
-      bottom: 5px;
-      background: var(--md-sys-color-outline);
-      border-radius: 50%;
-      transition: 0.25s ease;
-    }
-    .m3-switch input:checked + .m3-slider {
-      background: var(--md-sys-color-primary);
-      border-color: var(--md-sys-color-primary);
-    }
-    .m3-switch input:checked + .m3-slider::before {
-      transform: translateX(20px);
-      background: var(--md-sys-color-on-primary);
-      width: 20px;
-      height: 20px;
-      bottom: 3px;
-    }
-
-    .color-picker-row { display: flex; gap: 14px; padding: 6px 0; }
-    .color-dot {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      outline: 2px solid transparent;
-      cursor: pointer;
-      display: grid;
-      place-content: center;
-      color: #fff;
-    }
-    .color-dot.active {
-      outline-color: var(--md-sys-color-primary);
-      outline-offset: 3px;
-      transform: scale(0.92);
-    }
-
-    .snackbar {
-      position: fixed;
-      bottom: calc(90px + env(safe-area-inset-bottom, 0px));
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--md-sys-color-on-surface);
-      color: var(--md-sys-color-surface);
-      padding: 12px 20px;
-      border-radius: 18px;
-      font-size: 13px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      z-index: 120;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.25s ease;
-      max-width: calc(100% - 32px);
-      box-shadow: var(--shadow-expressive);
-    }
-    .snackbar.show {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .screen { display: none; }
-    .screen.active { display: block; }
   </style>
 </head>
 <body>
 
   <div class="app">
     <!-- Header épuré sans bouton avatar -->
-    <header>
-      <div class="brand-title">Budget</div>
-      <div class="month-pill press-spring">
-        <span class="material-symbols-rounded" style="font-size: 18px; color: var(--md-sys-color-primary);">calendar_month</span>
-        <span id="monthLabel">...</span>
-        <input type="month" id="monthInput" />
+    <header class="ios-nav">
+      <div class="ios-nav-row">
+        <div class="brand-title">Budget</div>
+        <div class="ios-nav-actions">
+          <div class="month-pill ios-press">
+            <span class="material-symbols-rounded" aria-hidden="true">calendar_month</span>
+            <span id="monthLabel">...</span>
+            <input type="month" id="monthInput" aria-label="Choisir le mois" />
+          </div>
+          <button class="ios-circle-button ios-press" id="btnNavAccount" aria-label="Compte">
+            <span class="nav-indicator" id="navAccountIndicator">
+              <span class="material-symbols-rounded" id="navAccountIcon">account_circle</span>
+              <span class="account-badge-dot" id="navAccountDot"></span>
+            </span>
+          </button>
+          <button class="fab ios-press" id="openAdd" aria-label="Ajouter une opération">
+            <span class="material-symbols-rounded" aria-hidden="true">add</span>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -838,12 +360,12 @@
         </div>
       </div>
 
-      <!-- Filtres en Pilules -->
+      <!-- Filtre segmenté iOS -->
       <div class="chips-bar" id="filterChips">
-        <button class="chip-expressive press-spring active" data-filter="all">Toutes</button>
-        <button class="chip-expressive press-spring" data-filter="income">Revenus</button>
-        <button class="chip-expressive press-spring" data-filter="expense">Dépenses</button>
-        <button class="chip-expressive press-spring" data-filter="fixed">Charges</button>
+        <button class="ios-filter ios-press active" data-filter="all">Toutes</button>
+        <button class="ios-filter ios-press" data-filter="income">Revenus</button>
+        <button class="ios-filter ios-press" data-filter="expense">Dépenses</button>
+        <button class="ios-filter ios-press" data-filter="fixed">Charges</button>
       </div>
 
       <div class="sec-header" id="secHeader">
@@ -853,18 +375,18 @@
             <p style="font-size: 11px; color: var(--md-sys-color-outline);">Toutes les opérations du mois</p>
           </div>
           <div class="sec-header-right">
-            <button class="sec-search-trigger press-spring" id="btnOpenSearch" title="Rechercher une opération">
+            <button class="sec-search-trigger ios-press" id="btnOpenSearch" title="Rechercher une opération">
               <span class="material-symbols-rounded" style="font-size: 17px;">search</span>
             </button>
-            <div class="sec-badge" id="secBadge">0 op.</div>
+            <div class="ios-badge" id="secBadge">0 op.</div>
           </div>
         </div>
 
-        <!-- Barre de recherche fluide extensible -->
+        <!-- Champ de recherche iOS -->
         <div class="sec-search-bar" id="secSearchBar">
           <span class="material-symbols-rounded" style="font-size: 19px; color: var(--md-sys-color-primary); flex-shrink: 0;">search</span>
           <input type="text" id="searchInput" class="sec-search-input" placeholder="Rechercher par libellé, montant..." autocomplete="off" />
-          <button class="sec-search-close press-spring" id="btnCloseSearch" title="Fermer la recherche">
+          <button class="sec-search-close ios-press" id="btnCloseSearch" title="Fermer la recherche">
             <span class="material-symbols-rounded" style="font-size: 18px;">close</span>
           </button>
         </div>
@@ -874,8 +396,8 @@
     </div>
 
     <div id="screenAnalytics" class="screen">
-      <!-- Règle 50 / 30 / 20 aérée -->
-      <div class="card-squircle">
+      <!-- Règle 50 / 30 / 20 -->
+      <div class="ios-card">
         <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 2px;">Règle 50 / 30 / 20</h3>
         <p style="font-size: 12px; color: var(--md-sys-color-outline); margin-bottom: 16px;">Calculée sur vos revenus mensuels réels.</p>
 
@@ -920,13 +442,13 @@
       </div>
 
       <!-- Graphique 1 : Charges Fixes -->
-      <div class="card-squircle">
+      <div class="ios-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
           <div>
             <h3 style="font-size: 18px; font-weight: 800;">Charges</h3>
             <p style="font-size: 11px; color: var(--md-sys-color-outline);">Dépenses récurrentes & fixes</p>
           </div>
-          <div class="sec-badge" id="fixedTotalBadge">0,00 €</div>
+          <div class="ios-badge" id="fixedTotalBadge">0,00 €</div>
         </div>
         <div class="donut-wrap">
           <canvas id="chartFixed" style="position: absolute; inset: 0; width: 100%; height: 100%;"></canvas>
@@ -939,13 +461,13 @@
       </div>
 
       <!-- Graphique 2 : Dépenses Courantes -->
-      <div class="card-squircle">
+      <div class="ios-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
           <div>
             <h3 style="font-size: 18px; font-weight: 800;">Dépenses courantes</h3>
             <p style="font-size: 11px; color: var(--md-sys-color-outline);">Achats du quotidien & sorties</p>
           </div>
-          <div class="sec-badge" id="normalTotalBadge">0,00 €</div>
+          <div class="ios-badge" id="normalTotalBadge">0,00 €</div>
         </div>
         <div class="donut-wrap">
           <canvas id="chartNormal" style="position: absolute; inset: 0; width: 100%; height: 100%;"></canvas>
@@ -960,33 +482,33 @@
 
     <!-- Écran 3 : Options -->
     <div id="screenSettings" class="screen">
-      <div class="card-squircle">
+      <div class="ios-card">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 10px;">Mode d'affichage</div>
-        <div class="segmented-switch" id="themeSwitch">
-          <button type="button" class="segmented-btn press-spring active" data-theme-val="auto">
+        <div class="ios-segmented" id="themeSwitch">
+          <button type="button" class="ios-segmented-btn ios-press active" data-theme-val="auto">
             <span class="material-symbols-rounded" style="font-size: 18px;">brightness_auto</span>
             <span>Auto</span>
           </button>
-          <button type="button" class="segmented-btn press-spring" data-theme-val="light">
+          <button type="button" class="ios-segmented-btn ios-press" data-theme-val="light">
             <span class="material-symbols-rounded" style="font-size: 18px;">light_mode</span>
             <span>Clair</span>
           </button>
-          <button type="button" class="segmented-btn press-spring" data-theme-val="dark">
+          <button type="button" class="ios-segmented-btn ios-press" data-theme-val="dark">
             <span class="material-symbols-rounded" style="font-size: 18px;">dark_mode</span>
             <span>Sombre</span>
           </button>
         </div>
 
-        <div style="font-weight: 700; font-size: 14px; margin: 18px 0 10px;">Couleur Pixel</div>
+        <div style="font-weight: 700; font-size: 14px; margin: 18px 0 10px;">Couleur d’accent</div>
         <div class="color-picker-row" id="colorPickerRow">
-          <button class="color-dot active press-spring" data-palette="lavender" style="background:#6750A4;"><span class="material-symbols-rounded" style="font-size:20px;">check</span></button>
-          <button class="color-dot press-spring" data-palette="blue" style="background:#1B6585;"><span class="material-symbols-rounded" style="font-size:20px; display:none;">check</span></button>
-          <button class="color-dot press-spring" data-palette="sage" style="background:#386A3B;"><span class="material-symbols-rounded" style="font-size:20px; display:none;">check</span></button>
-          <button class="color-dot press-spring" data-palette="peach" style="background:#8F4C36;"><span class="material-symbols-rounded" style="font-size:20px; display:none;">check</span></button>
+          <button class="color-dot active ios-press" data-palette="lavender" style="background:#AF52DE;"><span class="material-symbols-rounded" style="font-size:20px;">check</span></button>
+          <button class="color-dot ios-press" data-palette="blue" style="background:#007AFF;"><span class="material-symbols-rounded" style="font-size:20px; display:none;">check</span></button>
+          <button class="color-dot ios-press" data-palette="sage" style="background:#34C759;"><span class="material-symbols-rounded" style="font-size:20px; display:none;">check</span></button>
+          <button class="color-dot ios-press" data-palette="peach" style="background:#FF9500;"><span class="material-symbols-rounded" style="font-size:20px; display:none;">check</span></button>
         </div>
       </div>
 
-      <div class="card-squircle">
+      <div class="ios-card">
         <div style="font-size: 11px; font-weight: 800; color: var(--md-sys-color-primary); text-transform: uppercase; margin-bottom: 12px;">Sauvegarde & Données</div>
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -994,7 +516,7 @@
               <div style="font-weight: 700; font-size: 13px;">Importer un fichier JSON</div>
               <div style="font-size: 11px; color: var(--md-sys-color-outline);">Synchronise avec Firestore</div>
             </div>
-            <button id="btnTriggerImport" class="btn-pill btn-tonal press-spring">Importer</button>
+            <button id="btnTriggerImport" class="ios-button ios-secondary ios-press">Importer</button>
             <input type="file" id="jsonFileInput" accept=".json,application/json" style="display: none;" />
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--md-sys-color-outline-variant);">
@@ -1002,37 +524,24 @@
               <div style="font-weight: 700; font-size: 13px;">Exporter vos données</div>
               <div style="font-size: 11px; color: var(--md-sys-color-outline);">Sauvegarde dans Fichiers</div>
             </div>
-            <button id="btnExport" class="btn-pill btn-tonal press-spring">Exporter</button>
+            <button id="btnExport" class="ios-button ios-secondary ios-press">Exporter</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- FAB -->
-    <button class="fab press-spring" id="openAdd">
-      <span class="material-symbols-rounded">add</span>
-      <span>Opération</span>
-    </button>
-
-    <nav class="nav-bar" id="navBar">
-      <button class="nav-item active press-spring" data-target="screenOperations">
+    <nav class="nav-bar" id="navBar" aria-label="Navigation principale">
+      <button class="nav-item active ios-press" data-target="screenOperations">
         <div class="nav-indicator"><span class="material-symbols-rounded">receipt_long</span></div>
         <span class="nav-label">Opérations</span>
       </button>
-      <button class="nav-item press-spring" data-target="screenAnalytics">
+      <button class="nav-item ios-press" data-target="screenAnalytics">
         <div class="nav-indicator"><span class="material-symbols-rounded">pie_chart</span></div>
         <span class="nav-label">Analyse</span>
       </button>
-      <button class="nav-item press-spring" data-target="screenSettings">
+      <button class="nav-item ios-press" data-target="screenSettings">
         <div class="nav-indicator"><span class="material-symbols-rounded">settings</span></div>
         <span class="nav-label">Options</span>
-      </button>
-      <button class="nav-item press-spring" id="btnNavAccount">
-        <div class="nav-indicator" id="navAccountIndicator" style="position: relative;">
-          <span class="material-symbols-rounded" id="navAccountIcon">account_circle</span>
-          <div class="account-badge-dot" id="navAccountDot" style="right: 14px; bottom: 2px;"></div>
-        </div>
-        <span class="nav-label">Compte</span>
       </button>
     </nav>
   </div>
@@ -1043,31 +552,31 @@
       <div class="sheet-handle"></div>
       <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 14px;" id="modalTxTitle">Nouvelle opération</h3>
 
-      <div class="segmented-switch" style="margin-bottom: 14px;">
-        <button type="button" id="btnTypeExp" class="segmented-btn press-spring active">
+      <div class="ios-segmented" style="margin-bottom: 14px;">
+        <button type="button" id="btnTypeExp" class="ios-segmented-btn ios-press active">
           <span class="material-symbols-rounded" style="font-size: 18px;">arrow_downward</span>
           <span>Dépense</span>
         </button>
-        <button type="button" id="btnTypeInc" class="segmented-btn press-spring">
+        <button type="button" id="btnTypeInc" class="ios-segmented-btn ios-press">
           <span class="material-symbols-rounded" style="font-size: 18px;">arrow_upward</span>
           <span>Revenu</span>
         </button>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 12px;">
-        <input type="text" id="txLabel" class="input-m3" placeholder="Titre / Émetteur" required />
-        <input type="tel" inputmode="numeric" id="txAmount" class="input-m3" placeholder="0,00 €" required />
-        <select id="txCat" class="input-m3"></select>
-        <input type="date" id="txDate" class="input-m3" />
+        <input type="text" id="txLabel" class="ios-input" placeholder="Titre / Émetteur" required />
+        <input type="tel" inputmode="numeric" id="txAmount" class="ios-input" placeholder="0,00 €" required />
+        <select id="txCat" class="ios-input"></select>
+        <input type="date" id="txDate" class="ios-input" />
         
         <div id="switchRow" class="switch-wrap">
           <div>
             <div style="font-weight: 700; font-size: 13px;">Charge</div>
             <div style="font-size: 11px; color: var(--md-sys-color-outline);">Récurrente (loyer, abonnements, etc.)</div>
           </div>
-          <label class="m3-switch">
+          <label class="ios-switch">
             <input type="checkbox" id="txSwitch">
-            <span class="m3-slider"></span>
+            <span class="ios-slider"></span>
           </label>
         </div>
 
@@ -1076,16 +585,16 @@
             <div style="font-weight: 700; font-size: 13px;">Frais remboursé</div>
             <div style="font-size: 11px; color: var(--md-sys-color-outline);">Exclu du reste à vivre et des dépenses</div>
           </div>
-          <label class="m3-switch">
+          <label class="ios-switch">
             <input type="checkbox" id="txReimbursedSwitch">
-            <span class="m3-slider"></span>
+            <span class="ios-slider"></span>
           </label>
         </div>
       </div>
 
       <div style="display: flex; gap: 10px; margin-top: 20px;">
-        <button class="btn-pill btn-tonal press-spring" style="flex: 1;" data-close="modalTx">Annuler</button>
-        <button id="btnSaveTx" class="btn-pill btn-primary press-spring" style="flex: 1;">Enregistrer</button>
+        <button class="ios-button ios-secondary ios-press" style="flex: 1;" data-close="modalTx">Annuler</button>
+        <button id="btnSaveTx" class="ios-button ios-primary ios-press" style="flex: 1;">Enregistrer</button>
       </div>
     </div>
   </div>
@@ -1098,18 +607,18 @@
       <p id="actSub" style="font-size: 13px; color: var(--md-sys-color-outline); margin: 4px 0 16px;"></p>
       
       <div style="display: flex; flex-direction: column; gap: 8px;">
-        <button id="btnActEdit" class="btn-pill btn-tonal press-spring" style="justify-content: flex-start;">
+        <button id="btnActEdit" class="ios-button ios-secondary ios-press" style="justify-content: flex-start;">
           <span class="material-symbols-rounded">edit</span>Modifier cette opération
         </button>
-        <button id="btnActDel" class="btn-pill btn-danger press-spring" style="justify-content: flex-start;">
+        <button id="btnActDel" class="ios-button ios-danger ios-press" style="justify-content: flex-start;">
           <span class="material-symbols-rounded">delete</span>Supprimer définitivement
         </button>
       </div>
-      <button class="btn-pill btn-tonal press-spring" style="width: 100%; margin-top: 12px;" data-close="modalAction">Fermer</button>
+      <button class="ios-button ios-secondary ios-press" style="width: 100%; margin-top: 12px;" data-close="modalAction">Fermer</button>
     </div>
   </div>
 
-  <!-- MODAL COMPTE GOOGLE -->
+  <!-- FEUILLE DE COMPTE GOOGLE -->
   <div class="modal-backdrop" id="modalAccount">
     <div class="sheet">
       <div class="sheet-handle"></div>
@@ -1125,24 +634,24 @@
       </div>
 
       <div id="accountActionsLoggedOut" style="display: flex; flex-direction: column; gap: 8px;">
-        <button class="btn-pill btn-primary press-spring" id="btnConnectGoogle" style="width: 100%;">
+        <button class="ios-button ios-primary ios-press" id="btnConnectGoogle" style="width: 100%;">
           <span>Se connecter avec Google</span>
         </button>
       </div>
 
       <div id="accountActionsLoggedIn" style="display: none; flex-direction: column; gap: 8px;">
-        <button id="btnSwitchAccount" class="btn-pill btn-tonal press-spring" style="justify-content: flex-start;">
+        <button id="btnSwitchAccount" class="ios-button ios-secondary ios-press" style="justify-content: flex-start;">
           <span class="material-symbols-rounded">switch_account</span>Changer de compte
         </button>
-        <button id="btnSyncNow" class="btn-pill btn-tonal press-spring" style="justify-content: flex-start;">
+        <button id="btnSyncNow" class="ios-button ios-secondary ios-press" style="justify-content: flex-start;">
           <span class="material-symbols-rounded">sync</span>Forcer la synchronisation
         </button>
-        <button id="btnAccountLogout" class="btn-pill btn-danger press-spring" style="justify-content: flex-start;">
+        <button id="btnAccountLogout" class="ios-button ios-danger ios-press" style="justify-content: flex-start;">
           <span class="material-symbols-rounded">logout</span>Se déconnecter
         </button>
       </div>
 
-      <button class="btn-pill btn-tonal press-spring" style="width: 100%; margin-top: 12px;" data-close="modalAccount">Fermer</button>
+      <button class="ios-button ios-secondary ios-press" style="width: 100%; margin-top: 12px;" data-close="modalAccount">Fermer</button>
     </div>
   </div>
 
@@ -1280,7 +789,7 @@
               </div>
               <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
                 <strong>${fmt(seg.amt)}</strong>
-                <span class="sec-badge" style="padding:2px 6px; font-size:10px;">${percent}%</span>
+                <span class="ios-badge" style="padding:2px 6px; font-size:10px;">${percent}%</span>
               </div>
             </div>`);
         }
@@ -1344,7 +853,7 @@
             }
 
             html += `
-              <div class="tx-item press-spring" data-id="${tx.id}">
+              <div class="tx-item ios-press" data-id="${tx.id}">
                 <div class="tx-left">
                   <div class="tx-icon-wrap"><span class="material-symbols-rounded">${cat.icon}</span></div>
                   <div style="min-width:0;">
@@ -1398,8 +907,8 @@
       const fixedItems = allExpenses.filter(t => t.isFixed === true || t.isFixed === "true" || t.isFixed === 1);
       const normalItems = allExpenses.filter(t => !t.isFixed || t.isFixed === "false" || t.isFixed === 0);
 
-      const FIXED_PALETTE = ["#6750A4", "#5B4294", "#70578F", "#3A5F7D", "#4F6354", "#845366"];
-      const NORMAL_PALETTE = ["#8F4C36", "#1B6585", "#386A3B", "#7D5260", "#625B71", "#B58392"];
+      const FIXED_PALETTE = ["#007AFF", "#5856D6", "#34C759", "#5AC8FA", "#AF52DE", "#64D2FF"];
+      const NORMAL_PALETTE = ["#FF9500", "#FF2D55", "#34C759", "#007AFF", "#AF52DE", "#FFD60A"];
 
       drawDonut("chartFixed", "fixedTotalBadge", "fixedTotalText", "breakdownFixed", fixedItems, FIXED_PALETTE, "Aucune charge ce mois-ci");
       drawDonut("chartNormal", "normalTotalBadge", "normalTotalText", "breakdownNormal", normalItems, NORMAL_PALETTE, "Aucune dépense courante ce mois-ci");
@@ -1443,11 +952,11 @@
       if (user) {
         if (dot) dot.classList.add("online");
         if (user.photoURL) {
-          if (indicator) indicator.innerHTML = `<img src="${user.photoURL}" alt="Photo" referrerpolicy="no-referrer" style="width:24px; height:24px; border-radius:50%; object-fit:cover;" /><div class="account-badge-dot online" id="navAccountDot" style="right:14px; bottom:2px;"></div>`;
+          if (indicator) indicator.innerHTML = `<img src="${user.photoURL}" alt="Photo" referrerpolicy="no-referrer" style="width:24px; height:24px; border-radius:50%; object-fit:cover;" /><div class="account-badge-dot online" id="navAccountDot" style="right:3px; bottom:3px;"></div>`;
           $("accModalAvatar").innerHTML = `<img src="${user.photoURL}" alt="Photo" referrerpolicy="no-referrer" style="width:100%; height:100%; object-fit:cover;" />`;
         } else {
           const initials = (user.displayName || user.email || "U").charAt(0).toUpperCase();
-          if (indicator) indicator.innerHTML = `<div style="font-weight:800; font-size:14px;">${initials}</div><div class="account-badge-dot online" id="navAccountDot" style="right:14px; bottom:2px;"></div>`;
+          if (indicator) indicator.innerHTML = `<div style="font-weight:800; font-size:14px;">${initials}</div><div class="account-badge-dot online" id="navAccountDot" style="right:3px; bottom:3px;"></div>`;
           $("accModalAvatar").innerHTML = `<span>${initials}</span>`;
         }
 
@@ -1465,7 +974,7 @@
         }, () => notify("Erreur de synchronisation", "error"));
       } else {
         if (dot) dot.classList.remove("online");
-        if (indicator) indicator.innerHTML = `<span class="material-symbols-rounded" id="navAccountIcon">account_circle</span><div class="account-badge-dot" id="navAccountDot" style="right:14px; bottom:2px;"></div>`;
+        if (indicator) indicator.innerHTML = `<span class="material-symbols-rounded" id="navAccountIcon">account_circle</span><div class="account-badge-dot" id="navAccountDot" style="right:3px; bottom:3px;"></div>`;
         $("accModalAvatar").innerHTML = `<span class="material-symbols-rounded">person</span>`;
         $("accModalName").textContent = "Non connecté";
         $("accModalEmail").textContent = "Mode local";
@@ -1514,6 +1023,8 @@
     };
 
     $all("[data-close]").forEach(b => b.onclick = () => modal(b.dataset.close, false));
+
+    $("btnNavAccount").onclick = () => modal("modalAccount", true);
 
     $("openAdd").onclick = () => {
       editingId = null;
@@ -1632,9 +1143,9 @@
     };
 
     $("filterChips").onclick = e => {
-      const chip = e.target.closest(".chip-expressive");
+      const chip = e.target.closest(".ios-filter");
       if (!chip) return;
-      $all("#filterChips .chip-expressive").forEach(c => c.classList.remove("active"));
+      $all("#filterChips .ios-filter").forEach(c => c.classList.remove("active"));
       chip.classList.add("active");
       currentFilter = chip.dataset.filter;
       renderApp();
@@ -1643,12 +1154,12 @@
     function applyTheme(themeVal) {
       document.documentElement.setAttribute("data-theme", themeVal);
       try { localStorage.setItem("budget_theme", themeVal); } catch(e){}
-      $all("#themeSwitch .segmented-btn").forEach(b => b.classList.toggle("active", b.dataset.themeVal === themeVal));
+      $all("#themeSwitch .ios-segmented-btn").forEach(b => b.classList.toggle("active", b.dataset.themeVal === themeVal));
       renderAnalytics();
     }
 
     $("themeSwitch").onclick = e => {
-      const btn = e.target.closest(".segmented-btn");
+      const btn = e.target.closest(".ios-segmented-btn");
       if (!btn) return;
       applyTheme(btn.dataset.themeVal);
     };
@@ -1663,7 +1174,7 @@
       dot.classList.add("active");
       dot.querySelector(".material-symbols-rounded").style.display = "block";
       document.documentElement.setAttribute("data-color", dot.dataset.palette);
-      try { localStorage.setItem("budget_pixel_color", dot.dataset.palette); } catch(e){}
+      try { localStorage.setItem("budget_ios_color", dot.dataset.palette); } catch(e){}
       renderAnalytics();
     };
 
@@ -1714,8 +1225,8 @@
       notify("Export téléchargé", "download");
     };
 
-    let savedPalette = "lavender";
-    try { savedPalette = localStorage.getItem("budget_pixel_color") || "lavender"; } catch(e){}
+    let savedPalette = "blue";
+    try { savedPalette = localStorage.getItem("budget_ios_color") || localStorage.getItem("budget_pixel_color") || "blue"; } catch(e){}
     document.documentElement.setAttribute("data-color", savedPalette);
     $all(".color-dot").forEach(d => {
       const isActive = d.dataset.palette === savedPalette;
