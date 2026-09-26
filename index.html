@@ -2114,6 +2114,32 @@
       display:none !important;
     }
 
+    /* DA2 v3 — transaction cards use the page background, never white. */
+    #txContainer,
+    .tx-list {
+      background:transparent !important;
+    }
+
+    .tx-item,
+    .tx-item.ios-press {
+      background:var(--nb-bg) !important;
+      background-color:var(--nb-bg) !important;
+    }
+
+    .tx-item:hover,
+    .tx-item:focus,
+    .tx-item.ios-press:hover,
+    .tx-item.ios-press:focus {
+      background:var(--nb-bg) !important;
+      background-color:var(--nb-bg) !important;
+    }
+
+    .tx-item:active,
+    .tx-item.ios-press:active {
+      background:#F5E9B9 !important;
+      background-color:#F5E9B9 !important;
+    }
+
   </style>
 </head>
 <body class="auth-locked">
