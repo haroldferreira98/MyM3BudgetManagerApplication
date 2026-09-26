@@ -3862,8 +3862,8 @@
     const getMonthTx = () => transactions.filter(t => (t.date || "").startsWith(currentMonth));
     const sum = (arr, fn) => arr.filter(fn).reduce((s, t) => s + (Number(t.amount) || 0), 0);
 
-    // By default, only today, yesterday and the day before yesterday stay expanded.
-    // Older date groups start collapsed; a manual choice is kept in dateGroupCollapsedState.
+    // By default, only today stays expanded.
+    // Every other date group starts collapsed; a manual choice is kept in dateGroupCollapsedState.
     const shouldCollapseDateGroupByDefault = date => {
       const [y, m, d] = String(date || "").split("-").map(Number);
       if (![y, m, d].every(Number.isFinite)) return true;
@@ -3872,7 +3872,7 @@
       today.setHours(0, 0, 0, 0);
       dateObj.setHours(0, 0, 0, 0);
       const diff = Math.round((today - dateObj) / 86400000);
-      return diff > 2;
+      return diff !== 0;
     };
 
     function drawDonut(canvasId, totalBadgeId, totalTextId, breakdownId, items, palette, emptyMsg) {
@@ -4026,7 +4026,7 @@
             const dateLabel = diff === 0 ? "Aujourd'hui" : diff === 1 ? "Hier" : diff === 2 ? "Avant-hier" : dateObj.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
 
             // During a search, matching transactions stay visible. Outside search,
-            // manual state wins; otherwise days older than the last 3 calendar days start collapsed.
+            // manual state wins; otherwise every date except today starts collapsed.
             const defaultCollapsed = shouldCollapseDateGroupByDefault(group.date);
             const collapsed = !searchQuery.trim() && (
               dateGroupCollapsedState.has(group.date)
