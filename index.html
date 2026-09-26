@@ -1068,6 +1068,85 @@
     }
     .auth-confirm-wrap[hidden] { display:none !important; }
 
+    /* ─────────────────────────────────────────────────────────────
+       iPhone-like navigation & sheet gestures
+       ───────────────────────────────────────────────────────────── */
+
+    /* The tab bar belongs only to root app screens.
+       Any presented sheet/modal hides it, just like a native iOS tab bar. */
+    body.auth-ready.modal-open > #navBar.nav-bar {
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: translate3d(-50%, calc(100% + 44px), 0) !important;
+      -webkit-transform: translate3d(-50%, calc(100% + 44px), 0) !important;
+    }
+
+    body.modal-open {
+      overflow: hidden !important;
+      overscroll-behavior: none;
+    }
+
+    .modal-backdrop {
+      overscroll-behavior: contain;
+      touch-action: manipulation;
+    }
+
+    .modal-backdrop.show {
+      animation: iosBackdropIn .20s ease-out both;
+    }
+
+    .modal-backdrop.show .sheet {
+      animation: iosSheetIn .32s cubic-bezier(.22,.86,.22,1) both;
+    }
+
+    .sheet {
+      max-height: min(92vh, 92dvh);
+      overscroll-behavior: contain;
+      transform: translate3d(0,0,0);
+      will-change: transform;
+      transition: transform .28s cubic-bezier(.22,.86,.22,1);
+    }
+
+    .sheet.is-dragging {
+      transition: none !important;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .sheet-handle {
+      cursor: grab;
+      touch-action: none;
+      position: relative;
+    }
+
+    /* Larger invisible grab target, visually still the tiny iOS handle. */
+    .sheet-handle::before {
+      content:"";
+      position:absolute;
+      inset:-12px -38px;
+    }
+
+    .sheet-handle:active { cursor: grabbing; }
+
+    @keyframes iosBackdropIn {
+      from { background-color: rgba(0,0,0,0); backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0); }
+      to   { background-color: rgba(0,0,0,.28); }
+    }
+
+    @keyframes iosSheetIn {
+      from { transform: translate3d(0, 36px, 0); opacity:.76; }
+      to   { transform: translate3d(0, 0, 0); opacity:1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .modal-backdrop.show,
+      .modal-backdrop.show .sheet {
+        animation: none !important;
+      }
+      .sheet { transition: none !important; }
+    }
+
   </style>
 </head>
 <body class="auth-locked">
@@ -1546,7 +1625,41 @@
     const $ = id => document.getElementById(id);
     const $all = sel => document.querySelectorAll(sel);
     const fmt = n => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n || 0);
-    const modal = (id, show) => { const el = $(id); if (el) el.classList.toggle("show", !!show); };
+    const syncPresentedUI = () => {
+      const anyModalOpen = !!document.querySelector(".modal-backdrop.show");
+      document.body.classList.toggle("modal-open", anyModalOpen);
+      document.documentElement.style.overflow = anyModalOpen ? "hidden" : "";
+    };
+
+    const resetSheetPosition = backdrop => {
+      const sheet = backdrop?.querySelector(".sheet");
+      if (!sheet) return;
+      sheet.classList.remove("is-dragging");
+      sheet.style.transform = "";
+      sheet.style.opacity = "";
+    };
+
+    const modal = (id, show) => {
+      const el = $(id);
+      if (!el) return;
+
+      if (show) {
+        // iOS presents one foreground sheet at a time.
+        $all(".modal-backdrop.show").forEach(open => {
+          if (open !== el) {
+            open.classList.remove("show");
+            resetSheetPosition(open);
+          }
+        });
+        resetSheetPosition(el);
+        el.classList.add("show");
+      } else {
+        el.classList.remove("show");
+        resetSheetPosition(el);
+      }
+
+      syncPresentedUI();
+    };
 
     const notify = (msg, icon = "info") => {
       const sb = $("snackbar");
@@ -1900,6 +2013,9 @@
       const gate = $("authGate");
       if (!gate) return;
       if (visible) {
+        $all(".modal-backdrop.show").forEach(open => open.classList.remove("show"));
+        document.body.classList.remove("modal-open");
+        document.documentElement.style.overflow = "";
         gate.classList.remove("is-leaving");
         document.body.classList.remove("auth-ready");
         document.body.classList.add("auth-locked");
@@ -2124,6 +2240,98 @@
     };
 
     $all("[data-close]").forEach(b => b.onclick = () => modal(b.dataset.close, false));
+
+    // Tap the empty/dimmed area to dismiss the presented sheet.
+    $all(".modal-backdrop").forEach(backdrop => {
+      backdrop.addEventListener("click", e => {
+        if (e.target === backdrop) modal(backdrop.id, false);
+      });
+    });
+
+    // Escape = dismiss on desktop/iPad keyboard.
+    document.addEventListener("keydown", e => {
+      if (e.key !== "Escape") return;
+      const open = [...$all(".modal-backdrop.show")].at(-1);
+      if (open) {
+        e.preventDefault();
+        modal(open.id, false);
+      }
+    });
+
+    // iOS-style swipe-down gesture from the sheet handle.
+    $all(".modal-backdrop .sheet").forEach(sheet => {
+      const backdrop = sheet.closest(".modal-backdrop");
+      const handle = sheet.querySelector(".sheet-handle");
+      if (!backdrop || !handle) return;
+
+      let pointerId = null;
+      let startY = 0;
+      let lastY = 0;
+      let startTime = 0;
+
+      const finishDrag = (dismiss = false) => {
+        if (pointerId !== null) {
+          try { handle.releasePointerCapture(pointerId); } catch (_) {}
+        }
+
+        sheet.classList.remove("is-dragging");
+
+        if (dismiss) {
+          sheet.style.transform = "translate3d(0, 110%, 0)";
+          sheet.style.opacity = ".5";
+          window.setTimeout(() => modal(backdrop.id, false), 180);
+        } else {
+          sheet.style.transform = "translate3d(0,0,0)";
+          sheet.style.opacity = "1";
+          window.setTimeout(() => {
+            if (!backdrop.classList.contains("show")) return;
+            sheet.style.transform = "";
+            sheet.style.opacity = "";
+          }, 280);
+        }
+
+        pointerId = null;
+      };
+
+      handle.addEventListener("pointerdown", e => {
+        if (!backdrop.classList.contains("show")) return;
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+
+        pointerId = e.pointerId;
+        startY = lastY = e.clientY;
+        startTime = performance.now();
+        sheet.classList.add("is-dragging");
+
+        try { handle.setPointerCapture(pointerId); } catch (_) {}
+      });
+
+      handle.addEventListener("pointermove", e => {
+        if (pointerId !== e.pointerId) return;
+
+        const dy = Math.max(0, e.clientY - startY);
+        lastY = e.clientY;
+
+        // Slight resistance, like an iOS sheet.
+        const translated = dy <= 180 ? dy : 180 + (dy - 180) * .32;
+        sheet.style.transform = `translate3d(0, ${translated}px, 0)`;
+        sheet.style.opacity = String(Math.max(.68, 1 - translated / 760));
+      });
+
+      handle.addEventListener("pointerup", e => {
+        if (pointerId !== e.pointerId) return;
+
+        const dy = Math.max(0, lastY - startY);
+        const elapsed = Math.max(1, performance.now() - startTime);
+        const velocity = dy / elapsed; // px/ms
+
+        finishDrag(dy > 92 || velocity > .55);
+      });
+
+      handle.addEventListener("pointercancel", () => {
+        if (pointerId !== null) finishDrag(false);
+      });
+    });
+
 
     $("btnNavAccount").onclick = () => modal("modalAccount", true);
 
