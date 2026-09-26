@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Budget — iOS</title>
+  <title>Budget — iOS 27 Liquid Glass</title>
   <!-- Apple system typography + Material Symbols only as a web fallback for SF Symbols. -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..500,0..1,-25..0&display=swap">
 
@@ -311,6 +311,389 @@
     @media (prefers-reduced-motion:reduce) {
       *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
     }
+
+
+    /* =========================================================
+       iOS 27 — Liquid Glass refinement (2026)
+       Functional glass is reserved for controls/navigation.
+       Content stays visually quieter and edge-to-edge.
+       ========================================================= */
+    :root {
+      --glass-rgb: 255,255,255;
+      --glass-alpha: .52;
+      --glass-border: rgba(255,255,255,.68);
+      --glass-highlight: rgba(255,255,255,.86);
+      --glass-shadow: 0 12px 42px rgba(15,23,42,.12), 0 2px 8px rgba(15,23,42,.06);
+      --glass-inner: inset 0 1px 0 rgba(255,255,255,.72), inset 0 -1px 0 rgba(255,255,255,.22);
+      --ios27-hairline: rgba(60,60,67,.16);
+      --ios27-content-width: 480px;
+    }
+
+    html[data-theme="dark"] {
+      --glass-rgb: 38,38,40;
+      --glass-border: rgba(255,255,255,.18);
+      --glass-highlight: rgba(255,255,255,.24);
+      --glass-shadow: 0 18px 50px rgba(0,0,0,.48), 0 2px 10px rgba(0,0,0,.28);
+      --glass-inner: inset 0 1px 0 rgba(255,255,255,.17), inset 0 -1px 0 rgba(255,255,255,.05);
+      --ios27-hairline: rgba(84,84,88,.52);
+    }
+    @media (prefers-color-scheme: dark) {
+      html[data-theme="auto"] {
+        --glass-rgb: 38,38,40;
+        --glass-border: rgba(255,255,255,.18);
+        --glass-highlight: rgba(255,255,255,.24);
+        --glass-shadow: 0 18px 50px rgba(0,0,0,.48), 0 2px 10px rgba(0,0,0,.28);
+        --glass-inner: inset 0 1px 0 rgba(255,255,255,.17), inset 0 -1px 0 rgba(255,255,255,.05);
+        --ios27-hairline: rgba(84,84,88,.52);
+      }
+    }
+
+    body {
+      background:
+        radial-gradient(90% 52% at 8% -5%, color-mix(in srgb, var(--ios-accent) 9%, transparent), transparent 68%),
+        radial-gradient(70% 44% at 100% 18%, rgba(103,174,255,.08), transparent 72%),
+        var(--ios-bg);
+      background-attachment: fixed;
+    }
+
+    .app {
+      padding-bottom: calc(104px + env(safe-area-inset-bottom,0px));
+    }
+
+    /* iOS 27 navigation chrome: transparent content first, glass only on controls. */
+    .ios-nav {
+      position: sticky;
+      top: 0;
+      padding: calc(8px + env(safe-area-inset-top,0px)) 16px 8px;
+      background: linear-gradient(to bottom,
+        color-mix(in srgb, var(--ios-bg) 92%, transparent) 0%,
+        color-mix(in srgb, var(--ios-bg) 70%, transparent) 68%,
+        transparent 100%);
+      -webkit-backdrop-filter: blur(10px) saturate(125%);
+      backdrop-filter: blur(10px) saturate(125%);
+    }
+    .ios-nav::after {
+      content:"";
+      position:absolute;
+      left:16px; right:16px; bottom:0;
+      height:.5px;
+      background:linear-gradient(90deg,transparent,var(--ios27-hairline),transparent);
+      opacity:.55;
+    }
+    .brand-title {
+      font-size: 32px;
+      line-height: 1.06;
+      font-weight: 760;
+      letter-spacing: -1.15px;
+    }
+    .ios-nav-actions { gap: 7px; }
+
+    /* Shared Liquid Glass treatment */
+    .ios-circle-button,.fab,.month-pill,.nav-bar,.sec-search-trigger,.sec-search-bar,.update-card {
+      position: relative;
+      isolation: isolate;
+      background: rgba(var(--glass-rgb), var(--glass-alpha));
+      border: .5px solid var(--glass-border);
+      -webkit-backdrop-filter: blur(28px) saturate(180%) contrast(1.04);
+      backdrop-filter: blur(28px) saturate(180%) contrast(1.04);
+      box-shadow: var(--glass-shadow), var(--glass-inner);
+      overflow: hidden;
+    }
+    .ios-circle-button::before,.fab::before,.month-pill::before,.nav-bar::before,.sec-search-trigger::before,.sec-search-bar::before,.update-card::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-1;
+      pointer-events:none;
+      background:
+        radial-gradient(80% 75% at 18% 0%, var(--glass-highlight), transparent 54%),
+        linear-gradient(135deg, rgba(255,255,255,.20), transparent 42%, rgba(255,255,255,.06));
+      opacity:.65;
+      mix-blend-mode:screen;
+    }
+    .ios-circle-button::after,.fab::after,.month-pill::after,.nav-bar::after,.sec-search-trigger::after,.sec-search-bar::after,.update-card::after {
+      content:"";
+      position:absolute;
+      inset:1px;
+      z-index:-1;
+      pointer-events:none;
+      border-radius:inherit;
+      box-shadow: inset 0 -12px 24px rgba(120,120,128,.055);
+    }
+
+    .ios-circle-button,.fab {
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      color: var(--ios-accent);
+    }
+    .month-pill {
+      height:40px;
+      border-radius:20px;
+      padding:0 12px;
+      font-size:13px;
+      font-weight:620;
+    }
+
+    /* Main financial content: no giant opaque iOS 18 card. */
+    .balance-card {
+      margin: 7px 20px 12px;
+      padding: 18px 0 20px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .balance-label {
+      font-size: 13px;
+      font-weight: 590;
+      color: var(--ios-secondary-label);
+    }
+    .balance-val {
+      font-size: 45px;
+      line-height: 1;
+      font-weight: 720;
+      letter-spacing: -2.2px;
+      margin: 6px 0 20px;
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-grid {
+      padding: 0;
+      background: transparent;
+      border-radius: 0;
+      gap: 0;
+    }
+    .kpi-cell { padding: 3px 10px; }
+    .kpi-cell:first-child { padding-left:0; }
+    .kpi-cell:last-child { padding-right:0; }
+    .kpi-cell + .kpi-cell { border-left: .5px solid var(--ios27-hairline); }
+    .kpi-cell span { font-size:11px; }
+    .kpi-cell strong { font-size:14px; font-weight:650; font-variant-numeric:tabular-nums; }
+
+    /* Liquid segmented control */
+    .chips-bar {
+      margin: 0 16px 12px;
+      padding: 3px;
+      gap: 2px;
+      border-radius: 17px;
+      background: rgba(var(--glass-rgb), calc(var(--glass-alpha) * .76));
+      border: .5px solid var(--glass-border);
+      -webkit-backdrop-filter: blur(24px) saturate(175%);
+      backdrop-filter: blur(24px) saturate(175%);
+      box-shadow: var(--glass-inner), 0 5px 18px rgba(0,0,0,.055);
+    }
+    .ios-filter {
+      height: 34px;
+      border-radius: 14px;
+      color: var(--ios-secondary-label);
+      font-weight: 560;
+    }
+    .ios-filter.active {
+      color: var(--ios-label);
+      background: color-mix(in srgb, var(--ios-secondary-bg) 78%, transparent);
+      box-shadow: 0 1px 5px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.65);
+      font-weight: 650;
+    }
+
+    .sec-header { padding: 5px 18px 8px; }
+    .sec-header h3 { font-size: 21px; font-weight: 710; letter-spacing:-.45px; }
+    .sec-search-trigger { background:rgba(var(--glass-rgb),calc(var(--glass-alpha) * .88)); }
+    .sec-search-bar { inset:5px 16px 7px; border-radius:19px; }
+    .ios-badge { background:var(--ios-fill-tertiary); }
+
+    /* iOS 27-style list: rows, not separate rounded cards. */
+    .tx-list {
+      margin: 0 16px;
+      padding: 0;
+      gap: 0;
+      border-radius: 22px;
+      overflow: hidden;
+      background: color-mix(in srgb, var(--ios-secondary-bg) 68%, transparent);
+      border: .5px solid color-mix(in srgb, var(--ios-separator) 68%, transparent);
+    }
+    .date-group-header {
+      margin: 0;
+      padding: 15px 14px 7px;
+      background: var(--ios-bg);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .25px;
+    }
+    .tx-item {
+      min-height: 70px;
+      padding: 11px 14px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      position:relative;
+    }
+    .tx-item + .tx-item::before {
+      content:"";
+      position:absolute;
+      top:0; left:65px; right:0;
+      height:.5px;
+      background:var(--ios27-hairline);
+    }
+    .tx-item:active { background:var(--ios-fill-tertiary); }
+    .tx-icon-wrap {
+      width:40px; height:40px;
+      border-radius:12px;
+      background: color-mix(in srgb, var(--ios-accent) 13%, transparent);
+      box-shadow: inset 0 .5px 0 rgba(255,255,255,.35);
+    }
+    .tx-title { font-weight:620; }
+    .tx-amount { font-weight:650; font-variant-numeric:tabular-nums; }
+
+    /* Content sections: low-chrome surfaces. */
+    .ios-card {
+      margin: 0 16px 14px;
+      padding: 18px;
+      border-radius: 24px;
+      background: color-mix(in srgb, var(--ios-secondary-bg) 74%, transparent);
+      border: .5px solid color-mix(in srgb, var(--ios-separator) 55%, transparent);
+      box-shadow: 0 1px 1px rgba(0,0,0,.025);
+    }
+    .rule-card,.breakdown-row {
+      background: color-mix(in srgb, var(--ios-fill-tertiary) 78%, transparent);
+      border: .5px solid color-mix(in srgb, var(--ios-separator) 34%, transparent);
+    }
+    .progress-track { height:6px; }
+
+    /* Refined floating tab bar, expands at rest and compresses while scrolling. */
+    .nav-bar {
+      bottom: calc(10px + env(safe-area-inset-bottom,0px));
+      width: calc(100% - 28px);
+      max-width: 438px;
+      min-height: 62px;
+      padding: 5px;
+      border-radius: 31px;
+      background: rgba(var(--glass-rgb), var(--glass-alpha));
+      transition: width .32s cubic-bezier(.2,.8,.2,1), min-height .32s cubic-bezier(.2,.8,.2,1), padding .32s cubic-bezier(.2,.8,.2,1), transform .32s cubic-bezier(.2,.8,.2,1);
+    }
+    .nav-item {
+      height:52px;
+      border-radius:26px;
+      transition:background .22s ease, color .22s ease, transform .22s ease;
+      z-index:1;
+    }
+    .nav-item.active {
+      background: color-mix(in srgb, var(--ios-accent) 12%, transparent);
+      color: var(--ios-accent);
+    }
+    .nav-item.active .nav-indicator { background:transparent; }
+    .nav-indicator { height:27px; }
+    .nav-label { font-size:10px; font-weight:560; }
+    .nav-bar.compact {
+      width: 230px;
+      min-height: 50px;
+      padding: 4px;
+    }
+    .nav-bar.compact .nav-item { height:42px; }
+    .nav-bar.compact .nav-label {
+      max-height:0;
+      opacity:0;
+      overflow:hidden;
+      transform:translateY(4px);
+    }
+    .nav-bar.compact .nav-indicator { height:34px; }
+
+    /* Sheets with iOS 27 readability refinement. */
+    .modal-backdrop {
+      background:rgba(0,0,0,.28);
+      -webkit-backdrop-filter:blur(8px) saturate(120%);
+      backdrop-filter:blur(8px) saturate(120%);
+    }
+    .sheet {
+      background: rgba(var(--glass-rgb), .88);
+      -webkit-backdrop-filter: blur(42px) saturate(150%);
+      backdrop-filter: blur(42px) saturate(150%);
+      border: .5px solid var(--glass-border);
+      border-bottom:0;
+      box-shadow: 0 -18px 60px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.45);
+    }
+    .sheet-handle { background:var(--ios-tertiary-label); opacity:.48; }
+    .ios-input {
+      min-height: 50px;
+      border-radius: 15px;
+      background: color-mix(in srgb, var(--ios-fill-tertiary) 85%, transparent);
+      border: .5px solid color-mix(in srgb, var(--ios-separator) 42%, transparent);
+    }
+    .ios-button { border-radius: 14px; min-height:46px; }
+    .ios-secondary { background: color-mix(in srgb, var(--ios-fill-secondary) 76%, transparent); }
+    .ios-segmented { border-radius:13px; padding:3px; background:var(--ios-fill); }
+    .ios-segmented-btn { border-radius:10px; min-height:36px; }
+
+    /* iOS 27 glass transparency control */
+    .glass-setting {
+      margin-top:18px;
+      padding-top:16px;
+      border-top:.5px solid var(--ios27-hairline);
+    }
+    .glass-setting-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:12px; }
+    .glass-setting-title { font-size:14px; font-weight:690; }
+    .glass-setting-sub { margin-top:2px; color:var(--ios-secondary-label); font-size:11px; line-height:1.35; }
+    .glass-value { font-size:12px; font-weight:650; color:var(--ios-accent); white-space:nowrap; }
+    .glass-slider {
+      width:100%; height:28px; margin:0; appearance:none; -webkit-appearance:none; background:transparent; cursor:pointer;
+    }
+    .glass-slider::-webkit-slider-runnable-track {
+      height:7px; border-radius:999px;
+      background:linear-gradient(90deg, rgba(255,255,255,.10), color-mix(in srgb,var(--ios-accent) 30%,var(--ios-fill)));
+      box-shadow:inset 0 0 0 .5px var(--ios-separator);
+    }
+    .glass-slider::-webkit-slider-thumb {
+      appearance:none; -webkit-appearance:none;
+      width:24px; height:24px; margin-top:-8.5px; border-radius:50%;
+      background:rgba(var(--glass-rgb),.92);
+      border:.5px solid var(--glass-border);
+      box-shadow:0 2px 7px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.75);
+      -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
+    }
+    .glass-range-labels { display:flex; justify-content:space-between; margin-top:-2px; font-size:10px; color:var(--ios-tertiary-label); }
+
+    /* Update prompt: iOS notification-like Liquid Glass card. */
+    .update-wrap {
+      position:fixed;
+      left:50%;
+      bottom:calc(84px + env(safe-area-inset-bottom,0px));
+      transform:translateX(-50%) translateY(18px) scale(.98);
+      width:min(430px,calc(100% - 28px));
+      z-index:135;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .26s ease, transform .30s cubic-bezier(.2,.8,.2,1);
+    }
+    .update-wrap.show { opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0) scale(1); }
+    .update-card { border-radius:24px; padding:14px 14px 12px; }
+    .update-top { display:flex; gap:11px; align-items:flex-start; }
+    .update-icon {
+      width:36px; height:36px; border-radius:11px; flex:0 0 auto;
+      display:grid; place-items:center; color:white;
+      background:linear-gradient(145deg,color-mix(in srgb,var(--ios-accent) 78%,white),var(--ios-accent));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.46),0 3px 9px color-mix(in srgb,var(--ios-accent) 25%,transparent);
+    }
+    .update-title { font-size:14px; font-weight:720; letter-spacing:-.15px; }
+    .update-sub { margin-top:2px; font-size:12px; line-height:1.35; color:var(--ios-secondary-label); }
+    .update-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
+    .update-actions button { min-height:34px; border:0; border-radius:12px; padding:0 13px; font-size:13px; font-weight:650; cursor:pointer; }
+    .update-later { color:var(--ios-secondary-label); background:var(--ios-fill-tertiary); }
+    .update-reload { color:white; background:var(--ios-accent); }
+
+    .snackbar {
+      bottom:calc(88px + env(safe-area-inset-bottom,0px));
+      background:rgba(28,28,30,.72);
+      border:.5px solid rgba(255,255,255,.12);
+      -webkit-backdrop-filter:blur(28px) saturate(165%);
+      backdrop-filter:blur(28px) saturate(165%);
+      box-shadow:0 12px 36px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.10);
+    }
+
+    @media (max-width:380px) {
+      .brand-title { font-size:30px; }
+      .balance-val { font-size:40px; }
+      .nav-bar.compact { width:210px; }
+    }
+
   </style>
 </head>
 <body>
@@ -506,6 +889,18 @@
           <button class="color-dot ios-press" data-palette="sage" style="background:#34C759;"><span class="material-symbols-rounded" style="font-size:20px; display:none;">check</span></button>
           <button class="color-dot ios-press" data-palette="peach" style="background:#FF9500;"><span class="material-symbols-rounded" style="font-size:20px; display:none;">check</span></button>
         </div>
+
+        <div class="glass-setting">
+          <div class="glass-setting-head">
+            <div>
+              <div class="glass-setting-title">Liquid Glass</div>
+              <div class="glass-setting-sub">Ajuste la transparence des commandes et de la navigation.</div>
+            </div>
+            <div class="glass-value" id="glassValue">Équilibré</div>
+          </div>
+          <input class="glass-slider" id="glassTintSlider" type="range" min="0" max="100" value="54" aria-label="Transparence Liquid Glass" />
+          <div class="glass-range-labels"><span>Ultra-transparent</span><span>Teinté</span></div>
+        </div>
       </div>
 
       <div class="ios-card">
@@ -652,6 +1047,23 @@
       </div>
 
       <button class="ios-button ios-secondary ios-press" style="width: 100%; margin-top: 12px;" data-close="modalAccount">Fermer</button>
+    </div>
+  </div>
+
+
+  <div class="update-wrap" id="updatePrompt" role="status" aria-live="polite">
+    <div class="update-card">
+      <div class="update-top">
+        <div class="update-icon"><span class="material-symbols-rounded" style="font-size:21px;">system_update_alt</span></div>
+        <div style="min-width:0; flex:1;">
+          <div class="update-title">Nouvelle version disponible</div>
+          <div class="update-sub">Une nouvelle version de Budget est prête. Rechargez pour l’utiliser.</div>
+        </div>
+      </div>
+      <div class="update-actions">
+        <button type="button" class="update-later ios-press" id="updateLater">Plus tard</button>
+        <button type="button" class="update-reload ios-press" id="updateReload">Recharger</button>
+      </div>
     </div>
   </div>
 
@@ -1251,6 +1663,90 @@
         renderApp();
       }
     };
+
+    // iOS 27 Liquid Glass transparency preference.
+    const glassSlider = $("glassTintSlider");
+    const glassValue = $("glassValue");
+    function applyGlassTint(rawValue) {
+      const v = Math.max(0, Math.min(100, Number(rawValue) || 0));
+      // iOS 27 concept: from ultraclear to more strongly tinted while retaining blur.
+      const alpha = 0.24 + (v / 100) * 0.48;
+      document.documentElement.style.setProperty("--glass-alpha", alpha.toFixed(3));
+      if (glassValue) glassValue.textContent = v < 30 ? "Ultra-clair" : v < 70 ? "Équilibré" : "Teinté";
+      if (glassSlider && String(glassSlider.value) !== String(v)) glassSlider.value = String(v);
+      try { localStorage.setItem("budget_ios27_glass", String(v)); } catch(e){}
+    }
+    let savedGlass = 54;
+    try { savedGlass = Number(localStorage.getItem("budget_ios27_glass") || 54); } catch(e){}
+    applyGlassTint(savedGlass);
+    if (glassSlider) glassSlider.oninput = e => applyGlassTint(e.target.value);
+
+    // Floating tab bar compression: mirrors Apple's content-first navigation behavior.
+    let lastScrollY = window.scrollY;
+    let compactTimer = 0;
+    const syncTabBarDensity = () => {
+      const nav = $("navBar");
+      if (!nav) return;
+      const y = window.scrollY;
+      const goingDown = y > lastScrollY + 2;
+      if (y > 90 && goingDown) nav.classList.add("compact");
+      if (y < 45 || y < lastScrollY - 8) nav.classList.remove("compact");
+      lastScrollY = y;
+      clearTimeout(compactTimer);
+      compactTimer = setTimeout(() => {
+        if (window.scrollY < 90) nav.classList.remove("compact");
+      }, 260);
+    };
+    window.addEventListener("scroll", syncTabBarDensity, { passive:true });
+
   </script>
+
+
+  <script>
+    (() => {
+      const prompt = document.getElementById('updatePrompt');
+      const later = document.getElementById('updateLater');
+      const reload = document.getElementById('updateReload');
+      let baseline = null;
+      let dismissedHash = null;
+
+      async function sha256(text) {
+        if (!window.crypto?.subtle) return String(text.length) + ':' + text.slice(0,64);
+        const data = new TextEncoder().encode(text);
+        const digest = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2,'0')).join('');
+      }
+
+      async function fetchCurrentHash() {
+        if (!/^https?:$/.test(location.protocol)) return null;
+        const url = new URL(location.href);
+        url.hash = '';
+        url.searchParams.set('_version_check', Date.now().toString());
+        const response = await fetch(url.toString(), { cache:'no-store', headers:{ 'Cache-Control':'no-cache' } });
+        if (!response.ok) return null;
+        return sha256(await response.text());
+      }
+
+      async function checkForUpdate() {
+        try {
+          const hash = await fetchCurrentHash();
+          if (!hash) return;
+          if (!baseline) { baseline = hash; return; }
+          if (hash !== baseline && hash !== dismissedHash) prompt?.classList.add('show');
+        } catch (_) { /* Offline or local file: silently skip update detection. */ }
+      }
+
+      later?.addEventListener('click', async () => {
+        dismissedHash = await fetchCurrentHash();
+        prompt?.classList.remove('show');
+      });
+      reload?.addEventListener('click', () => location.reload());
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) checkForUpdate(); });
+      window.addEventListener('online', checkForUpdate);
+      checkForUpdate();
+      setInterval(checkForUpdate, 60000);
+    })();
+  </script>
+
 </body>
 </html>
