@@ -953,7 +953,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
               <div style="font-weight: 700; font-size: 13px;">Importer un fichier JSON</div>
-              <div style="font-size: 11px; color: var(--md-sys-color-outline);">Synchronise avec Firestore</div>
+              <div style="font-size: 11px; color: var(--md-sys-color-outline);">Synchronise avec Supabase</div>
             </div>
             <button id="btnTriggerImport" class="ios-button ios-secondary ios-press">Importer</button>
             <input type="file" id="jsonFileInput" accept=".json,application/json" style="display: none;" />
@@ -1118,20 +1118,18 @@
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, doc, setDoc, deleteDoc, writeBatch, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-    const app = initializeApp({
-      apiKey: "AIzaSyA02Emvdc_sNSYuaxUhlE87aDoaJ3CtSPE",
-      authDomain: "mym3budgetmanagerapplication.firebaseapp.com",
-      projectId: "mym3budgetmanagerapplication",
-      storageBucket: "mym3budgetmanagerapplication.firebasestorage.app",
-      messagingSenderId: "883702754992",
-      appId: "1:883702754992:web:4a8be32c24c5a3d9645575"
+    // Backend Supabase (publishable key: safe to expose in a browser app; RLS protects user data).
+    const SUPABASE_URL = "https://ymxamijmsagpkbojionp.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_4R6cqtravhdj5h437FiUZw_rJitTQpv";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
     });
-    const auth = getAuth(app), db = getFirestore(app), provider = new GoogleAuthProvider();
-    setPersistence(auth, browserLocalPersistence).catch(() => {});
 
     const $ = id => document.getElementById(id);
     const $all = sel => document.querySelectorAll(sel);
@@ -1172,7 +1170,7 @@
     };
     const ALL_CATS = [...CATS.expense, ...CATS.income];
 
-    let currentUser = null, unsubscribeFirestore = null, transactions = [];
+    let currentUser = null, currentHouseholdId = null, realtimeChannel = null, transactions = [];
     let currentFilter = "all", editingId = null, selectedId = null, modalType = "expense", searchQuery = "";
     let currentMonth = new Date().toISOString().slice(0, 7);
 
@@ -1234,7 +1232,7 @@
         angle += slice;
 
         if (bd) {
-          const cat = ALL_CATS.find(c => c.id === seg.id) || { label: "Autres", icon: "more_horiz" };
+          const cat = ALL_CATS.find(c => c.id === seg.id) || { label: seg.id || "Autres", icon: "more_horiz" };
           const percent = Math.round((seg.amt / total) * 100);
           bd.insertAdjacentHTML("beforeend", `
             <div class="breakdown-row">
@@ -1294,7 +1292,7 @@
         } else {
           let lastDate = null, html = "";
           list.forEach(tx => {
-            const cat = ALL_CATS.find(x => x.id === tx.category) || { label: "Divers", icon: "category" };
+            const cat = ALL_CATS.find(x => x.id === tx.category) || { label: tx.category || "Divers", icon: "category" };
             const isExp = tx.type === "expense";
             const isFix = (tx.isFixed === true || tx.isFixed === "true" || tx.isFixed === 1);
             const isReimb = !!tx.isReimbursed;
@@ -1397,39 +1395,137 @@
     const getTPE = () => parseFloat(tpe.value.replace(/\s/g, '').replace(',', '.')) || 0;
     const setTPE = v => { tpe.value = v ? Number(v).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ""; };
 
-    onAuthStateChanged(auth, user => {
-      currentUser = user;
+    const dbCategoryToApp = value => {
+      const raw = String(value || "").trim();
+      if (!raw) return "Divers";
+      const exact = ALL_CATS.find(c => c.id === raw || c.label.toLocaleLowerCase("fr-FR") === raw.toLocaleLowerCase("fr-FR"));
+      if (exact) return exact.id;
+      const aliases = {
+        "vtc": "vtc_taxi",
+        "supermarchés et hypermarchés": "supermarche",
+        "supermarches et hypermarches": "supermarche",
+        "transport": "transport_commun",
+        "énergie et eau": "energie",
+        "energie et eau": "energie",
+        "loyer": "logement",
+        "téléphone et internet": "abonnement",
+        "telephone et internet": "abonnement",
+        "frais bancaires": "credit"
+      };
+      return aliases[raw.toLocaleLowerCase("fr-FR")] || raw;
+    };
+
+    const appCategoryToDb = value => {
+      const found = ALL_CATS.find(c => c.id === value);
+      return found ? found.label : String(value || "Divers");
+    };
+
+    const rowToTransaction = row => ({
+      id: row.id,
+      clientEntryId: row.client_entry_id,
+      label: row.title || "Sans titre",
+      amount: Number(row.amount) || 0,
+      type: row.kind === "income" ? "income" : "expense",
+      category: dbCategoryToApp(row.category),
+      isFixed: row.kind === "fixed",
+      isReimbursed: !!row.is_reimbursed,
+      date: String(row.occurred_at || "").slice(0, 10)
+    });
+
+    async function loadActiveHousehold() {
+      if (!currentUser) return null;
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("active_household_id")
+        .eq("id", currentUser.id)
+        .single();
+      if (error) throw error;
+      currentHouseholdId = data?.active_household_id || null;
+      if (!currentHouseholdId) throw new Error("Aucun foyer Supabase actif n'a été trouvé.");
+      return currentHouseholdId;
+    }
+
+    async function loadTransactions() {
+      if (!currentUser || !currentHouseholdId) {
+        transactions = [];
+        renderApp();
+        return;
+      }
+      const { data, error } = await supabase
+        .from("household_transactions")
+        .select("id, client_entry_id, month_key, kind, title, amount, category, occurred_at, is_reimbursed")
+        .eq("household_id", currentHouseholdId)
+        .order("occurred_at", { ascending: false });
+      if (error) throw error;
+      transactions = (data || []).map(rowToTransaction);
+      renderApp();
+    }
+
+    function stopRealtime() {
+      if (realtimeChannel) {
+        supabase.removeChannel(realtimeChannel);
+        realtimeChannel = null;
+      }
+    }
+
+    function startRealtime() {
+      stopRealtime();
+      if (!currentHouseholdId) return;
+      realtimeChannel = supabase
+        .channel(`budget-${currentHouseholdId}`)
+        .on("postgres_changes", {
+          event: "*",
+          schema: "public",
+          table: "household_transactions",
+          filter: `household_id=eq.${currentHouseholdId}`
+        }, async () => {
+          try { await loadTransactions(); } catch (err) { console.error(err); }
+        })
+        .subscribe();
+    }
+
+    async function applyAuthUser(user) {
+      currentUser = user || null;
       const dot = $("navAccountDot");
       const indicator = $("navAccountIndicator");
       const loggedOut = $("accountActionsLoggedOut");
       const loggedIn = $("accountActionsLoggedIn");
-
-      if (unsubscribeFirestore) { unsubscribeFirestore(); unsubscribeFirestore = null; }
+      stopRealtime();
 
       if (user) {
+        const meta = user.user_metadata || {};
+        const photoURL = meta.avatar_url || meta.picture || "";
+        const displayName = meta.full_name || meta.name || user.email?.split("@")[0] || "Utilisateur Google";
+
         if (dot) dot.classList.add("online");
-        if (user.photoURL) {
-          if (indicator) indicator.innerHTML = `<img src="${user.photoURL}" alt="Photo" referrerpolicy="no-referrer" style="width:24px; height:24px; border-radius:50%; object-fit:cover;" /><div class="account-badge-dot online" id="navAccountDot" style="right:3px; bottom:3px;"></div>`;
-          $("accModalAvatar").innerHTML = `<img src="${user.photoURL}" alt="Photo" referrerpolicy="no-referrer" style="width:100%; height:100%; object-fit:cover;" />`;
+        if (photoURL) {
+          if (indicator) indicator.innerHTML = `<img src="${photoURL}" alt="Photo" referrerpolicy="no-referrer" style="width:24px; height:24px; border-radius:50%; object-fit:cover;" /><div class="account-badge-dot online" id="navAccountDot" style="right:3px; bottom:3px;"></div>`;
+          $("accModalAvatar").innerHTML = `<img src="${photoURL}" alt="Photo" referrerpolicy="no-referrer" style="width:100%; height:100%; object-fit:cover;" />`;
         } else {
-          const initials = (user.displayName || user.email || "U").charAt(0).toUpperCase();
+          const initials = displayName.charAt(0).toUpperCase();
           if (indicator) indicator.innerHTML = `<div style="font-weight:800; font-size:14px;">${initials}</div><div class="account-badge-dot online" id="navAccountDot" style="right:3px; bottom:3px;"></div>`;
           $("accModalAvatar").innerHTML = `<span>${initials}</span>`;
         }
 
-        $("accModalName").textContent = user.displayName || "Utilisateur Google";
+        $("accModalName").textContent = displayName;
         $("accModalEmail").textContent = user.email || "";
-        $("accModalStatus").textContent = "• Synchronisé avec Firebase Cloud";
+        $("accModalStatus").textContent = "• Synchronisé avec Supabase Cloud";
         $("accModalStatus").style.color = "var(--md-sys-color-success)";
-
         loggedOut.style.display = "none";
         loggedIn.style.display = "flex";
 
-        unsubscribeFirestore = onSnapshot(collection(db, "users", user.uid, "transactions"), snap => {
-          transactions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        try {
+          await loadActiveHousehold();
+          await loadTransactions();
+          startRealtime();
+        } catch (err) {
+          console.error(err);
+          transactions = [];
           renderApp();
-        }, () => notify("Erreur de synchronisation", "error"));
+          notify("Erreur Supabase : " + err.message, "error");
+        }
       } else {
+        currentHouseholdId = null;
         if (dot) dot.classList.remove("online");
         if (indicator) indicator.innerHTML = `<span class="material-symbols-rounded" id="navAccountIcon">account_circle</span><div class="account-badge-dot" id="navAccountDot" style="right:3px; bottom:3px;"></div>`;
         $("accModalAvatar").innerHTML = `<span class="material-symbols-rounded">person</span>`;
@@ -1437,36 +1533,64 @@
         $("accModalEmail").textContent = "Mode local";
         $("accModalStatus").textContent = "• Hors ligne";
         $("accModalStatus").style.color = "var(--md-sys-color-outline)";
-
         loggedOut.style.display = "flex";
         loggedIn.style.display = "none";
         transactions = [];
         renderApp();
       }
+    }
+
+    const { data: initialSessionData } = await supabase.auth.getSession();
+    await applyAuthUser(initialSessionData?.session?.user || null);
+
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "INITIAL_SESSION") return;
+      await applyAuthUser(session?.user || null);
     });
 
     $("btnConnectGoogle").onclick = async () => {
       try {
-        await signInWithPopup(auth, provider);
-        modal("modalAccount", false);
-        notify("Connecté avec succès", "check_circle");
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo: window.location.origin + window.location.pathname }
+        });
+        if (error) throw error;
       } catch (err) {
         notify("Échec de connexion : " + err.message, "error");
       }
     };
+
     $("btnSwitchAccount").onclick = async () => {
       try {
-        const p = new GoogleAuthProvider();
-        p.setCustomParameters({ prompt: 'select_account' });
-        await signInWithPopup(auth, p);
-        modal("modalAccount", false);
-        notify("Compte changé", "swap_horiz");
+        await supabase.auth.signOut({ scope: "local" });
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: window.location.origin + window.location.pathname,
+            queryParams: { prompt: "select_account" }
+          }
+        });
+        if (error) throw error;
       } catch (err) {
-        notify("Action annulée", "info");
+        notify("Action annulée : " + err.message, "info");
       }
     };
-    $("btnSyncNow").onclick = () => { renderApp(); notify("Données synchronisées", "sync"); modal("modalAccount", false); };
-    $("btnAccountLogout").onclick = () => signOut(auth).then(() => { modal("modalAccount", false); notify("Déconnecté", "logout"); });
+
+    $("btnSyncNow").onclick = async () => {
+      try {
+        await loadTransactions();
+        notify("Données synchronisées avec Supabase", "sync");
+        modal("modalAccount", false);
+      } catch (err) {
+        notify("Erreur de synchronisation : " + err.message, "error");
+      }
+    };
+
+    $("btnAccountLogout").onclick = async () => {
+      await supabase.auth.signOut();
+      modal("modalAccount", false);
+      notify("Déconnecté", "logout");
+    };
 
     $("txContainer").onclick = e => {
       const item = e.target.closest(".tx-item");
@@ -1508,14 +1632,34 @@
 
       const isFixed = modalType === "expense" && $("txSwitch").checked;
       const isReimbursed = modalType === "expense" && cat === "sante" && $("txReimbursedSwitch").checked;
-      const targetId = editingId || Date.now().toString();
+      if (!currentHouseholdId) return notify("Aucun foyer Supabase actif", "error");
+      const kind = modalType === "income" ? "income" : (isFixed ? "fixed" : "variable");
+      const payload = {
+        household_id: currentHouseholdId,
+        month_key: date.slice(0, 7),
+        kind,
+        title: label,
+        amount,
+        category: appCategoryToDb(cat),
+        subcategory: "",
+        owner_key: "",
+        note: "",
+        occurred_at: `${date}T12:00:00Z`,
+        is_reimbursed: isReimbursed
+      };
 
       try {
-        await setDoc(doc(db, "users", currentUser.uid, "transactions", targetId), {
-          label, amount, type: modalType, category: cat, isFixed, isReimbursed, date
-        });
+        let error;
+        if (editingId) {
+          ({ error } = await supabase.from("household_transactions").update(payload).eq("id", editingId));
+        } else {
+          payload.client_entry_id = (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+          ({ error } = await supabase.from("household_transactions").insert(payload));
+        }
+        if (error) throw error;
+        await loadTransactions();
         modal("modalTx", false);
-        notify("Opération enregistrée", "cloud_done");
+        notify("Opération enregistrée dans Supabase", "cloud_done");
       } catch (err) {
         notify("Erreur d'enregistrement : " + err.message, "error");
       }
@@ -1531,6 +1675,12 @@
       setTPE(t.amount);
       $("txDate").value = t.date;
       setModalType(t.type);
+      if (![...$("txCat").options].some(o => o.value === t.category)) {
+        const opt = document.createElement("option");
+        opt.value = t.category;
+        opt.textContent = t.category || "Divers";
+        $("txCat").appendChild(opt);
+      }
       $("txCat").value = t.category;
       $("txSwitch").checked = (t.isFixed === true || t.isFixed === "true" || t.isFixed === 1);
       $("txReimbursedSwitch").checked = !!t.isReimbursed;
@@ -1541,11 +1691,13 @@
     $("btnActDel").onclick = async () => {
       if (!currentUser || !selectedId) return;
       try {
-        await deleteDoc(doc(db, "users", currentUser.uid, "transactions", selectedId));
+        const { error } = await supabase.from("household_transactions").delete().eq("id", selectedId);
+        if (error) throw error;
+        await loadTransactions();
         modal("modalAction", false);
         notify("Opération supprimée", "delete");
       } catch (err) {
-        notify("Erreur de suppression", "error");
+        notify("Erreur de suppression : " + err.message, "error");
       }
     };
 
@@ -1647,23 +1799,32 @@
           const list = Array.isArray(raw) ? raw : (raw.transactions || []);
           if (!list.length) return notify("Aucune opération trouvée", "error");
 
-          for (let i = 0; i < list.length; i += 400) {
-            const batch = writeBatch(db);
-            list.slice(i, i + 400).forEach(t => {
-              const id = t.id ? String(t.id) : (Date.now() + Math.random().toString(36).slice(2, 8));
-              batch.set(doc(db, "users", currentUser.uid, "transactions", id), {
-                label: t.label || "Sans titre",
+          if (!currentHouseholdId) return notify("Aucun foyer Supabase actif", "error");
+          for (let i = 0; i < list.length; i += 300) {
+            const rows = list.slice(i, i + 300).map(t => {
+              const date = t.date || new Date().toISOString().slice(0, 10);
+              const type = t.type === "income" ? "income" : "expense";
+              const isFixed = type === "expense" && !!t.isFixed;
+              return {
+                household_id: currentHouseholdId,
+                client_entry_id: t.clientEntryId || t.client_entry_id || (t.id ? `firebase:${String(t.id)}` : (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`)),
+                month_key: date.slice(0, 7),
+                kind: type === "income" ? "income" : (isFixed ? "fixed" : "variable"),
+                title: t.label || t.title || "Sans titre",
                 amount: Number(t.amount) || 0,
-                type: t.type || "expense",
-                category: t.category || "supermarche",
-                isFixed: !!t.isFixed,
-                isReimbursed: !!t.isReimbursed,
-                date: t.date || new Date().toISOString().slice(0, 10)
-              });
+                category: appCategoryToDb(t.category || "supermarche"),
+                subcategory: "",
+                owner_key: "",
+                note: "",
+                occurred_at: `${date}T12:00:00Z`,
+                is_reimbursed: !!(t.isReimbursed ?? t.is_reimbursed)
+              };
             });
-            await batch.commit();
+            const { error } = await supabase.from("household_transactions").upsert(rows, { onConflict: "household_id,client_entry_id" });
+            if (error) throw error;
           }
-          notify(`${list.length} opérations importées`, "cloud_done");
+          await loadTransactions();
+          notify(`${list.length} opérations importées dans Supabase`, "cloud_done");
           $("jsonFileInput").value = "";
         } catch (err) {
           notify("Fichier JSON invalide", "error");
