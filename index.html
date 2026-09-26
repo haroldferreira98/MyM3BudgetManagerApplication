@@ -2140,6 +2140,46 @@
       background-color:#F5E9B9 !important;
     }
 
+    /* DA2 v4 — operations: remove the old outer list outline + make rows wider. */
+    #txContainer,
+    .tx-list {
+      margin-left:-8px !important;
+      margin-right:-8px !important;
+      width:calc(100% + 16px) !important;
+      padding:0 0 10px !important;
+
+      border:0 !important;
+      outline:0 !important;
+      border-radius:0 !important;
+      overflow:visible !important;
+
+      background:transparent !important;
+      box-shadow:none !important;
+    }
+
+    .date-group-header {
+      margin-left:2px !important;
+    }
+
+    .tx-item,
+    .tx-item.ios-press {
+      width:100% !important;
+      max-width:none !important;
+      margin-left:0 !important;
+      margin-right:0 !important;
+      background:var(--nb-bg) !important;
+      background-color:var(--nb-bg) !important;
+    }
+
+    @media (max-width:390px) {
+      #txContainer,
+      .tx-list {
+        margin-left:-6px !important;
+        margin-right:-6px !important;
+        width:calc(100% + 12px) !important;
+      }
+    }
+
   </style>
 </head>
 <body class="auth-locked">
