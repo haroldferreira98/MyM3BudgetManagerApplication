@@ -2512,6 +2512,21 @@
       vertical-align: top !important;
     }
 
+    /* DA2 v12 — date belongs visually to the transactions below. */
+    #screenOperations .date-group-header {
+      margin-top:16px !important;
+      margin-bottom:-10px !important; /* counters the tx-list gap: nearly attached to the day's first row */
+    }
+
+    /* Floating bottom nav uses the exact same left/right margins as the app content. */
+    body > #navBar.nav-bar,
+    .nav-bar {
+      width:min(452px, calc(100vw - 28px)) !important;
+      left:50% !important;
+      right:auto !important;
+      transform:translateX(-50%) !important;
+    }
+
   </style>
 </head>
 <body class="auth-locked">
