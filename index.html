@@ -2481,9 +2481,10 @@
     /* Operations list was starting too far below its title.
        Tighten only this gap without changing side margins. */
     #screenOperations .sec-header {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
+      margin-bottom:6px !important;
+      padding-bottom:6px !important;
+      min-height:auto !important;
+    }
 
     #screenOperations #txContainer,
     #screenOperations .tx-list {
@@ -2492,8 +2493,24 @@
     }
 
     #screenOperations .date-group-header {
-  margin-top: -6px !important;
-}
+      margin-top:2px !important;
+      margin-bottom:8px !important;
+    }
+
+    /* DA2 v10 — align the "Opérations" title with search + operation count.
+       Keep the v9 list spacing unchanged. */
+    #screenOperations .sec-header-copy {
+      transform:translateY(14px) !important;
+    }
+
+    /* DA2 v11 — date headers should belong visually to the day below,
+       not to the last transaction above. */
+    #screenOperations .date-group-header {
+      margin-top: 16px !important;
+      margin-bottom: 4px !important;
+      display: inline-flex !important;
+      vertical-align: top !important;
+    }
 
   </style>
 </head>
