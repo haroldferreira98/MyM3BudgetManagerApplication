@@ -2922,6 +2922,85 @@
       background:transparent !important;
     }
 
+    /* DA2 v17 — cleaner neo-brutal switch: one outline, one physical thumb. */
+    .ios-switch {
+      position:relative !important;
+      width:54px !important;
+      height:32px !important;
+      flex:0 0 54px !important;
+
+      border:0 !important;
+      border-radius:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      overflow:visible !important;
+    }
+
+    .ios-switch input {
+      position:absolute !important;
+      width:1px !important;
+      height:1px !important;
+      opacity:0 !important;
+      pointer-events:none !important;
+    }
+
+    .ios-slider {
+      position:absolute !important;
+      inset:0 !important;
+
+      border:3px solid var(--nb-black) !important;
+      border-radius:10px !important;
+
+      background:var(--nb-white) !important;
+      box-shadow:4px 4px 0 var(--nb-black) !important;
+
+      cursor:pointer !important;
+      transition:
+        background .14s ease,
+        transform .10s ease,
+        box-shadow .10s ease !important;
+    }
+
+    .ios-slider::before {
+      content:"" !important;
+      position:absolute !important;
+
+      width:20px !important;
+      height:20px !important;
+      left:4px !important;
+      top:3px !important;
+
+      border:3px solid var(--nb-black) !important;
+      border-radius:6px !important;
+
+      background:var(--nb-yellow) !important;
+      box-shadow:none !important;
+
+      transform:translateX(0) !important;
+      transition:
+        transform .16s cubic-bezier(.2,.9,.2,1),
+        background .14s ease !important;
+    }
+
+    .ios-switch input:checked + .ios-slider {
+      background:var(--nb-mint) !important;
+    }
+
+    .ios-switch input:checked + .ios-slider::before {
+      transform:translateX(24px) !important;
+      background:var(--nb-white) !important;
+    }
+
+    .ios-switch:active .ios-slider {
+      transform:translate(2px,2px) !important;
+      box-shadow:2px 2px 0 var(--nb-black) !important;
+    }
+
+    .ios-switch input:focus-visible + .ios-slider {
+      outline:3px solid var(--nb-purple) !important;
+      outline-offset:4px !important;
+    }
+
   </style>
 </head>
 <body class="auth-locked">
