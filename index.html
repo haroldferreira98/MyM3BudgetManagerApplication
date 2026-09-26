@@ -2527,6 +2527,351 @@
       transform:translateX(-50%) !important;
     }
 
+    /* DA2 v13 — Add action in bottom navigation + tighter first operation group. */
+
+    /* The former header + is replaced by the first bottom-nav action. */
+    #openAdd {
+      display:none !important;
+    }
+
+    body > #navBar.nav-bar,
+    .nav-bar {
+      grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    }
+
+    .nav-item.nav-add {
+      background:var(--nb-mint) !important;
+      color:var(--nb-black) !important;
+      border:3px solid var(--nb-black) !important;
+      box-shadow:3px 3px 0 var(--nb-black) !important;
+    }
+
+    .nav-item.nav-add .nav-indicator,
+    .nav-item.nav-add .material-symbols-rounded,
+    .nav-item.nav-add .nav-label {
+      color:var(--nb-black) !important;
+    }
+
+    .nav-item.nav-add:active {
+      transform:translate(2px,2px) !important;
+      box-shadow:1px 1px 0 var(--nb-black) !important;
+    }
+
+    /* Only the first day's header was visually too far from "Opérations".
+       Later date groups keep their larger top separation. */
+    #screenOperations .tx-list > .date-group-header:first-child,
+    #screenOperations #txContainer > .date-group-header:first-child {
+      margin-top:-12px !important;
+    }
+
+    /* ============================================================
+       DA2 v14 — UPDATE CURTAIN
+       Full-screen neo-brutal curtain instead of a bottom toast.
+       ============================================================ */
+
+    .update-wrap {
+      position:fixed !important;
+      inset:0 !important;
+      left:0 !important;
+      bottom:auto !important;
+      width:100% !important;
+      height:100vh !important;
+      height:100dvh !important;
+
+      z-index:5000 !important;
+      display:flex !important;
+      align-items:flex-start !important;
+      justify-content:center !important;
+
+      padding:0 !important;
+
+      background:rgba(17,17,17,.28) !important;
+
+      opacity:0 !important;
+      pointer-events:none !important;
+
+      transform:none !important;
+      transition:opacity .18s ease !important;
+
+      overflow:hidden !important;
+    }
+
+    .update-wrap.show {
+      opacity:1 !important;
+      pointer-events:auto !important;
+      transform:none !important;
+    }
+
+    .update-card {
+      position:relative !important;
+      width:min(480px,100vw) !important;
+      min-height:100dvh !important;
+
+      display:flex !important;
+      flex-direction:column !important;
+
+      padding:
+        calc(34px + env(safe-area-inset-top,0px))
+        22px
+        calc(24px + env(safe-area-inset-bottom,0px)) !important;
+
+      border:0 !important;
+      border-left:3px solid var(--nb-black) !important;
+      border-right:3px solid var(--nb-black) !important;
+      border-bottom:3px solid var(--nb-black) !important;
+      border-radius:0 0 34px 34px !important;
+
+      background:var(--nb-yellow) !important;
+      color:var(--nb-black) !important;
+
+      box-shadow:
+        0 12px 0 var(--nb-black),
+        0 26px 60px rgba(17,17,17,.25) !important;
+
+      backdrop-filter:none !important;
+      -webkit-backdrop-filter:none !important;
+
+      transform:translate3d(0,-102%,0) !important;
+      transition:transform .46s cubic-bezier(.2,.9,.2,1) !important;
+
+      overflow:hidden !important;
+    }
+
+    .update-wrap.show .update-card {
+      transform:translate3d(0,0,0) !important;
+    }
+
+    .update-card::before,
+    .update-card::after {
+      content:"" !important;
+      display:block !important;
+      position:absolute !important;
+      pointer-events:none !important;
+    }
+
+    .update-card::before {
+      width:180px !important;
+      height:180px !important;
+      right:-76px !important;
+      top:94px !important;
+      border:3px solid var(--nb-black) !important;
+      border-radius:50% !important;
+      background:var(--nb-mint) !important;
+      box-shadow:8px 8px 0 var(--nb-black) !important;
+    }
+
+    .update-card::after {
+      width:92px !important;
+      height:92px !important;
+      left:-42px !important;
+      bottom:156px !important;
+      border:3px solid var(--nb-black) !important;
+      transform:rotate(18deg) !important;
+      background:var(--nb-purple) !important;
+      box-shadow:7px 7px 0 var(--nb-black) !important;
+    }
+
+    .update-curtain-mark {
+      position:relative !important;
+      z-index:2 !important;
+
+      width:76px !important;
+      height:76px !important;
+
+      display:grid !important;
+      place-items:center !important;
+
+      border:3px solid var(--nb-black) !important;
+      border-radius:22px !important;
+
+      background:var(--nb-mint) !important;
+      color:var(--nb-black) !important;
+
+      box-shadow:var(--nb-shadow) !important;
+    }
+
+    .update-curtain-mark .material-symbols-rounded {
+      font-size:36px !important;
+      font-weight:700 !important;
+    }
+
+    .update-copy {
+      position:relative !important;
+      z-index:2 !important;
+      margin-top:42px !important;
+      max-width:355px !important;
+    }
+
+    .update-kicker {
+      display:inline-flex !important;
+      align-items:center !important;
+
+      min-height:32px !important;
+      padding:0 11px !important;
+
+      border:3px solid var(--nb-black) !important;
+      border-radius:999px !important;
+
+      background:var(--nb-orange) !important;
+      color:var(--nb-black) !important;
+
+      box-shadow:var(--nb-shadow-sm) !important;
+
+      font-size:11px !important;
+      font-weight:700 !important;
+      letter-spacing:.08em !important;
+    }
+
+    .update-title {
+      margin-top:22px !important;
+
+      font-size:46px !important;
+      line-height:.94 !important;
+      letter-spacing:-2.5px !important;
+      font-weight:700 !important;
+
+      color:var(--nb-black) !important;
+    }
+
+    .update-sub {
+      margin-top:18px !important;
+
+      max-width:330px !important;
+
+      font-size:15px !important;
+      line-height:1.48 !important;
+      font-weight:600 !important;
+
+      color:#514A3F !important;
+    }
+
+    .update-version-line {
+      position:relative !important;
+      z-index:2 !important;
+
+      display:flex !important;
+      align-items:center !important;
+      gap:9px !important;
+
+      width:max-content !important;
+      max-width:100% !important;
+
+      margin-top:26px !important;
+      padding:10px 12px !important;
+
+      border:3px solid var(--nb-black) !important;
+      border-radius:14px !important;
+
+      background:#FFFDF2 !important;
+      box-shadow:var(--nb-shadow-sm) !important;
+
+      font-size:12px !important;
+      font-weight:700 !important;
+    }
+
+    .update-ready-dot {
+      width:9px !important;
+      height:9px !important;
+      flex:0 0 auto !important;
+
+      border:2px solid var(--nb-black) !important;
+      border-radius:50% !important;
+      background:var(--nb-mint) !important;
+    }
+
+    .update-actions {
+      position:relative !important;
+      z-index:2 !important;
+
+      display:grid !important;
+      grid-template-columns:1fr 1.35fr !important;
+      gap:11px !important;
+
+      width:100% !important;
+
+      margin-top:auto !important;
+      padding-top:34px !important;
+    }
+
+    .update-actions button {
+      min-height:58px !important;
+      padding:0 15px !important;
+
+      display:flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+      gap:8px !important;
+
+      border:3px solid var(--nb-black) !important;
+      border-radius:17px !important;
+
+      font-family:"Space Grotesk",Inter,system-ui,sans-serif !important;
+      font-size:14px !important;
+      font-weight:700 !important;
+
+      cursor:pointer !important;
+      box-shadow:var(--nb-shadow-sm) !important;
+    }
+
+    .update-actions button:active {
+      transform:translate(3px,3px) !important;
+      box-shadow:1px 1px 0 var(--nb-black) !important;
+    }
+
+    .update-later {
+      background:#FFFDF2 !important;
+      color:var(--nb-black) !important;
+    }
+
+    .update-reload {
+      background:var(--nb-purple) !important;
+      color:#FFFFFF !important;
+    }
+
+    .update-reload .material-symbols-rounded {
+      font-size:20px !important;
+      color:#FFFFFF !important;
+    }
+
+    @media (max-height:690px) {
+      .update-card {
+        padding-top:calc(22px + env(safe-area-inset-top,0px)) !important;
+      }
+
+      .update-curtain-mark {
+        width:62px !important;
+        height:62px !important;
+      }
+
+      .update-copy {
+        margin-top:28px !important;
+      }
+
+      .update-title {
+        font-size:38px !important;
+      }
+
+      .update-sub {
+        margin-top:12px !important;
+      }
+
+      .update-version-line {
+        margin-top:18px !important;
+      }
+
+      .update-actions {
+        padding-top:22px !important;
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      .update-wrap,
+      .update-card {
+        transition:none !important;
+      }
+    }
+
+    body.update-curtain-open { overflow:hidden !important; }
   </style>
 </head>
 <body class="auth-locked">
@@ -2810,6 +3155,10 @@
   </div>
 
   <nav class="nav-bar" id="navBar" aria-label="Navigation principale">
+    <button class="nav-item nav-add ios-press" id="btnNavAdd" type="button" aria-label="Ajouter une opération">
+      <div class="nav-indicator"><span class="material-symbols-rounded">add</span></div>
+      <span class="nav-label">Ajouter</span>
+    </button>
     <button class="nav-item active ios-press" data-target="screenOperations">
       <div class="nav-indicator"><span class="material-symbols-rounded">receipt_long</span></div>
       <span class="nav-label">Opérations</span>
@@ -2928,18 +3277,30 @@
   </div>
 
 
-  <div class="update-wrap" id="updatePrompt" role="status" aria-live="polite">
+  <div class="update-wrap" id="updatePrompt" role="dialog" aria-modal="true" aria-labelledby="updateTitle">
     <div class="update-card">
-      <div class="update-top">
-        <div class="update-icon"><span class="material-symbols-rounded" style="font-size:21px;">system_update_alt</span></div>
-        <div style="min-width:0; flex:1;">
-          <div class="update-title">Nouvelle version disponible</div>
-          <div class="update-sub">Une nouvelle version de Budget est prête. Rechargez pour l’utiliser.</div>
-        </div>
+      <div class="update-curtain-mark" aria-hidden="true">
+        <span class="material-symbols-rounded">system_update_alt</span>
       </div>
+
+      <div class="update-copy">
+        <div class="update-kicker">MISE À JOUR</div>
+        <div class="update-title" id="updateTitle">Nouvelle version disponible</div>
+        <div class="update-sub">Une nouvelle version de Budget est prête. Rechargez maintenant pour utiliser les dernières modifications.</div>
+      </div>
+
+      <div class="update-version-line">
+        <span>Budget</span>
+        <span class="update-ready-dot"></span>
+        <span>Prêt à recharger</span>
+      </div>
+
       <div class="update-actions">
         <button type="button" class="update-later ios-press" id="updateLater">Plus tard</button>
-        <button type="button" class="update-reload ios-press" id="updateReload">Recharger</button>
+        <button type="button" class="update-reload ios-press" id="updateReload">
+          <span>Recharger</span>
+          <span class="material-symbols-rounded" aria-hidden="true">refresh</span>
+        </button>
       </div>
     </div>
   </div>
@@ -3823,6 +4184,11 @@
         return;
       }
 
+      if (item.id === "btnNavAdd") {
+        $("openAdd").click();
+        return;
+      }
+
       $all(".nav-item").forEach(i => i.classList.remove("active"));
       $all(".screen").forEach(s => s.classList.remove("active"));
       item.classList.add("active");
@@ -3973,13 +4339,19 @@
           const hash = await fetchCurrentHash();
           if (!hash) return;
           if (!baseline) { baseline = hash; return; }
-          if (hash !== baseline && hash !== dismissedHash) prompt?.classList.add('show');
+          if (hash !== baseline && hash !== dismissedHash) {
+            prompt?.classList.add('show');
+            document.body.classList.add('update-curtain-open');
+            document.documentElement.style.overflow = 'hidden';
+          }
         } catch (_) { /* Offline or local file: silently skip update detection. */ }
       }
 
       later?.addEventListener('click', async () => {
         dismissedHash = await fetchCurrentHash();
         prompt?.classList.remove('show');
+        document.body.classList.remove('update-curtain-open');
+        document.documentElement.style.overflow = '';
       });
       reload?.addEventListener('click', () => location.reload());
       document.addEventListener('visibilitychange', () => { if (!document.hidden) checkForUpdate(); });
