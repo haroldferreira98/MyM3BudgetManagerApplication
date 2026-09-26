@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="auto" data-color="blue">
+<html lang="fr" data-theme="auto" data-color="blue" data-da="neo">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Budget — Neo Brutal</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..500,0..1,-25..0&display=swap">
+
+  <script>
+    (() => {
+      try {
+        const savedDa = localStorage.getItem("budget_da_theme");
+        if (savedDa === "matrix" || savedDa === "neo") {
+          document.documentElement.setAttribute("data-da", savedDa);
+        }
+      } catch(e) {}
+    })();
+  </script>
 
   <style>
     :root {
@@ -3180,6 +3192,1044 @@
       outline-offset: 4px !important;
     }
 
+
+    /* ============================================================
+       DA THEME PICKER — Neo Brutal / Matrix
+       ============================================================ */
+
+    .da-theme-card {
+      overflow:visible !important;
+    }
+
+    .da-theme-heading {
+      display:flex !important;
+      align-items:flex-start !important;
+      justify-content:space-between !important;
+      gap:16px !important;
+      margin-bottom:16px !important;
+    }
+
+    .da-theme-eyebrow {
+      font-size:10px !important;
+      line-height:1 !important;
+      font-weight:700 !important;
+      letter-spacing:.09em !important;
+      text-transform:uppercase !important;
+      color:var(--nb-muted) !important;
+    }
+
+    .da-theme-title {
+      margin-top:5px !important;
+      font-size:19px !important;
+      line-height:1.05 !important;
+      font-weight:700 !important;
+      letter-spacing:-.45px !important;
+      color:var(--nb-black) !important;
+    }
+
+    .da-theme-subtitle {
+      margin-top:5px !important;
+      max-width:310px !important;
+      font-size:11px !important;
+      line-height:1.42 !important;
+      font-weight:600 !important;
+      color:var(--nb-muted) !important;
+    }
+
+    .da-theme-heading-icon {
+      flex:0 0 auto !important;
+      width:38px !important;
+      height:38px !important;
+      display:grid !important;
+      place-items:center !important;
+      border:3px solid var(--nb-black) !important;
+      border-radius:11px !important;
+      background:var(--nb-yellow) !important;
+      color:var(--nb-black) !important;
+      box-shadow:3px 3px 0 var(--nb-black) !important;
+      font-size:20px !important;
+    }
+
+    .da-theme-grid {
+      display:grid !important;
+      grid-template-columns:1fr !important;
+      gap:11px !important;
+    }
+
+    .da-theme-option {
+      position:relative !important;
+      width:100% !important;
+      min-height:82px !important;
+      padding:10px 42px 10px 10px !important;
+
+      display:grid !important;
+      grid-template-columns:64px minmax(0,1fr) !important;
+      gap:12px !important;
+      align-items:center !important;
+
+      border:3px solid var(--nb-black) !important;
+      border-radius:15px !important;
+      background:var(--nb-white) !important;
+      color:var(--nb-black) !important;
+      box-shadow:4px 4px 0 var(--nb-black) !important;
+
+      text-align:left !important;
+      cursor:pointer !important;
+    }
+
+    .da-theme-option:active {
+      transform:translate(2px,2px) !important;
+      box-shadow:2px 2px 0 var(--nb-black) !important;
+    }
+
+    .da-theme-option.active {
+      background:#EEE8FF !important;
+    }
+
+    .da-theme-preview {
+      position:relative !important;
+      width:64px !important;
+      height:56px !important;
+      overflow:hidden !important;
+      display:block !important;
+      border:3px solid var(--nb-black) !important;
+      border-radius:10px !important;
+    }
+
+    .da-theme-preview-neo {
+      background:#FFF7D6 !important;
+    }
+
+    .da-preview-block {
+      position:absolute !important;
+      display:block !important;
+      border:2px solid #111 !important;
+    }
+
+    .da-preview-block.one {
+      left:6px !important;
+      top:7px !important;
+      width:29px !important;
+      height:17px !important;
+      background:#7957FF !important;
+      box-shadow:3px 3px 0 #111 !important;
+    }
+
+    .da-preview-block.two {
+      right:6px !important;
+      top:11px !important;
+      width:14px !important;
+      height:14px !important;
+      border-radius:50% !important;
+      background:#42D8B2 !important;
+    }
+
+    .da-preview-block.three {
+      left:10px !important;
+      bottom:6px !important;
+      width:39px !important;
+      height:9px !important;
+      background:#FFD84A !important;
+    }
+
+    .da-theme-preview-matrix {
+      background:#050805 !important;
+      border-color:#4DFF73 !important;
+      color:#9DFF8A !important;
+      box-shadow:0 0 12px rgba(77,255,115,.14) inset !important;
+    }
+
+    .matrix-code {
+      position:absolute !important;
+      left:7px !important;
+      top:5px !important;
+      font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+      font-size:8px !important;
+      line-height:1.18 !important;
+      letter-spacing:1px !important;
+      color:#6FA577 !important;
+    }
+
+    .matrix-signal {
+      position:absolute !important;
+      left:7px !important;
+      right:7px !important;
+      bottom:8px !important;
+      height:10px !important;
+      border-left:1px solid #4DFF73 !important;
+      border-bottom:1px solid #4DFF73 !important;
+    }
+
+    .matrix-signal::after {
+      content:"" !important;
+      position:absolute !important;
+      left:4px !important;
+      right:2px !important;
+      top:3px !important;
+      height:1px !important;
+      background:#4DFF73 !important;
+      transform:skewY(-13deg) !important;
+      box-shadow:12px -4px 0 #4DFF73, 25px 2px 0 #4DFF73 !important;
+    }
+
+    .da-theme-option-copy {
+      min-width:0 !important;
+      display:flex !important;
+      flex-direction:column !important;
+      gap:3px !important;
+    }
+
+    .da-theme-option-copy strong {
+      font-size:14px !important;
+      line-height:1.1 !important;
+      font-weight:700 !important;
+      color:inherit !important;
+    }
+
+    .da-theme-option-copy small {
+      font-size:10px !important;
+      line-height:1.35 !important;
+      font-weight:600 !important;
+      color:var(--nb-muted) !important;
+    }
+
+    .da-theme-check {
+      position:absolute !important;
+      right:12px !important;
+      top:50% !important;
+      width:24px !important;
+      height:24px !important;
+      margin-top:-12px !important;
+      display:grid !important;
+      place-items:center !important;
+      border:2px solid var(--nb-black) !important;
+      border-radius:7px !important;
+      background:transparent !important;
+      color:transparent !important;
+      font-size:16px !important;
+    }
+
+    .da-theme-option.active .da-theme-check {
+      background:var(--nb-mint) !important;
+      color:var(--nb-black) !important;
+    }
+
+
+    /* ============================================================
+       MATRIX THEME
+       Scoped to html[data-da="matrix"] only.
+       No business logic, Supabase logic or app structure is changed.
+       ============================================================ */
+
+    html[data-da="matrix"] {
+      color-scheme:dark !important;
+
+      --mx-bg:#050805;
+      --mx-panel:#091009;
+      --mx-panel-2:#0D160D;
+      --mx-green:#9DFF8A;
+      --mx-signal:#4DFF73;
+      --mx-line:#17321B;
+      --mx-muted:#6FA577;
+      --mx-amber:#FFB85A;
+      --mx-red:#FF6B6B;
+
+      /* Re-map the existing visual variables only while Matrix is active. */
+      --nb-bg:var(--mx-bg);
+      --nb-surface:var(--mx-panel);
+      --nb-white:var(--mx-panel);
+      --nb-black:var(--mx-green);
+      --nb-purple:var(--mx-signal);
+      --nb-mint:var(--mx-signal);
+      --nb-orange:var(--mx-amber);
+      --nb-yellow:var(--mx-green);
+      --nb-blue:var(--mx-line);
+      --nb-green:var(--mx-signal);
+      --nb-red:var(--mx-red);
+      --nb-muted:var(--mx-muted);
+      --nb-shadow:4px 4px 0 var(--mx-line);
+      --nb-shadow-sm:3px 3px 0 var(--mx-line);
+
+      --ios-font:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      --ios-bg:var(--mx-bg);
+      --ios-secondary-bg:var(--mx-panel);
+      --ios-tertiary-bg:var(--mx-panel-2);
+      --ios-elevated:var(--mx-panel);
+      --ios-glass:var(--mx-panel);
+      --ios-label:var(--mx-green);
+      --ios-secondary-label:var(--mx-muted);
+      --ios-tertiary-label:#496E50;
+      --ios-quaternary-label:#2E4933;
+      --ios-separator:var(--mx-line);
+      --ios-fill:#0C190D;
+      --ios-fill-secondary:#0F1C10;
+      --ios-fill-tertiary:#0A140B;
+      --ios-accent:var(--mx-signal);
+      --ios-accent-soft:#102815;
+      --ios-accent-strong:var(--mx-green);
+      --ios-on-accent:#041005;
+      --ios-red:var(--mx-red);
+      --ios-red-soft:#2A1111;
+      --ios-green:var(--mx-signal);
+      --ios-green-soft:#102815;
+      --ios-orange:var(--mx-amber);
+
+      --md-sys-color-primary:var(--mx-signal);
+      --md-sys-color-on-primary:#041005;
+      --md-sys-color-primary-container:#102815;
+      --md-sys-color-on-primary-container:var(--mx-green);
+      --md-sys-color-secondary:var(--mx-muted);
+      --md-sys-color-secondary-container:#0F1C10;
+      --md-sys-color-on-secondary-container:var(--mx-green);
+      --md-sys-color-surface:var(--mx-bg);
+      --md-sys-color-surface-container:var(--mx-panel);
+      --md-sys-color-surface-container-high:var(--mx-panel-2);
+      --md-sys-color-surface-container-highest:#102011;
+      --md-sys-color-surface-container-lowest:var(--mx-bg);
+      --md-sys-color-on-surface:var(--mx-green);
+      --md-sys-color-on-surface-variant:var(--mx-muted);
+      --md-sys-color-outline:var(--mx-muted);
+      --md-sys-color-outline-variant:var(--mx-line);
+      --md-sys-color-error:var(--mx-red);
+      --md-sys-color-error-container:#2A1111;
+      --md-sys-color-on-error-container:var(--mx-red);
+      --md-sys-color-success:var(--mx-signal);
+      --md-sys-color-success-container:#102815;
+      --md-sys-color-on-success-container:var(--mx-signal);
+    }
+
+    html[data-da="matrix"],
+    html[data-da="matrix"] body {
+      background:var(--mx-bg) !important;
+    }
+
+    html[data-da="matrix"] body {
+      color:var(--mx-green) !important;
+      font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace !important;
+      background:
+        radial-gradient(70% 38% at 10% 0%,rgba(77,255,115,.055),transparent 74%),
+        radial-gradient(55% 34% at 100% 30%,rgba(77,255,115,.035),transparent 75%),
+        var(--mx-bg) !important;
+    }
+
+    /* Very subtle CRT scanlines. They never catch clicks. */
+    html[data-da="matrix"] body::before {
+      content:"" !important;
+      position:fixed !important;
+      inset:0 !important;
+      z-index:9000 !important;
+      pointer-events:none !important;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(157,255,138,.025) 0,
+          rgba(157,255,138,.025) 1px,
+          transparent 1px,
+          transparent 4px
+        ) !important;
+      opacity:.72 !important;
+      mix-blend-mode:screen !important;
+    }
+
+    html[data-da="matrix"] .app {
+      color:var(--mx-green) !important;
+    }
+
+    html[data-da="matrix"] .material-symbols-rounded {
+      color:inherit;
+    }
+
+    /* Header / top controls */
+    html[data-da="matrix"] .ios-nav {
+      background:
+        linear-gradient(to bottom,rgba(5,8,5,.98),rgba(5,8,5,.92) 74%,rgba(5,8,5,0)) !important;
+      -webkit-backdrop-filter:none !important;
+      backdrop-filter:none !important;
+    }
+
+    html[data-da="matrix"] .ios-nav::after {
+      background:linear-gradient(90deg,transparent,var(--mx-line),transparent) !important;
+      opacity:1 !important;
+    }
+
+    html[data-da="matrix"] .month-pill,
+    html[data-da="matrix"] .ios-circle-button,
+    html[data-da="matrix"] .fab {
+      background:var(--mx-panel) !important;
+      color:var(--mx-green) !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:5px !important;
+      box-shadow:none !important;
+      -webkit-backdrop-filter:none !important;
+      backdrop-filter:none !important;
+    }
+
+    html[data-da="matrix"] .month-pill::before,
+    html[data-da="matrix"] .month-pill::after,
+    html[data-da="matrix"] .ios-circle-button::before,
+    html[data-da="matrix"] .ios-circle-button::after,
+    html[data-da="matrix"] .fab::before,
+    html[data-da="matrix"] .fab::after {
+      display:none !important;
+      content:none !important;
+    }
+
+    html[data-da="matrix"] #navAccountDot {
+      border-color:var(--mx-panel) !important;
+      background:var(--mx-muted) !important;
+    }
+
+    html[data-da="matrix"] #navAccountDot.online {
+      background:var(--mx-signal) !important;
+      box-shadow:0 0 9px rgba(77,255,115,.55) !important;
+    }
+
+    /* Main balance / KPI */
+    html[data-da="matrix"] .balance-card,
+    html[data-da="matrix"] .ios-card,
+    html[data-da="matrix"] .analytics-card {
+      background:rgba(9,16,9,.92) !important;
+      color:var(--mx-green) !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:7px !important;
+      box-shadow:inset 0 0 28px rgba(77,255,115,.018) !important;
+    }
+
+    html[data-da="matrix"] .balance-card {
+      position:relative !important;
+      overflow:hidden !important;
+    }
+
+    html[data-da="matrix"] .balance-card::after {
+      content:"BALANCE://LIVE" !important;
+      position:absolute !important;
+      top:12px !important;
+      right:13px !important;
+      color:#37563D !important;
+      font-size:8px !important;
+      font-weight:600 !important;
+      letter-spacing:.08em !important;
+    }
+
+    html[data-da="matrix"] .balance-label,
+    html[data-da="matrix"] .sec-subtitle,
+    html[data-da="matrix"] .tx-meta,
+    html[data-da="matrix"] .rule-footer,
+    html[data-da="matrix"] .data-export-subtitle {
+      color:var(--mx-muted) !important;
+    }
+
+    html[data-da="matrix"] .balance-val,
+    html[data-da="matrix"] .kpi-cell strong,
+    html[data-da="matrix"] .tx-amount,
+    html[data-da="matrix"] .rule-header strong,
+    html[data-da="matrix"] .breakdown-row strong {
+      font-variant-numeric:tabular-nums !important;
+    }
+
+    html[data-da="matrix"] .kpi-grid {
+      background:#071007 !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:4px !important;
+    }
+
+    html[data-da="matrix"] .kpi-cell + .kpi-cell {
+      border-left:1px solid var(--mx-line) !important;
+    }
+
+    html[data-da="matrix"] .kpi-cell span {
+      color:var(--mx-muted) !important;
+    }
+
+    /* Filters */
+    html[data-da="matrix"] .chips-bar {
+      background:#071007 !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:5px !important;
+      box-shadow:none !important;
+      padding:4px !important;
+    }
+
+    html[data-da="matrix"] .ios-filter {
+      color:var(--mx-muted) !important;
+      border-radius:3px !important;
+      box-shadow:none !important;
+    }
+
+    html[data-da="matrix"] .ios-filter.active {
+      background:#102815 !important;
+      color:var(--mx-signal) !important;
+      box-shadow:inset 0 0 0 1px #315A37 !important;
+    }
+
+    /* Operations header / search */
+    html[data-da="matrix"] .sec-header h3,
+    html[data-da="matrix"] .analytics-title,
+    html[data-da="matrix"] #screenSettings {
+      color:var(--mx-green) !important;
+    }
+
+    html[data-da="matrix"] .sec-search-trigger,
+    html[data-da="matrix"] .ios-badge,
+    html[data-da="matrix"] .sec-search-close {
+      background:#0C190D !important;
+      color:var(--mx-green) !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:4px !important;
+      box-shadow:none !important;
+      -webkit-backdrop-filter:none !important;
+      backdrop-filter:none !important;
+    }
+
+    html[data-da="matrix"] .sec-search-trigger::before,
+    html[data-da="matrix"] .sec-search-trigger::after,
+    html[data-da="matrix"] .sec-search-bar::before,
+    html[data-da="matrix"] .sec-search-bar::after {
+      display:none !important;
+      content:none !important;
+    }
+
+    html[data-da="matrix"] .sec-search-bar {
+      background:#071007 !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:5px !important;
+      box-shadow:0 0 18px rgba(77,255,115,.04) !important;
+      -webkit-backdrop-filter:none !important;
+      backdrop-filter:none !important;
+    }
+
+    html[data-da="matrix"] .sec-search-input {
+      color:var(--mx-green) !important;
+      font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+    }
+
+    html[data-da="matrix"] .sec-search-input::placeholder {
+      color:#3D6444 !important;
+    }
+
+    /* Transaction list */
+    html[data-da="matrix"] #txContainer,
+    html[data-da="matrix"] .tx-list {
+      background:transparent !important;
+    }
+
+    html[data-da="matrix"] .date-group-header {
+      color:var(--mx-muted) !important;
+      font-size:10px !important;
+      letter-spacing:.08em !important;
+      text-transform:uppercase !important;
+    }
+
+    html[data-da="matrix"] .tx-item,
+    html[data-da="matrix"] .tx-item.ios-press {
+      background:rgba(9,16,9,.94) !important;
+      color:var(--mx-green) !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:6px !important;
+      box-shadow:none !important;
+    }
+
+    html[data-da="matrix"] .tx-item:active,
+    html[data-da="matrix"] .tx-item.ios-press:active {
+      background:#0D1B0E !important;
+      border-color:#315A37 !important;
+      transform:none !important;
+      opacity:1 !important;
+    }
+
+    html[data-da="matrix"] .tx-title {
+      color:var(--mx-green) !important;
+      font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+    }
+
+    html[data-da="matrix"] .tx-icon-wrap {
+      background:#0C190D !important;
+      color:var(--mx-signal) !important;
+      border:1px solid #274A2D !important;
+      border-radius:4px !important;
+      box-shadow:inset 0 0 14px rgba(77,255,115,.035) !important;
+    }
+
+    html[data-da="matrix"] .tx-amount {
+      color:var(--mx-green) !important;
+    }
+
+    html[data-da="matrix"] .tx-amount.income {
+      color:var(--mx-signal) !important;
+      text-shadow:0 0 10px rgba(77,255,115,.13) !important;
+    }
+
+    html[data-da="matrix"] .tag-pill {
+      border-radius:3px !important;
+      border:1px solid var(--mx-line) !important;
+    }
+
+    html[data-da="matrix"] .tag-fixed {
+      background:#0C190D !important;
+      color:var(--mx-muted) !important;
+    }
+
+    html[data-da="matrix"] .tag-reimbursed {
+      background:#102815 !important;
+      color:var(--mx-signal) !important;
+    }
+
+    /* Analytics */
+    html[data-da="matrix"] .rule-card,
+    html[data-da="matrix"] .breakdown-row {
+      background:#071007 !important;
+      color:var(--mx-green) !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:5px !important;
+      box-shadow:none !important;
+    }
+
+    html[data-da="matrix"] .progress-track {
+      background:#0E1B0F !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:2px !important;
+    }
+
+    html[data-da="matrix"] .progress-fill {
+      border-radius:0 !important;
+    }
+
+    html[data-da="matrix"] .donut-center {
+      min-width:104px !important;
+      min-height:70px !important;
+      padding:10px !important;
+      display:grid !important;
+      place-content:center !important;
+      background:#071007 !important;
+      color:var(--mx-green) !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:4px !important;
+      box-shadow:inset 0 0 20px rgba(77,255,115,.03) !important;
+    }
+
+    html[data-da="matrix"] .breakdown-row .ios-badge {
+      background:#0D1A0E !important;
+      color:var(--mx-muted) !important;
+    }
+
+    /* Options and theme chooser */
+    html[data-da="matrix"] .da-theme-heading-icon {
+      background:#0C190D !important;
+      color:var(--mx-signal) !important;
+      border:1px solid #315A37 !important;
+      border-radius:4px !important;
+      box-shadow:none !important;
+    }
+
+    html[data-da="matrix"] .da-theme-title,
+    html[data-da="matrix"] .da-theme-option-copy strong,
+    html[data-da="matrix"] .data-export-title {
+      color:var(--mx-green) !important;
+    }
+
+    html[data-da="matrix"] .da-theme-eyebrow,
+    html[data-da="matrix"] .da-theme-subtitle,
+    html[data-da="matrix"] .da-theme-option-copy small {
+      color:var(--mx-muted) !important;
+    }
+
+    html[data-da="matrix"] .da-theme-option {
+      background:#071007 !important;
+      color:var(--mx-green) !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:5px !important;
+      box-shadow:none !important;
+    }
+
+    html[data-da="matrix"] .da-theme-option:hover {
+      border-color:#315A37 !important;
+    }
+
+    html[data-da="matrix"] .da-theme-option.active {
+      background:#0D1A0E !important;
+      border-color:var(--mx-signal) !important;
+      box-shadow:0 0 16px rgba(77,255,115,.06) !important;
+    }
+
+    html[data-da="matrix"] .da-theme-check {
+      border:1px solid #315A37 !important;
+      border-radius:3px !important;
+    }
+
+    html[data-da="matrix"] .da-theme-option.active .da-theme-check {
+      background:var(--mx-signal) !important;
+      color:#041005 !important;
+      border-color:var(--mx-signal) !important;
+    }
+
+    html[data-da="matrix"] .data-export-cell {
+      border-top:1px solid var(--mx-line) !important;
+    }
+
+    html[data-da="matrix"] .data-export-button,
+    html[data-da="matrix"] .ios-button {
+      border:1px solid var(--mx-line) !important;
+      border-radius:4px !important;
+      box-shadow:none !important;
+      font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+    }
+
+    html[data-da="matrix"] .data-export-download,
+    html[data-da="matrix"] .ios-secondary {
+      background:#0C190D !important;
+      color:var(--mx-green) !important;
+    }
+
+    html[data-da="matrix"] .data-export-share,
+    html[data-da="matrix"] .ios-primary {
+      background:var(--mx-signal) !important;
+      color:#041005 !important;
+    }
+
+    html[data-da="matrix"] .ios-danger {
+      background:#2A1111 !important;
+      color:var(--mx-red) !important;
+      border-color:#572323 !important;
+    }
+
+    html[data-da="matrix"] .data-export-button:active,
+    html[data-da="matrix"] .ios-button:active {
+      transform:none !important;
+      opacity:.75 !important;
+      box-shadow:none !important;
+    }
+
+    /* Bottom navigation: same functionality, Matrix instrument styling. */
+    html[data-da="matrix"] body > #navBar.nav-bar,
+    html[data-da="matrix"] .nav-bar {
+      background:rgba(5,8,5,.96) !important;
+      border:1px solid #274A2D !important;
+      border-radius:8px !important;
+      box-shadow:0 0 28px rgba(77,255,115,.055) !important;
+      gap:5px !important;
+      padding:6px !important;
+      -webkit-backdrop-filter:blur(8px) !important;
+      backdrop-filter:blur(8px) !important;
+    }
+
+    html[data-da="matrix"] .nav-bar::before,
+    html[data-da="matrix"] .nav-bar::after {
+      display:none !important;
+      content:none !important;
+    }
+
+    html[data-da="matrix"] body > #navBar.nav-bar .nav-item,
+    html[data-da="matrix"] .nav-bar .nav-item {
+      background:#071007 !important;
+      color:var(--mx-muted) !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:4px !important;
+      box-shadow:none !important;
+    }
+
+    html[data-da="matrix"] body > #navBar.nav-bar .nav-item.nav-add,
+    html[data-da="matrix"] .nav-bar .nav-item.nav-add {
+      background:#102815 !important;
+      color:var(--mx-signal) !important;
+      border-color:#315A37 !important;
+    }
+
+    html[data-da="matrix"] body > #navBar.nav-bar .nav-item.active,
+    html[data-da="matrix"] .nav-bar .nav-item.active {
+      background:var(--mx-signal) !important;
+      color:#041005 !important;
+      border-color:var(--mx-signal) !important;
+      box-shadow:0 0 14px rgba(77,255,115,.12) !important;
+    }
+
+    html[data-da="matrix"] body > #navBar.nav-bar .nav-item:active,
+    html[data-da="matrix"] .nav-bar .nav-item:active {
+      transform:none !important;
+      opacity:.72 !important;
+      box-shadow:none !important;
+    }
+
+    html[data-da="matrix"] .nav-label {
+      font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+      font-size:9px !important;
+      letter-spacing:.01em !important;
+    }
+
+    /* Sheets / forms */
+    html[data-da="matrix"] .modal-backdrop {
+      background:rgba(0,0,0,.72) !important;
+      -webkit-backdrop-filter:blur(2px) !important;
+      backdrop-filter:blur(2px) !important;
+    }
+
+    html[data-da="matrix"] .sheet {
+      background:#071007 !important;
+      color:var(--mx-green) !important;
+      border:1px solid #315A37 !important;
+      border-bottom:0 !important;
+      border-radius:9px 9px 0 0 !important;
+      box-shadow:0 -16px 48px rgba(0,0,0,.58),0 0 30px rgba(77,255,115,.035) !important;
+      -webkit-backdrop-filter:none !important;
+      backdrop-filter:none !important;
+    }
+
+    html[data-da="matrix"] .sheet-handle {
+      background:#315A37 !important;
+      border-radius:0 !important;
+    }
+
+    html[data-da="matrix"] .ios-input {
+      background:#050A05 !important;
+      color:var(--mx-green) !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:4px !important;
+      box-shadow:none !important;
+      font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+    }
+
+    html[data-da="matrix"] .ios-input:focus {
+      background:#071007 !important;
+      border-color:var(--mx-signal) !important;
+      box-shadow:0 0 0 2px rgba(77,255,115,.08) !important;
+    }
+
+    html[data-da="matrix"] .ios-input::placeholder {
+      color:#3D6444 !important;
+    }
+
+    html[data-da="matrix"] .ios-segmented {
+      background:#050A05 !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:4px !important;
+      padding:3px !important;
+    }
+
+    html[data-da="matrix"] .ios-segmented-btn {
+      color:var(--mx-muted) !important;
+      border-radius:2px !important;
+      box-shadow:none !important;
+    }
+
+    html[data-da="matrix"] .ios-segmented-btn.active {
+      background:#102815 !important;
+      color:var(--mx-signal) !important;
+      box-shadow:inset 0 0 0 1px #315A37 !important;
+    }
+
+    /* Preserve the exact switch geometry/centering the user approved.
+       Matrix changes colors only. */
+    html[data-da="matrix"] .ios-slider {
+      background:#071007 !important;
+      border-color:#315A37 !important;
+      box-shadow:3px 3px 0 #17321B !important;
+    }
+
+    html[data-da="matrix"] .ios-slider::before {
+      background:var(--mx-green) !important;
+      border-color:#041005 !important;
+    }
+
+    html[data-da="matrix"] .ios-switch input:checked + .ios-slider {
+      background:#102815 !important;
+      border-color:var(--mx-signal) !important;
+    }
+
+    html[data-da="matrix"] .ios-switch input:checked + .ios-slider::before {
+      background:var(--mx-signal) !important;
+    }
+
+    /* Account / auth */
+    html[data-da="matrix"] .auth-gate {
+      color:var(--mx-green) !important;
+      background:
+        radial-gradient(65% 42% at 10% 0%,rgba(77,255,115,.075),transparent 72%),
+        radial-gradient(60% 42% at 100% 100%,rgba(77,255,115,.035),transparent 74%),
+        var(--mx-bg) !important;
+    }
+
+    html[data-da="matrix"] .auth-blob {
+      display:none !important;
+    }
+
+    html[data-da="matrix"] .auth-logo {
+      color:var(--mx-signal) !important;
+      background:#071007 !important;
+      border:1px solid #315A37 !important;
+      border-radius:6px !important;
+      box-shadow:0 0 28px rgba(77,255,115,.08) !important;
+    }
+
+    html[data-da="matrix"] .auth-title,
+    html[data-da="matrix"] .auth-step-title {
+      color:var(--mx-green) !important;
+      font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+    }
+
+    html[data-da="matrix"] .auth-tagline,
+    html[data-da="matrix"] .auth-step-copy,
+    html[data-da="matrix"] .auth-field-label,
+    html[data-da="matrix"] .auth-hint,
+    html[data-da="matrix"] .auth-footer {
+      color:var(--mx-muted) !important;
+    }
+
+    html[data-da="matrix"] .auth-card {
+      background:rgba(7,16,7,.96) !important;
+      border:1px solid #274A2D !important;
+      border-radius:8px !important;
+      box-shadow:0 0 42px rgba(77,255,115,.045) !important;
+      -webkit-backdrop-filter:none !important;
+      backdrop-filter:none !important;
+    }
+
+    html[data-da="matrix"] .auth-card::before {
+      display:none !important;
+      content:none !important;
+    }
+
+    html[data-da="matrix"] .auth-input-wrap {
+      background:#050A05 !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:4px !important;
+      box-shadow:none !important;
+    }
+
+    html[data-da="matrix"] .auth-input-wrap:focus-within {
+      background:#071007 !important;
+      border-color:var(--mx-signal) !important;
+      box-shadow:0 0 0 2px rgba(77,255,115,.08) !important;
+      transform:none !important;
+    }
+
+    html[data-da="matrix"] .auth-input {
+      color:var(--mx-green) !important;
+      font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+    }
+
+    html[data-da="matrix"] .auth-primary {
+      background:var(--mx-signal) !important;
+      color:#041005 !important;
+      border:1px solid var(--mx-signal) !important;
+      border-radius:4px !important;
+      box-shadow:0 0 18px rgba(77,255,115,.09) !important;
+      font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+    }
+
+    html[data-da="matrix"] .auth-mode-switch {
+      background:#050A05 !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:4px !important;
+    }
+
+    html[data-da="matrix"] .auth-mode-btn {
+      color:var(--mx-muted) !important;
+      border-radius:2px !important;
+    }
+
+    html[data-da="matrix"] .auth-mode-btn.active {
+      background:#102815 !important;
+      color:var(--mx-signal) !important;
+    }
+
+    /* Update curtain: keep its exact interaction/animation, change only DA. */
+    html[data-da="matrix"] .update-wrap {
+      background:rgba(0,0,0,.66) !important;
+    }
+
+    html[data-da="matrix"] .update-card {
+      background:#071007 !important;
+      color:var(--mx-green) !important;
+      border-left:1px solid #315A37 !important;
+      border-right:1px solid #315A37 !important;
+      border-bottom:1px solid #315A37 !important;
+      border-radius:0 0 9px 9px !important;
+      box-shadow:0 10px 0 #17321B,0 26px 60px rgba(0,0,0,.55) !important;
+    }
+
+    html[data-da="matrix"] .update-card::before {
+      background:transparent !important;
+      border:1px solid #315A37 !important;
+      box-shadow:0 0 24px rgba(77,255,115,.04) !important;
+    }
+
+    html[data-da="matrix"] .update-card::after {
+      background:#102815 !important;
+      border:1px solid #315A37 !important;
+      box-shadow:none !important;
+    }
+
+    html[data-da="matrix"] .update-curtain-mark {
+      background:#0C190D !important;
+      color:var(--mx-signal) !important;
+      border:1px solid #315A37 !important;
+      border-radius:5px !important;
+      box-shadow:0 0 18px rgba(77,255,115,.06) !important;
+    }
+
+    html[data-da="matrix"] .update-kicker {
+      background:#102815 !important;
+      color:var(--mx-signal) !important;
+      border:1px solid #315A37 !important;
+      border-radius:3px !important;
+      box-shadow:none !important;
+    }
+
+    html[data-da="matrix"] .update-title {
+      color:var(--mx-green) !important;
+      font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+    }
+
+    html[data-da="matrix"] .update-sub {
+      color:var(--mx-muted) !important;
+    }
+
+    html[data-da="matrix"] .update-version-line {
+      background:#050A05 !important;
+      color:var(--mx-green) !important;
+      border:1px solid var(--mx-line) !important;
+      border-radius:4px !important;
+      box-shadow:none !important;
+    }
+
+    html[data-da="matrix"] .update-ready-dot {
+      background:var(--mx-signal) !important;
+      border:1px solid #315A37 !important;
+      box-shadow:0 0 8px rgba(77,255,115,.45) !important;
+    }
+
+    html[data-da="matrix"] .update-actions button {
+      border:1px solid var(--mx-line) !important;
+      border-radius:4px !important;
+      box-shadow:none !important;
+      font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+    }
+
+    html[data-da="matrix"] .update-later {
+      background:#071007 !important;
+      color:var(--mx-muted) !important;
+    }
+
+    html[data-da="matrix"] .update-reload {
+      background:var(--mx-signal) !important;
+      color:#041005 !important;
+      border-color:var(--mx-signal) !important;
+    }
+
+    html[data-da="matrix"] .update-reload .material-symbols-rounded {
+      color:#041005 !important;
+    }
+
+    html[data-da="matrix"] .snackbar {
+      background:#071007 !important;
+      color:var(--mx-green) !important;
+      border:1px solid #315A37 !important;
+      border-radius:4px !important;
+      box-shadow:0 0 24px rgba(77,255,115,.055) !important;
+      -webkit-backdrop-filter:none !important;
+      backdrop-filter:none !important;
+      font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+    }
+
   </style>
 </head>
 <body class="auth-locked">
@@ -3438,6 +4488,44 @@
 
     <!-- Écran 3 : Options -->
     <div id="screenSettings" class="screen">
+      <div class="ios-card da-theme-card">
+        <div class="da-theme-heading">
+          <div>
+            <div class="da-theme-eyebrow">Apparence</div>
+            <div class="da-theme-title">Thème visuel</div>
+            <div class="da-theme-subtitle">Change uniquement la direction artistique. Tes données et fonctions restent identiques.</div>
+          </div>
+          <span class="material-symbols-rounded da-theme-heading-icon" aria-hidden="true">palette</span>
+        </div>
+
+        <div class="da-theme-grid" id="daThemePicker" role="radiogroup" aria-label="Choisir la direction artistique">
+          <button class="da-theme-option active" type="button" data-da-theme="neo" role="radio" aria-checked="true">
+            <span class="da-theme-preview da-theme-preview-neo" aria-hidden="true">
+              <span class="da-preview-block one"></span>
+              <span class="da-preview-block two"></span>
+              <span class="da-preview-block three"></span>
+            </span>
+            <span class="da-theme-option-copy">
+              <strong>Neo Brutal</strong>
+              <small>Crème · couleurs franches · ombres physiques</small>
+            </span>
+            <span class="material-symbols-rounded da-theme-check" aria-hidden="true">check</span>
+          </button>
+
+          <button class="da-theme-option" type="button" data-da-theme="matrix" role="radio" aria-checked="false">
+            <span class="da-theme-preview da-theme-preview-matrix" aria-hidden="true">
+              <span class="matrix-code">01<br>110<br>010</span>
+              <span class="matrix-signal"></span>
+            </span>
+            <span class="da-theme-option-copy">
+              <strong>Matrix</strong>
+              <small>Terminal sombre · signal vert · interface système</small>
+            </span>
+            <span class="material-symbols-rounded da-theme-check" aria-hidden="true">check</span>
+          </button>
+        </div>
+      </div>
+
       <div class="ios-card">
         <div style="font-size: 11px; font-weight: 800; color: var(--nb-black); text-transform: uppercase; margin-bottom: 12px;">Sauvegarde & Données</div>
         <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -3724,6 +4812,11 @@
     const sum = (arr, fn) => arr.filter(fn).reduce((s, t) => s + (Number(t.amount) || 0), 0);
 
     function drawDonut(canvasId, totalBadgeId, totalTextId, breakdownId, items, palette, emptyMsg) {
+      const matrixMode = document.documentElement.getAttribute("data-da") === "matrix";
+      const chartStructural = matrixMode ? "#17321B" : "#111111";
+      const chartBackground = matrixMode ? "#050805" : "#FFF7D6";
+      const chartOther = matrixMode ? "#FFB85A" : "#F59BC1";
+
       const data = {};
       const total = items.reduce((acc, t) => {
         const amt = parseFloat(t.amount) || 0;
@@ -3749,13 +4842,13 @@
       if (!total || !Object.keys(data).length) {
         ctx.beginPath();
         ctx.arc(110, 110, 84, 0, 2 * Math.PI);
-        ctx.strokeStyle = "#111111";
+        ctx.strokeStyle = chartStructural;
         ctx.lineWidth = 28;
         ctx.stroke();
 
         ctx.beginPath();
         ctx.arc(110, 110, 84, 0, 2 * Math.PI);
-        ctx.strokeStyle = "#FFF7D6";
+        ctx.strokeStyle = chartBackground;
         ctx.lineWidth = 20;
         ctx.stroke();
 
@@ -3768,13 +4861,13 @@
       const keys = Object.keys(data).sort((a, b) => data[b] - data[a]);
       const segs = keys.slice(0, 5).map((k, i) => ({ id: k, amt: data[k], color: palette[i % palette.length] }));
       if (keys.length > 5) {
-        segs.push({ id: "autres", amt: keys.slice(5).reduce((a, k) => a + data[k], 0), color: "#F59BC1" });
+        segs.push({ id: "autres", amt: keys.slice(5).reduce((a, k) => a + data[k], 0), color: chartOther });
       }
 
       // Neo-brutal donut: black structural ring underneath the colored data.
       ctx.beginPath();
       ctx.arc(110, 110, 84, 0, 2 * Math.PI);
-      ctx.strokeStyle = "#111111";
+      ctx.strokeStyle = chartStructural;
       ctx.lineWidth = 30;
       ctx.stroke();
 
@@ -3925,8 +5018,13 @@
       const fixedItems = allExpenses.filter(t => t.isFixed === true || t.isFixed === "true" || t.isFixed === 1);
       const normalItems = allExpenses.filter(t => !t.isFixed || t.isFixed === "false" || t.isFixed === 0);
 
-      const FIXED_PALETTE = ["#7957FF", "#42D8B2", "#FFD84A", "#FF795A", "#B8DBFF", "#F59BC1"];
-      const NORMAL_PALETTE = ["#FF795A", "#FFD84A", "#42D8B2", "#7957FF", "#B8DBFF", "#F59BC1"];
+      const matrixMode = document.documentElement.getAttribute("data-da") === "matrix";
+      const FIXED_PALETTE = matrixMode
+        ? ["#4DFF73", "#9DFF8A", "#6FA577", "#FFB85A", "#39C95A", "#B7FFAA"]
+        : ["#7957FF", "#42D8B2", "#FFD84A", "#FF795A", "#B8DBFF", "#F59BC1"];
+      const NORMAL_PALETTE = matrixMode
+        ? ["#9DFF8A", "#4DFF73", "#FFB85A", "#6FA577", "#39C95A", "#B7FFAA"]
+        : ["#FF795A", "#FFD84A", "#42D8B2", "#7957FF", "#B8DBFF", "#F59BC1"];
 
       drawDonut("chartFixed", "fixedTotalBadge", "fixedTotalText", "breakdownFixed", fixedItems, FIXED_PALETTE, "Aucune charge ce mois-ci");
       drawDonut("chartNormal", "normalTotalBadge", "normalTotalText", "breakdownNormal", normalItems, NORMAL_PALETTE, "Aucune dépense courante ce mois-ci");
@@ -4538,6 +5636,28 @@
       renderAnalytics();
     }
 
+    function applyDaTheme(themeVal, persist = true) {
+      const nextTheme = themeVal === "matrix" ? "matrix" : "neo";
+      document.documentElement.setAttribute("data-da", nextTheme);
+
+      if (persist) {
+        try { localStorage.setItem("budget_da_theme", nextTheme); } catch(e){}
+      }
+
+      $all(".da-theme-option").forEach(btn => {
+        const active = btn.dataset.daTheme === nextTheme;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-checked", active ? "true" : "false");
+      });
+
+      // Redraw only the charts so their palette immediately follows the selected DA.
+      renderAnalytics();
+    }
+
+    $all(".da-theme-option").forEach(btn => {
+      btn.onclick = () => applyDaTheme(btn.dataset.daTheme);
+    });
+
     $("btnTriggerImport").onclick = () => $("jsonFileInput").click();
     $("jsonFileInput").onchange = e => {
       const file = e.target.files[0];
@@ -4648,6 +5768,13 @@
     let savedTheme = "auto";
     try { savedTheme = localStorage.getItem("budget_theme") || "auto"; } catch(e){}
     applyTheme(savedTheme);
+
+    let savedDaTheme = document.documentElement.getAttribute("data-da") || "neo";
+    try {
+      const storedDaTheme = localStorage.getItem("budget_da_theme");
+      if (storedDaTheme === "matrix" || storedDaTheme === "neo") savedDaTheme = storedDaTheme;
+    } catch(e){}
+    applyDaTheme(savedDaTheme, false);
 
     $("monthInput").value = currentMonth;
     const updateMonth = () => {
