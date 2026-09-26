@@ -714,6 +714,30 @@
       .balance-val { font-size:40px; }
     }
 
+    /* iPhone viewport lock: nav belongs to the viewport, never to document flow. */
+    body { padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)); }
+    body > #navBar.nav-bar {
+      position: fixed !important;
+      top: auto !important;
+      right: auto !important;
+      left: 50vw !important;
+      bottom: max(6px, env(safe-area-inset-bottom, 0px)) !important;
+      transform: translate3d(-50%, 0, 0) !important;
+      width: min(462px, calc(100vw - 18px)) !important;
+      margin: 0 !important;
+      z-index: 1000 !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      -webkit-transform: translate3d(-50%, 0, 0) !important;
+      will-change: transform;
+    }
+    @supports (bottom: env(safe-area-inset-bottom)) {
+      body > #navBar.nav-bar {
+        bottom: calc(4px + env(safe-area-inset-bottom)) !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -945,21 +969,22 @@
       </div>
     </div>
 
-    <nav class="nav-bar" id="navBar" aria-label="Navigation principale">
-      <button class="nav-item active ios-press" data-target="screenOperations">
-        <div class="nav-indicator"><span class="material-symbols-rounded">receipt_long</span></div>
-        <span class="nav-label">Opérations</span>
-      </button>
-      <button class="nav-item ios-press" data-target="screenAnalytics">
-        <div class="nav-indicator"><span class="material-symbols-rounded">pie_chart</span></div>
-        <span class="nav-label">Analyse</span>
-      </button>
-      <button class="nav-item ios-press" data-target="screenSettings">
-        <div class="nav-indicator"><span class="material-symbols-rounded">settings</span></div>
-        <span class="nav-label">Options</span>
-      </button>
-    </nav>
   </div>
+
+  <nav class="nav-bar" id="navBar" aria-label="Navigation principale">
+    <button class="nav-item active ios-press" data-target="screenOperations">
+      <div class="nav-indicator"><span class="material-symbols-rounded">receipt_long</span></div>
+      <span class="nav-label">Opérations</span>
+    </button>
+    <button class="nav-item ios-press" data-target="screenAnalytics">
+      <div class="nav-indicator"><span class="material-symbols-rounded">pie_chart</span></div>
+      <span class="nav-label">Analyse</span>
+    </button>
+    <button class="nav-item ios-press" data-target="screenSettings">
+      <div class="nav-indicator"><span class="material-symbols-rounded">settings</span></div>
+      <span class="nav-label">Options</span>
+    </button>
+  </nav>
 
   <!-- MODAL NOUVELLE / ÉDITION OPÉRATION -->
   <div class="modal-backdrop" id="modalTx">
