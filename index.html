@@ -1040,6 +1040,34 @@
       .auth-blob, .auth-brand, .auth-card, .auth-footer, .auth-step { animation:none !important; }
     }
 
+    .auth-mode-switch {
+      display:flex;
+      gap:6px;
+      padding:4px;
+      margin-bottom:18px;
+      border-radius:15px;
+      background:var(--ios-fill-tertiary);
+    }
+    .auth-mode-btn {
+      flex:1;
+      min-height:38px;
+      border:0;
+      border-radius:12px;
+      background:transparent;
+      color:var(--ios-secondary-label);
+      font:inherit;
+      font-size:13px;
+      font-weight:650;
+      cursor:pointer;
+      transition:background .18s ease,color .18s ease,box-shadow .18s ease;
+    }
+    .auth-mode-btn.active {
+      background:rgba(var(--glass-rgb),.88);
+      color:var(--ios-label);
+      box-shadow:0 2px 10px rgba(0,0,0,.08), inset 0 1px 0 rgba(255,255,255,.52);
+    }
+    .auth-confirm-wrap[hidden] { display:none !important; }
+
   </style>
 </head>
 <body class="auth-locked">
@@ -1059,8 +1087,13 @@
 
       <div class="auth-card">
         <form class="auth-step" id="authEmailStep" novalidate>
-          <div class="auth-step-title">Bon retour</div>
-          <div class="auth-step-copy">Connectez-vous avec votre adresse e-mail et votre mot de passe.</div>
+          <div class="auth-mode-switch" role="tablist" aria-label="Connexion ou création de compte">
+            <button class="auth-mode-btn active" id="authModeLogin" type="button" role="tab" aria-selected="true">Se connecter</button>
+            <button class="auth-mode-btn" id="authModeSignup" type="button" role="tab" aria-selected="false">Créer un compte</button>
+          </div>
+
+          <div class="auth-step-title" id="authFormTitle">Bon retour</div>
+          <div class="auth-step-copy" id="authFormCopy">Connectez-vous avec votre adresse e-mail et votre mot de passe.</div>
 
           <label class="auth-field-label" for="authEmail">Adresse e-mail</label>
           <div class="auth-input-wrap">
@@ -1094,8 +1127,22 @@
             </button>
           </div>
 
+          <div class="auth-confirm-wrap" id="authConfirmWrap" hidden>
+            <label class="auth-field-label" for="authPasswordConfirm">Confirmer le mot de passe</label>
+            <div class="auth-input-wrap">
+              <span class="material-symbols-rounded" aria-hidden="true">lock_reset</span>
+              <input
+                class="auth-input"
+                id="authPasswordConfirm"
+                type="password"
+                autocomplete="new-password"
+                placeholder="Retapez votre mot de passe"
+              />
+            </div>
+          </div>
+
           <button class="auth-primary" id="authSignIn" type="submit">
-            <span>Se connecter</span>
+            <span id="authSubmitLabel">Se connecter</span>
             <span class="material-symbols-rounded" aria-hidden="true" style="font-size:19px;">arrow_forward</span>
           </button>
 
@@ -1939,37 +1986,93 @@
       await applyAuthUser(session?.user || null);
     });
 
+    let authMode = "login";
+
+    function setAuthMode(mode) {
+      authMode = mode === "signup" ? "signup" : "login";
+      const signup = authMode === "signup";
+
+      $("authModeLogin").classList.toggle("active", !signup);
+      $("authModeSignup").classList.toggle("active", signup);
+      $("authModeLogin").setAttribute("aria-selected", String(!signup));
+      $("authModeSignup").setAttribute("aria-selected", String(signup));
+      $("authConfirmWrap").hidden = !signup;
+
+      $("authFormTitle").textContent = signup ? "Créer votre compte" : "Bon retour";
+      $("authFormCopy").textContent = signup
+        ? "Choisissez votre adresse e-mail et un mot de passe pour créer votre espace Budget."
+        : "Connectez-vous avec votre adresse e-mail et votre mot de passe.";
+      $("authSubmitLabel").textContent = signup ? "Créer mon compte" : "Se connecter";
+
+      $("authPassword").autocomplete = signup ? "new-password" : "current-password";
+      $("authPasswordConfirm").value = "";
+      setAuthStatus("authEmailStatus", "");
+    }
+
+    $("authModeLogin").onclick = () => setAuthMode("login");
+    $("authModeSignup").onclick = () => setAuthMode("signup");
+
     $("authEmailStep").addEventListener("submit", async e => {
       e.preventDefault();
+
       const email = $("authEmail").value.trim().toLowerCase();
       const password = $("authPassword").value;
+      const passwordConfirm = $("authPasswordConfirm").value;
       const btn = $("authSignIn");
 
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         setAuthStatus("authEmailStatus", "Entrez une adresse e-mail valide.", true);
         return;
       }
-      if (!password) {
-        setAuthStatus("authEmailStatus", "Entrez votre mot de passe.", true);
+      if (password.length < 6) {
+        setAuthStatus("authEmailStatus", "Le mot de passe doit contenir au moins 6 caractères.", true);
+        return;
+      }
+      if (authMode === "signup" && password !== passwordConfirm) {
+        setAuthStatus("authEmailStatus", "Les deux mots de passe ne correspondent pas.", true);
         return;
       }
 
       setAuthStatus("authEmailStatus", "");
-      setAuthButtonBusy(btn, true, "Connexion…");
+      setAuthButtonBusy(btn, true, authMode === "signup" ? "Création du compte…" : "Connexion…");
 
       try {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        if (authMode === "signup") {
+          const { data, error } = await supabase.auth.signUp({ email, password });
+          if (error) throw error;
+
+          // With email confirmation disabled in Supabase, a session is returned immediately.
+          // If confirmation is still enabled, explain what needs to be changed instead of silently failing.
+          if (!data?.session) {
+            setAuthStatus(
+              "authEmailStatus",
+              "Compte créé, mais Supabase demande encore une confirmation e-mail. Désactive « Confirm email » dans Authentication → Sign In / Providers → Email pour une inscription sans e-mail.",
+              true
+            );
+            return;
+          }
+        } else {
+          const { error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+        }
       } catch (err) {
         const raw = String(err?.message || "");
-        let message = "Connexion impossible. Vérifiez votre e-mail et votre mot de passe.";
+        let message = authMode === "signup"
+          ? "Impossible de créer le compte."
+          : "Connexion impossible. Vérifiez votre e-mail et votre mot de passe.";
+
         if (/invalid login credentials/i.test(raw)) {
           message = "E-mail ou mot de passe incorrect.";
         } else if (/email not confirmed/i.test(raw)) {
           message = "Ce compte n’est pas encore confirmé dans Supabase.";
+        } else if (/already registered|already exists|user already registered/i.test(raw)) {
+          message = "Un compte existe déjà avec cette adresse e-mail. Essayez « Se connecter ».";
+        } else if (/password/i.test(raw) && /6|short|weak/i.test(raw)) {
+          message = "Choisissez un mot de passe d’au moins 6 caractères.";
         } else if (raw) {
           message = raw;
         }
+
         setAuthStatus("authEmailStatus", message, true);
       } finally {
         setAuthButtonBusy(btn, false);
