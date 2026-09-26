@@ -2922,109 +2922,166 @@
       background:transparent !important;
     }
 
-    /* Neo Brutal Switch — version propre et regroupée */
+    /* DA2 v17 — cleaner neo-brutal switch: one outline, one physical thumb. */
+    .ios-switch {
+      position:relative !important;
+      width:54px !important;
+      height:32px !important;
+      flex:0 0 54px !important;
 
-.ios-switch {
-  position: relative !important;
+      border:0 !important;
+      border-radius:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      overflow:visible !important;
+    }
 
-  width: 54px !important;
-  height: 32px !important;
-  flex: 0 0 54px !important;
+    .ios-switch input {
+      position:absolute !important;
+      width:1px !important;
+      height:1px !important;
+      opacity:0 !important;
+      pointer-events:none !important;
+    }
 
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  overflow: visible !important;
-}
+    .ios-slider {
+      position:absolute !important;
+      inset:0 !important;
 
+      border:3px solid var(--nb-black) !important;
+      border-radius:10px !important;
 
-/* Input invisible */
-.ios-switch input {
-  position: absolute !important;
+      background:var(--nb-white) !important;
+      box-shadow:4px 4px 0 var(--nb-black) !important;
 
-  width: 1px !important;
-  height: 1px !important;
+      cursor:pointer !important;
+      transition:
+        background .14s ease,
+        transform .10s ease,
+        box-shadow .10s ease !important;
+    }
 
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
+    .ios-slider::before {
+      content:"" !important;
+      position:absolute !important;
 
+      width:20px !important;
+      height:20px !important;
+      left:4px !important;
+      top:3px !important;
 
-/* Corps du switch */
-.ios-slider {
-  position: absolute !important;
-  inset: 0 !important;
+      border:3px solid var(--nb-black) !important;
+      border-radius:6px !important;
 
-  border: 3px solid var(--nb-black) !important;
-  border-radius: 10px !important;
+      background:var(--nb-yellow) !important;
+      box-shadow:none !important;
 
-  background: var(--nb-white) !important;
+      transform:translateX(0) !important;
+      transition:
+        transform .16s cubic-bezier(.2,.9,.2,1),
+        background .14s ease !important;
+    }
 
-  box-shadow: 4px 4px 0 var(--nb-black) !important;
+    .ios-switch input:checked + .ios-slider {
+      background:var(--nb-mint) !important;
+    }
 
-  cursor: pointer !important;
+    .ios-switch input:checked + .ios-slider::before {
+      transform:translateX(24px) !important;
+      background:var(--nb-white) !important;
+    }
 
-  transition:
-    background .14s ease,
-    transform .10s ease,
-    box-shadow .10s ease !important;
-}
+    .ios-switch:active .ios-slider {
+      transform:translate(2px,2px) !important;
+      box-shadow:2px 2px 0 var(--nb-black) !important;
+    }
 
+    .ios-switch input:focus-visible + .ios-slider {
+      outline:3px solid var(--nb-purple) !important;
+      outline-offset:4px !important;
+    }
 
-/* Petit carré */
-.ios-slider::before {
-  content: "" !important;
+    /* DA2 v18 — recenter the switch thumb vertically. */
+    .ios-slider::before {
+      top:1px !important;
+    }
 
-  position: absolute !important;
+    /* DA2 v19 — Exporter + Partager dans une même cellule */
+    .data-export-cell {
+      display:flex !important;
+      flex-direction:column !important;
+      gap:13px !important;
 
-  width: 18px !important;
-  height: 18px !important;
+      padding-top:14px !important;
+      border-top:3px solid var(--nb-black) !important;
+    }
 
-  left: 1px !important;
-  top: 1px !important;
+    .data-export-copy {
+      min-width:0 !important;
+    }
 
-  border: 3px solid var(--nb-black) !important;
-  border-radius: 6px !important;
+    .data-export-title {
+      font-size:14px !important;
+      line-height:1.15 !important;
+      font-weight:700 !important;
+      color:var(--nb-black) !important;
+    }
 
-  background: var(--nb-yellow) !important;
+    .data-export-subtitle {
+      margin-top:3px !important;
+      font-size:11px !important;
+      line-height:1.35 !important;
+      font-weight:600 !important;
+      color:#514A3F !important;
+    }
 
-  box-shadow: none !important;
+    .data-export-actions {
+      display:grid !important;
+      grid-template-columns:1fr 1fr !important;
+      gap:10px !important;
+      width:100% !important;
+    }
 
-  transform: translateX(0) !important;
+    .data-export-button {
+      min-width:0 !important;
+      min-height:48px !important;
+      padding:0 10px !important;
 
-  transition:
-    transform .16s cubic-bezier(.2, .9, .2, 1),
-    background .14s ease !important;
-}
+      display:flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+      gap:7px !important;
 
+      border:3px solid var(--nb-black) !important;
+      border-radius:14px !important;
+      box-shadow:3px 3px 0 var(--nb-black) !important;
 
-/* Switch activé */
-.ios-switch input:checked + .ios-slider {
-  background: var(--nb-mint) !important;
-}
+      color:var(--nb-black) !important;
+      font-family:"Space Grotesk",Inter,system-ui,sans-serif !important;
+      font-size:12px !important;
+      font-weight:700 !important;
 
+      cursor:pointer !important;
+    }
 
-/* Petit carré à droite */
-.ios-switch input:checked + .ios-slider::before {
-  transform: translateX(22px) !important;
+    .data-export-download {
+      background:var(--nb-yellow) !important;
+    }
 
-  background: var(--nb-white) !important;
-}
+    .data-export-share {
+      background:var(--nb-purple) !important;
+      color:#fff !important;
+    }
 
+    .data-export-button .material-symbols-rounded {
+      font-size:19px !important;
+      color:inherit !important;
+    }
 
-/* Effet physique au clic */
-.ios-switch:active .ios-slider {
-  transform: translate(2px, 2px) !important;
-
-  box-shadow: 2px 2px 0 var(--nb-black) !important;
-}
-
-
-/* Focus clavier */
-.ios-switch input:focus-visible + .ios-slider {
-  outline: 3px solid var(--nb-purple) !important;
-  outline-offset: 4px !important;
-}
+    .data-export-button:active {
+      transform:translate(2px,2px) !important;
+      box-shadow:1px 1px 0 var(--nb-black) !important;
+    }
 
   </style>
 </head>
@@ -3295,12 +3352,23 @@
             <button id="btnTriggerImport" class="ios-button ios-secondary ios-press">Importer</button>
             <input type="file" id="jsonFileInput" accept=".json,application/json" style="display: none;" />
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--md-sys-color-outline-variant);">
-            <div>
-              <div style="font-weight: 700; font-size: 13px;">Exporter vos données</div>
-              <div style="font-size: 11px; color: var(--md-sys-color-outline);">Sauvegarde dans Fichiers</div>
+          <div class="data-export-cell">
+            <div class="data-export-copy">
+              <div class="data-export-title">Exporter & partager</div>
+              <div class="data-export-subtitle">Sauvegarde JSON ou partage avec une autre app</div>
             </div>
-            <button id="btnExport" class="ios-button ios-secondary ios-press">Exporter</button>
+
+            <div class="data-export-actions">
+              <button id="btnExport" class="data-export-button data-export-download ios-press" type="button">
+                <span class="material-symbols-rounded">download</span>
+                <span>Exporter</span>
+              </button>
+
+              <button id="btnShareExport" class="data-export-button data-export-share ios-press" type="button">
+                <span class="material-symbols-rounded">ios_share</span>
+                <span>Partager</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -4419,14 +4487,56 @@
       reader.readAsText(file);
     };
 
+    const buildExportFile = () => {
+      const json = JSON.stringify(transactions, null, 2);
+      const filename = `budget_${currentMonth}.json`;
+      const blob = new Blob([json], { type: "application/json" });
+      const file = new File([blob], filename, { type: "application/json" });
+      return { json, filename, blob, file };
+    };
+
     $("btnExport").onclick = () => {
-      const blob = new Blob([JSON.stringify(transactions, null, 2)], { type: "application/json" });
+      const { filename, blob } = buildExportFile();
+      const url = URL.createObjectURL(blob);
       const a = Object.assign(document.createElement("a"), {
-        href: URL.createObjectURL(blob),
-        download: `budget_${currentMonth}.json`
+        href: url,
+        download: filename
       });
+
+      document.body.appendChild(a);
       a.click();
+      a.remove();
+
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
       notify("Export téléchargé", "download");
+    };
+
+    $("btnShareExport").onclick = async () => {
+      const { file, filename, json } = buildExportFile();
+
+      try {
+        if (!navigator.share) {
+          notify("Partage natif indisponible", "error");
+          return;
+        }
+
+        const shareData = {
+          title: "Export Budget",
+          text: `Export des opérations — ${currentMonth}`
+        };
+
+        if (navigator.canShare?.({ files: [file] })) {
+          shareData.files = [file];
+        } else {
+          shareData.text += `\n\n${json}`;
+        }
+
+        await navigator.share(shareData);
+      } catch (err) {
+        if (err?.name !== "AbortError") {
+          notify("Impossible de partager le fichier", "error");
+        }
+      }
     };
 
     let savedPalette = "blue";
