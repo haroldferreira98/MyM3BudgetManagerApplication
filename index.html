@@ -208,14 +208,16 @@
     .ios-filter { flex:1; min-width:0; height:32px; border:0; border-radius:8px; padding:0 8px; background:transparent; color:var(--ios-label); font-size:13px; font-weight:500; cursor:pointer; white-space:nowrap; }
     .ios-filter.active { background:var(--ios-secondary-bg); color:var(--ios-label); font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,.16); }
 
-    .sec-header { padding:5px 16px 8px; min-height:56px; display:flex; align-items:center; position:relative; overflow:hidden; }
-    .sec-header-default { width:100%; display:flex; justify-content:space-between; align-items:center; transition:opacity .18s ease,transform .18s ease; }
+    .sec-header { padding:10px 16px 10px; min-height:68px; display:block; position:relative; overflow:visible; }
+    .sec-header-default { width:100%; min-height:52px; display:flex; justify-content:space-between; align-items:flex-end; gap:12px; transition:opacity .18s ease,transform .18s ease; }
+    .sec-header-copy { display:flex; flex-direction:column; gap:3px; min-width:0; }
+    .sec-subtitle { font-size:13px; line-height:1.25; color:var(--ios-secondary-label); }
     .sec-header.searching .sec-header-default { opacity:0; pointer-events:none; transform:translateY(-4px); }
-    .sec-header-right { display:flex; align-items:center; gap:8px; }
-    .sec-header h3 { font-size:20px; font-weight:700; letter-spacing:-.35px; }
-    .sec-search-trigger { width:34px; height:34px; border-radius:50%; border:0; background:var(--ios-fill-secondary); color:var(--ios-accent); display:grid; place-items:center; cursor:pointer; }
-    .ios-badge { height:26px; padding:0 9px; border-radius:13px; background:var(--ios-fill-secondary); color:var(--ios-secondary-label); display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; white-space:nowrap; }
-    .sec-search-bar { position:absolute; inset:5px 16px 7px; display:flex; align-items:center; gap:7px; padding:0 8px 0 11px; background:var(--ios-fill); border-radius:11px; opacity:0; pointer-events:none; transform:scale(.98); transition:opacity .16s ease,transform .16s ease; }
+    .sec-header-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+    .sec-header h3 { font-size:24px; font-weight:760; letter-spacing:-.65px; }
+    .sec-search-trigger { width:38px; height:38px; border-radius:19px; border:0; background:var(--ios-fill-secondary); color:var(--ios-accent); display:grid; place-items:center; cursor:pointer; }
+    .ios-badge { height:32px; padding:0 12px; border-radius:16px; background:var(--ios-fill-secondary); color:var(--ios-secondary-label); display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:650; white-space:nowrap; }
+    .sec-search-bar { position:absolute; inset:4px 16px 6px; min-height:50px; display:flex; align-items:center; gap:8px; padding:0 10px 0 13px; background:var(--ios-fill); border-radius:18px; opacity:0; pointer-events:none; transform:scale(.985); transition:opacity .16s ease,transform .16s ease; }
     .sec-header.searching .sec-search-bar { opacity:1; pointer-events:auto; transform:scale(1); }
     .sec-search-input { flex:1; height:100%; background:transparent; border:0; outline:0; color:var(--ios-label); font-family:inherit; font-size:15px; font-weight:400; }
     .sec-search-input::placeholder { color:var(--ios-tertiary-label); }
@@ -357,7 +359,7 @@
     }
 
     .app {
-      padding-bottom: calc(104px + env(safe-area-inset-bottom,0px));
+      padding-bottom: calc(124px + env(safe-area-inset-bottom,0px));
     }
 
     /* iOS 27 navigation chrome: transparent content first, glass only on controls. */
@@ -495,8 +497,8 @@
       font-weight: 650;
     }
 
-    .sec-header { padding: 5px 18px 8px; }
-    .sec-header h3 { font-size: 21px; font-weight: 710; letter-spacing:-.45px; }
+    .sec-header { padding: 10px 18px 10px; }
+    .sec-header h3 { font-size: 24px; font-weight: 760; letter-spacing:-.65px; }
     .sec-search-trigger { background:rgba(var(--glass-rgb),calc(var(--glass-alpha) * .88)); }
     .sec-search-bar { inset:5px 16px 7px; border-radius:19px; }
     .ios-badge { background:var(--ios-fill-tertiary); }
@@ -559,44 +561,63 @@
     }
     .progress-track { height:6px; }
 
-    /* Refined floating tab bar, expands at rest and compresses while scrolling. */
+    /* Bottom navigation: anchored low like real Liquid Glass, always visible. */
     .nav-bar {
-      bottom: calc(10px + env(safe-area-inset-bottom,0px));
-      width: calc(100% - 28px);
-      max-width: 438px;
-      min-height: 62px;
-      padding: 5px;
-      border-radius: 31px;
-      background: rgba(var(--glass-rgb), var(--glass-alpha));
-      transition: width .32s cubic-bezier(.2,.8,.2,1), min-height .32s cubic-bezier(.2,.8,.2,1), padding .32s cubic-bezier(.2,.8,.2,1), transform .32s cubic-bezier(.2,.8,.2,1);
+      left: 50%;
+      bottom: calc(6px + env(safe-area-inset-bottom,0px));
+      transform: translateX(-50%);
+      width: calc(100% - 18px);
+      max-width: 462px;
+      min-height: 76px;
+      padding: 8px 10px 10px;
+      border-radius: 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: rgba(var(--glass-rgb), calc(var(--glass-alpha) + .06));
+      transition: transform .24s ease, opacity .24s ease;
     }
     .nav-item {
-      height:52px;
-      border-radius:26px;
-      transition:background .22s ease, color .22s ease, transform .22s ease;
-      z-index:1;
+      min-width: 0;
+      height: 58px;
+      border-radius: 24px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:3px;
+      border:0;
+      background:transparent;
+      cursor:pointer;
+      color: var(--ios-secondary-label);
+      transition: color .2s ease, transform .2s ease, background .2s ease;
+      z-index: 1;
     }
+    .nav-item .material-symbols-rounded { font-size: 23px; }
     .nav-item.active {
-      background: color-mix(in srgb, var(--ios-accent) 12%, transparent);
-      color: var(--ios-accent);
+      color: var(--ios-label);
+      transform: translateY(-1px);
     }
-    .nav-item.active .nav-indicator { background:transparent; }
-    .nav-indicator { height:27px; }
-    .nav-label { font-size:10px; font-weight:560; }
-    .nav-bar.compact {
-      width: 230px;
-      min-height: 50px;
-      padding: 4px;
+    .nav-item.active .nav-indicator {
+      min-width: 78px;
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.26));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.72), 0 8px 18px rgba(0,0,0,.10);
+      color: var(--ios-label);
     }
-    .nav-bar.compact .nav-item { height:42px; }
-    .nav-bar.compact .nav-label {
-      max-height:0;
-      opacity:0;
-      overflow:hidden;
-      transform:translateY(4px);
+    .nav-indicator {
+      width: auto;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: min-width .22s ease, height .22s ease, padding .22s ease, background .22s ease, box-shadow .22s ease, color .22s ease;
     }
-    .nav-bar.compact .nav-indicator { height:34px; }
-
+    .nav-label { font-size: 11px; font-weight: 620; letter-spacing: -.1px; }
     /* Sheets with iOS 27 readability refinement. */
     .modal-backdrop {
       background:rgba(0,0,0,.28);
@@ -691,7 +712,6 @@
     @media (max-width:380px) {
       .brand-title { font-size:30px; }
       .balance-val { font-size:40px; }
-      .nav-bar.compact { width:210px; }
     }
 
   </style>
@@ -753,9 +773,9 @@
 
       <div class="sec-header" id="secHeader">
         <div class="sec-header-default">
-          <div>
+          <div class="sec-header-copy">
             <h3>Opérations</h3>
-            <p style="font-size: 11px; color: var(--md-sys-color-outline);">Toutes les opérations du mois</p>
+            <p class="sec-subtitle">Toutes les opérations du mois</p>
           </div>
           <div class="sec-header-right">
             <button class="sec-search-trigger ios-press" id="btnOpenSearch" title="Rechercher une opération">
@@ -1681,23 +1701,9 @@
     applyGlassTint(savedGlass);
     if (glassSlider) glassSlider.oninput = e => applyGlassTint(e.target.value);
 
-    // Floating tab bar compression: mirrors Apple's content-first navigation behavior.
-    let lastScrollY = window.scrollY;
-    let compactTimer = 0;
-    const syncTabBarDensity = () => {
-      const nav = $("navBar");
-      if (!nav) return;
-      const y = window.scrollY;
-      const goingDown = y > lastScrollY + 2;
-      if (y > 90 && goingDown) nav.classList.add("compact");
-      if (y < 45 || y < lastScrollY - 8) nav.classList.remove("compact");
-      lastScrollY = y;
-      clearTimeout(compactTimer);
-      compactTimer = setTimeout(() => {
-        if (window.scrollY < 90) nav.classList.remove("compact");
-      }, 260);
-    };
-    window.addEventListener("scroll", syncTabBarDensity, { passive:true });
+    // Keep bottom navigation always visible and anchored low.
+    const navBar = $("navBar");
+    if (navBar) navBar.classList.remove("compact");
 
   </script>
 
