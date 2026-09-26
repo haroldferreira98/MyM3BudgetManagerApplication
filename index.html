@@ -2420,6 +2420,38 @@
       }
     }
 
+    /* DA2 v7 — floating bottom nav, very close to the device bottom. */
+    body > #navBar.nav-bar,
+    .nav-bar {
+      position:fixed !important;
+      left:50% !important;
+      right:auto !important;
+      bottom:max(5px, calc(env(safe-area-inset-bottom, 0px) - 18px)) !important;
+      transform:translateX(-50%) !important;
+
+      width:min(456px, calc(100vw - 20px)) !important;
+      min-height:70px !important;
+
+      padding:7px 9px !important;
+
+      border:3px solid var(--nb-black) !important;
+      border-radius:24px !important;
+      background:var(--nb-bg) !important;
+
+      box-shadow:6px 6px 0 var(--nb-black) !important;
+      z-index:80 !important;
+    }
+
+    body.auth-ready.modal-open > #navBar.nav-bar {
+      transform:translate3d(-50%, calc(100% + 28px), 0) !important;
+    }
+
+    /* Black is structural only in charts; never a data/category swatch. */
+    #screenAnalytics .breakdown-row [style*="background:#111"],
+    #screenAnalytics .breakdown-row [style*="background: #111"] {
+      background:#F59BC1 !important;
+    }
+
   </style>
 </head>
 <body class="auth-locked">
@@ -2981,7 +3013,7 @@
       const keys = Object.keys(data).sort((a, b) => data[b] - data[a]);
       const segs = keys.slice(0, 5).map((k, i) => ({ id: k, amt: data[k], color: palette[i % palette.length] }));
       if (keys.length > 5) {
-        segs.push({ id: "autres", amt: keys.slice(5).reduce((a, k) => a + data[k], 0), color: palette[5 % palette.length] });
+        segs.push({ id: "autres", amt: keys.slice(5).reduce((a, k) => a + data[k], 0), color: "#F59BC1" });
       }
 
       // Neo-brutal donut: black structural ring underneath the colored data.
@@ -3138,8 +3170,8 @@
       const fixedItems = allExpenses.filter(t => t.isFixed === true || t.isFixed === "true" || t.isFixed === 1);
       const normalItems = allExpenses.filter(t => !t.isFixed || t.isFixed === "false" || t.isFixed === 0);
 
-      const FIXED_PALETTE = ["#7957FF", "#42D8B2", "#FFD84A", "#FF795A", "#B8DBFF", "#111111"];
-      const NORMAL_PALETTE = ["#FF795A", "#FFD84A", "#42D8B2", "#7957FF", "#B8DBFF", "#111111"];
+      const FIXED_PALETTE = ["#7957FF", "#42D8B2", "#FFD84A", "#FF795A", "#B8DBFF", "#F59BC1"];
+      const NORMAL_PALETTE = ["#FF795A", "#FFD84A", "#42D8B2", "#7957FF", "#B8DBFF", "#F59BC1"];
 
       drawDonut("chartFixed", "fixedTotalBadge", "fixedTotalText", "breakdownFixed", fixedItems, FIXED_PALETTE, "Aucune charge ce mois-ci");
       drawDonut("chartNormal", "normalTotalBadge", "normalTotalText", "breakdownNormal", normalItems, NORMAL_PALETTE, "Aucune dépense courante ce mois-ci");
