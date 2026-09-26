@@ -2180,6 +2180,246 @@
       }
     }
 
+    /* DA2 v5 — one single horizontal grid for the whole operations screen.
+       The KPI card, filters, operations header and rows share exactly
+       the same left/right edges. */
+    #screenOperations {
+      width:100% !important;
+    }
+
+    #screenOperations .balance-card,
+    #screenOperations .chips-bar,
+    #screenOperations .sec-header,
+    #screenOperations #txContainer,
+    #screenOperations .tx-list {
+      width:100% !important;
+      max-width:none !important;
+      margin-left:0 !important;
+      margin-right:0 !important;
+    }
+
+    #screenOperations #txContainer,
+    #screenOperations .tx-list {
+      padding-left:0 !important;
+      padding-right:0 !important;
+    }
+
+    #screenOperations .tx-item,
+    #screenOperations .tx-item.ios-press {
+      width:100% !important;
+      max-width:none !important;
+      margin-left:0 !important;
+      margin-right:0 !important;
+    }
+
+    /* Keep the section title aligned to the same global edge;
+       only its internal content gets breathing room. */
+    #screenOperations .sec-header {
+      padding-left:2px !important;
+      padding-right:2px !important;
+    }
+
+    #screenOperations .date-group-header {
+      margin-left:2px !important;
+    }
+
+    @media (max-width:390px) {
+      #screenOperations .balance-card,
+      #screenOperations .chips-bar,
+      #screenOperations .sec-header,
+      #screenOperations #txContainer,
+      #screenOperations .tx-list {
+        width:100% !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+      }
+    }
+
+    /* ============================================================
+       DA2 v6 — ANALYSE + SPACING + BOTTOM NAV
+       ============================================================ */
+
+    /* ANALYSE: same horizontal grid and deliberate spacing */
+    #screenAnalytics {
+      width:100% !important;
+      padding:8px 0 126px !important;
+    }
+
+    #screenAnalytics > .analytics-card {
+      width:100% !important;
+      max-width:none !important;
+      margin:0 0 22px !important;
+      padding:18px !important;
+      border:3px solid var(--nb-black) !important;
+      border-radius:28px !important;
+      background:var(--nb-bg) !important;
+      box-shadow:var(--nb-shadow) !important;
+    }
+
+    #screenAnalytics > .analytics-card:last-child {
+      margin-bottom:0 !important;
+    }
+
+    #screenAnalytics .analytics-title,
+    #screenAnalytics .analytics-rules > h3 {
+      margin:0 0 4px !important;
+      font-size:25px !important;
+      line-height:1 !important;
+      letter-spacing:-1px !important;
+      font-weight:700 !important;
+      color:var(--nb-black) !important;
+    }
+
+    #screenAnalytics .analytics-card p {
+      color:var(--nb-muted) !important;
+      font-weight:600 !important;
+    }
+
+    /* 50/30/20 cards: more breathing room, no cramped stack */
+    #screenAnalytics .rule-card {
+      margin:14px 0 0 !important;
+      padding:14px !important;
+      border:3px solid var(--nb-black) !important;
+      border-radius:18px !important;
+      background:#FFFDF2 !important;
+      box-shadow:var(--nb-shadow-sm) !important;
+    }
+
+    #screenAnalytics .rule-header {
+      font-size:13px !important;
+      font-weight:700 !important;
+    }
+
+    #screenAnalytics .rule-footer {
+      margin-top:10px !important;
+      color:var(--nb-muted) !important;
+      font-weight:600 !important;
+    }
+
+    #screenAnalytics .progress-track {
+      height:17px !important;
+      margin:12px 0 !important;
+      border:3px solid var(--nb-black) !important;
+      border-radius:7px !important;
+      background:#EFE5C8 !important;
+      overflow:hidden !important;
+    }
+
+    #screenAnalytics .progress-fill {
+      border-radius:0 !important;
+    }
+
+    /* Chart area: intentional DA, not floating old-style donut */
+    #screenAnalytics .donut-wrap {
+      width:236px !important;
+      height:236px !important;
+      margin:24px auto 26px !important;
+      padding:0 !important;
+      border:0 !important;
+      background:transparent !important;
+    }
+
+    #screenAnalytics .donut-center {
+      min-width:110px;
+      min-height:78px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:10px;
+      border:3px solid var(--nb-black);
+      border-radius:16px;
+      background:var(--nb-yellow);
+      box-shadow:var(--nb-shadow-sm);
+    }
+
+    #screenAnalytics .donut-center > div:first-child {
+      font-size:20px !important;
+      font-weight:700 !important;
+      color:var(--nb-black) !important;
+      letter-spacing:-.6px;
+    }
+
+    #screenAnalytics .donut-center > div:last-child {
+      margin-top:4px;
+      color:var(--nb-black) !important;
+      font-size:9px !important;
+      font-weight:700 !important;
+      letter-spacing:.05em;
+    }
+
+    /* Breakdown cells: separate, spaced, explicitly neo-brutal */
+    #screenAnalytics #breakdownFixed,
+    #screenAnalytics #breakdownNormal {
+      display:flex !important;
+      flex-direction:column !important;
+      gap:11px !important;
+      margin-top:4px !important;
+    }
+
+    #screenAnalytics .breakdown-row {
+      margin:0 !important;
+      padding:12px 13px !important;
+      border:3px solid var(--nb-black) !important;
+      border-radius:16px !important;
+      background:#FFFDF2 !important;
+      box-shadow:var(--nb-shadow-sm) !important;
+      font-size:12px !important;
+    }
+
+    #screenAnalytics .breakdown-row:last-child {
+      border-bottom:3px solid var(--nb-black) !important;
+    }
+
+    #screenAnalytics .ios-badge {
+      box-shadow:2px 2px 0 var(--nb-black) !important;
+    }
+
+    /* Keep all analysis cards away from the bottom bar. */
+    #screenAnalytics,
+    #screenSettings,
+    #screenOperations {
+      padding-bottom:126px !important;
+    }
+
+    /* NAV: anchored to the actual viewport bottom.
+       The safe-area is INSIDE the bar instead of creating a floating gap. */
+    body > #navBar.nav-bar,
+    .nav-bar {
+      position:fixed !important;
+      left:50% !important;
+      right:auto !important;
+      bottom:0 !important;
+      transform:translateX(-50%) !important;
+      width:min(480px,100vw) !important;
+      min-height:74px !important;
+      padding:
+        7px
+        max(9px,env(safe-area-inset-right,0px))
+        calc(7px + env(safe-area-inset-bottom,0px))
+        max(9px,env(safe-area-inset-left,0px)) !important;
+      border-left:3px solid var(--nb-black) !important;
+      border-right:3px solid var(--nb-black) !important;
+      border-top:3px solid var(--nb-black) !important;
+      border-bottom:0 !important;
+      border-radius:24px 24px 0 0 !important;
+      background:var(--nb-bg) !important;
+      box-shadow:0 -7px 0 var(--nb-black) !important;
+      z-index:80 !important;
+    }
+
+    body.auth-ready.modal-open > #navBar.nav-bar {
+      transform:translate3d(-50%,calc(100% + 16px),0) !important;
+    }
+
+    @media (min-width:481px) {
+      body > #navBar.nav-bar,
+      .nav-bar {
+        border-bottom:3px solid var(--nb-black) !important;
+        border-radius:24px 24px 0 0 !important;
+      }
+    }
+
   </style>
 </head>
 <body class="auth-locked">
@@ -2353,7 +2593,7 @@
 
     <div id="screenAnalytics" class="screen">
       <!-- Règle 50 / 30 / 20 -->
-      <div class="ios-card">
+      <div class="ios-card analytics-card analytics-rules">
         <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 2px;">Règle 50 / 30 / 20</h3>
         <p style="font-size: 12px; color: var(--md-sys-color-outline); margin-bottom: 16px;">Calculée sur vos revenus mensuels réels.</p>
 
@@ -2398,10 +2638,10 @@
       </div>
 
       <!-- Graphique 1 : Charges Fixes -->
-      <div class="ios-card">
+      <div class="ios-card analytics-card analytics-chart-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
           <div>
-            <h3 style="font-size: 18px; font-weight: 800;">Charges</h3>
+            <h3 class="analytics-title" style="font-size: 18px; font-weight: 800;">Charges</h3>
             <p style="font-size: 11px; color: var(--md-sys-color-outline);">Dépenses récurrentes & fixes</p>
           </div>
           <div class="ios-badge" id="fixedTotalBadge">0,00 €</div>
@@ -2417,10 +2657,10 @@
       </div>
 
       <!-- Graphique 2 : Dépenses Courantes -->
-      <div class="ios-card">
+      <div class="ios-card analytics-card analytics-chart-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
           <div>
-            <h3 style="font-size: 18px; font-weight: 800;">Dépenses courantes</h3>
+            <h3 class="analytics-title" style="font-size: 18px; font-weight: 800;">Dépenses courantes</h3>
             <p style="font-size: 11px; color: var(--md-sys-color-outline);">Achats du quotidien & sorties</p>
           </div>
           <div class="ios-badge" id="normalTotalBadge">0,00 €</div>
@@ -2721,8 +2961,14 @@
 
       if (!total || !Object.keys(data).length) {
         ctx.beginPath();
-        ctx.arc(110, 110, 85, 0, 2 * Math.PI);
-        ctx.strokeStyle = "rgba(120, 120, 120, 0.15)";
+        ctx.arc(110, 110, 84, 0, 2 * Math.PI);
+        ctx.strokeStyle = "#111111";
+        ctx.lineWidth = 28;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(110, 110, 84, 0, 2 * Math.PI);
+        ctx.strokeStyle = "#FFF7D6";
         ctx.lineWidth = 20;
         ctx.stroke();
 
@@ -2738,16 +2984,27 @@
         segs.push({ id: "autres", amt: keys.slice(5).reduce((a, k) => a + data[k], 0), color: palette[5 % palette.length] });
       }
 
+      // Neo-brutal donut: black structural ring underneath the colored data.
+      ctx.beginPath();
+      ctx.arc(110, 110, 84, 0, 2 * Math.PI);
+      ctx.strokeStyle = "#111111";
+      ctx.lineWidth = 30;
+      ctx.stroke();
+
       let angle = -0.5 * Math.PI;
       segs.forEach(seg => {
         const slice = (seg.amt / total) * (2 * Math.PI);
-        const endAngle = angle + (segs.length > 1 ? Math.max(0.04, slice - 0.04) : slice);
+        const gap = segs.length > 1 ? Math.min(0.055, slice * 0.16) : 0;
+        const startAngle = angle + gap / 2;
+        const endAngle = angle + slice - gap / 2;
+
         ctx.beginPath();
-        ctx.arc(110, 110, 85, angle, endAngle);
+        ctx.arc(110, 110, 84, startAngle, endAngle);
         ctx.strokeStyle = seg.color;
         ctx.lineWidth = 20;
-        ctx.lineCap = "round";
+        ctx.lineCap = "butt";
         ctx.stroke();
+
         angle += slice;
 
         if (bd) {
@@ -2756,7 +3013,7 @@
           bd.insertAdjacentHTML("beforeend", `
             <div class="breakdown-row">
               <div style="display:flex; align-items:center; gap:8px; min-width:0;">
-                <div style="background:${seg.color}; width:28px; height:28px; border-radius:10px; display:grid; place-content:center; color:#fff; flex-shrink:0;">
+                <div style="background:${seg.color}; width:32px; height:32px; border:2px solid #111; border-radius:7px; display:grid; place-content:center; color:#111; flex-shrink:0; box-shadow:3px 3px 0 #111;">
                   <span class="material-symbols-rounded" style="font-size:16px;">${cat.icon}</span>
                 </div>
                 <span style="font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cat.label}</span>
@@ -2881,8 +3138,8 @@
       const fixedItems = allExpenses.filter(t => t.isFixed === true || t.isFixed === "true" || t.isFixed === 1);
       const normalItems = allExpenses.filter(t => !t.isFixed || t.isFixed === "false" || t.isFixed === 0);
 
-      const FIXED_PALETTE = ["#007AFF", "#5856D6", "#34C759", "#5AC8FA", "#AF52DE", "#64D2FF"];
-      const NORMAL_PALETTE = ["#FF9500", "#FF2D55", "#34C759", "#007AFF", "#AF52DE", "#FFD60A"];
+      const FIXED_PALETTE = ["#7957FF", "#42D8B2", "#FFD84A", "#FF795A", "#B8DBFF", "#111111"];
+      const NORMAL_PALETTE = ["#FF795A", "#FFD84A", "#42D8B2", "#7957FF", "#B8DBFF", "#111111"];
 
       drawDonut("chartFixed", "fixedTotalBadge", "fixedTotalText", "breakdownFixed", fixedItems, FIXED_PALETTE, "Aucune charge ce mois-ci");
       drawDonut("chartNormal", "normalTotalBadge", "normalTotalText", "breakdownNormal", normalItems, NORMAL_PALETTE, "Aucune dépense courante ce mois-ci");
