@@ -1060,7 +1060,7 @@
       <div class="auth-card">
         <form class="auth-step" id="authEmailStep" novalidate>
           <div class="auth-step-title">Bon retour</div>
-          <div class="auth-step-copy">Entrez votre adresse e-mail. Aucun mot de passe à retenir.</div>
+          <div class="auth-step-copy">Connectez-vous avec votre adresse e-mail et votre mot de passe.</div>
 
           <label class="auth-field-label" for="authEmail">Adresse e-mail</label>
           <div class="auth-input-wrap">
@@ -1078,51 +1078,38 @@
             />
           </div>
 
-          <button class="auth-primary" id="authSendCode" type="submit">
-            <span>Continuer</span>
+          <label class="auth-field-label" for="authPassword">Mot de passe</label>
+          <div class="auth-input-wrap">
+            <span class="material-symbols-rounded" aria-hidden="true">lock</span>
+            <input
+              class="auth-input"
+              id="authPassword"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Votre mot de passe"
+              required
+            />
+            <button class="auth-text-btn" id="authTogglePassword" type="button" aria-label="Afficher le mot de passe" style="padding:6px;">
+              <span class="material-symbols-rounded" id="authTogglePasswordIcon" aria-hidden="true">visibility</span>
+            </button>
+          </div>
+
+          <button class="auth-primary" id="authSignIn" type="submit">
+            <span>Se connecter</span>
             <span class="material-symbols-rounded" aria-hidden="true" style="font-size:19px;">arrow_forward</span>
           </button>
 
           <div class="auth-hint">
-            <span class="material-symbols-rounded" aria-hidden="true">lock</span>
-            <span>Nous vous envoyons un code de connexion à usage unique. Votre session reste gérée par Supabase Auth.</span>
+            <span class="material-symbols-rounded" aria-hidden="true">verified_user</span>
+            <span>Connexion directe avec Supabase Auth. Aucun code ni lien n’est envoyé par e-mail.</span>
           </div>
           <div class="auth-status" id="authEmailStatus" role="status" aria-live="polite"></div>
         </form>
 
-        <form class="auth-step" id="authOtpStep" novalidate hidden>
-          <div class="auth-step-title">Vérifiez votre e-mail</div>
-          <div class="auth-step-copy">Saisissez le code à 6 chiffres reçu à cette adresse.</div>
-          <div class="auth-email-chip"><span id="authOtpEmail"></span></div>
 
-          <label class="auth-field-label" for="authOtp">Code de vérification</label>
-          <div class="auth-input-wrap">
-            <input
-              class="auth-input auth-otp"
-              id="authOtp"
-              type="text"
-              inputmode="numeric"
-              autocomplete="one-time-code"
-              maxlength="6"
-              pattern="[0-9]{6}"
-              placeholder="••••••"
-              required
-            />
-          </div>
-
-          <button class="auth-primary" id="authVerifyCode" type="submit">
-            <span>Se connecter</span>
-          </button>
-
-          <div class="auth-secondary-row">
-            <button class="auth-text-btn" id="authResendCode" type="button">Renvoyer le code</button>
-            <button class="auth-text-btn" id="authChangeEmail" type="button">Changer d’adresse</button>
-          </div>
-          <div class="auth-status" id="authOtpStatus" role="status" aria-live="polite"></div>
-        </form>
       </div>
 
-      <div class="auth-footer">Connexion sans mot de passe · Données protégées par les règles RLS Supabase</div>
+      <div class="auth-footer">Connexion sécurisée · Données protégées par les règles RLS Supabase</div>
     </div>
   </section>
 
@@ -1459,7 +1446,7 @@
 
       <div id="accountActionsLoggedIn" style="display: flex; flex-direction: column; gap: 8px;">
         <button id="btnSwitchAccount" class="ios-button ios-secondary ios-press" style="justify-content: flex-start;">
-          <span class="material-symbols-rounded">alternate_email</span>Changer d’adresse e-mail
+          <span class="material-symbols-rounded">alternate_email</span> e-mail
         </button>
         <button id="btnSyncNow" class="ios-button ios-secondary ios-press" style="justify-content: flex-start;">
           <span class="material-symbols-rounded">sync</span>Forcer la synchronisation
@@ -1896,37 +1883,10 @@
     }
 
     function showEmailStep(email = "") {
-      $("authOtpStep").hidden = true;
-      $("authEmailStep").hidden = false;
       $("authEmail").value = email || $("authEmail").value || "";
-      $("authOtp").value = "";
+      $("authPassword").value = "";
       setAuthStatus("authEmailStatus", "");
-      setAuthStatus("authOtpStatus", "");
       setTimeout(() => $("authEmail")?.focus(), 80);
-    }
-
-    function showOtpStep(email) {
-      $("authEmailStep").hidden = true;
-      $("authOtpStep").hidden = false;
-      $("authOtpEmail").textContent = email;
-      $("authOtp").value = "";
-      setAuthStatus("authOtpStatus", "Code envoyé. Consultez votre boîte de réception.");
-      setTimeout(() => $("authOtp")?.focus(), 80);
-    }
-
-    async function sendEmailOtp(email, { resend = false } = {}) {
-      const cleanEmail = String(email || "").trim().toLowerCase();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
-        throw new Error("Entrez une adresse e-mail valide.");
-      }
-
-      const { error } = await supabase.auth.signInWithOtp({
-        email: cleanEmail,
-        options: { shouldCreateUser: true }
-      });
-      if (error) throw error;
-      if (!resend) showOtpStep(cleanEmail);
-      return cleanEmail;
     }
 
     async function applyAuthUser(user) {
@@ -1969,7 +1929,7 @@
       }
     }
 
-    // Keep the application locked until we know whether a Supabase session exists.
+    // Keep the application locked until Supabase tells us whether a session exists.
     setAuthGateVisible(true);
     const { data: initialSessionData } = await supabase.auth.getSession();
     await applyAuthUser(initialSessionData?.session?.user || null);
@@ -1981,66 +1941,49 @@
 
     $("authEmailStep").addEventListener("submit", async e => {
       e.preventDefault();
-      const btn = $("authSendCode");
-      setAuthStatus("authEmailStatus", "");
-      setAuthButtonBusy(btn, true, "Envoi du code…");
-      try {
-        await sendEmailOtp($("authEmail").value);
-      } catch (err) {
-        setAuthStatus("authEmailStatus", err.message || "Impossible d’envoyer le code.", true);
-      } finally {
-        setAuthButtonBusy(btn, false);
+      const email = $("authEmail").value.trim().toLowerCase();
+      const password = $("authPassword").value;
+      const btn = $("authSignIn");
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setAuthStatus("authEmailStatus", "Entrez une adresse e-mail valide.", true);
+        return;
       }
-    });
-
-    $("authOtp").addEventListener("input", e => {
-      e.target.value = e.target.value.replace(/\D/g, "").slice(0, 6);
-    });
-
-    $("authOtpStep").addEventListener("submit", async e => {
-      e.preventDefault();
-      const btn = $("authVerifyCode");
-      const email = $("authOtpEmail").textContent.trim();
-      const token = $("authOtp").value.replace(/\D/g, "");
-      if (token.length !== 6) {
-        setAuthStatus("authOtpStatus", "Saisissez les 6 chiffres du code.", true);
+      if (!password) {
+        setAuthStatus("authEmailStatus", "Entrez votre mot de passe.", true);
         return;
       }
 
-      setAuthStatus("authOtpStatus", "");
-      setAuthButtonBusy(btn, true, "Vérification…");
+      setAuthStatus("authEmailStatus", "");
+      setAuthButtonBusy(btn, true, "Connexion…");
+
       try {
-        const { data, error } = await supabase.auth.verifyOtp({
-          email,
-          token,
-          type: "email"
-        });
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        if (!data?.session) throw new Error("La session n’a pas pu être créée.");
-        setAuthStatus("authOtpStatus", "Connexion réussie.");
       } catch (err) {
-        setAuthStatus("authOtpStatus", err.message || "Code invalide ou expiré.", true);
+        const raw = String(err?.message || "");
+        let message = "Connexion impossible. Vérifiez votre e-mail et votre mot de passe.";
+        if (/invalid login credentials/i.test(raw)) {
+          message = "E-mail ou mot de passe incorrect.";
+        } else if (/email not confirmed/i.test(raw)) {
+          message = "Ce compte n’est pas encore confirmé dans Supabase.";
+        } else if (raw) {
+          message = raw;
+        }
+        setAuthStatus("authEmailStatus", message, true);
       } finally {
         setAuthButtonBusy(btn, false);
       }
     });
 
-    $("authResendCode").onclick = async () => {
-      const email = $("authOtpEmail").textContent.trim();
-      const btn = $("authResendCode");
-      btn.disabled = true;
-      setAuthStatus("authOtpStatus", "Renvoi en cours…");
-      try {
-        await sendEmailOtp(email, { resend: true });
-        setAuthStatus("authOtpStatus", "Nouveau code envoyé.");
-      } catch (err) {
-        setAuthStatus("authOtpStatus", err.message || "Impossible de renvoyer le code.", true);
-      } finally {
-        btn.disabled = false;
-      }
+    $("authTogglePassword").onclick = () => {
+      const input = $("authPassword");
+      const icon = $("authTogglePasswordIcon");
+      const hidden = input.type === "password";
+      input.type = hidden ? "text" : "password";
+      icon.textContent = hidden ? "visibility_off" : "visibility";
+      $("authTogglePassword").setAttribute("aria-label", hidden ? "Masquer le mot de passe" : "Afficher le mot de passe");
     };
-
-    $("authChangeEmail").onclick = () => showEmailStep($("authOtpEmail").textContent.trim());
 
     $("btnSwitchAccount").onclick = async () => {
       const previousEmail = currentUser?.email || "";
