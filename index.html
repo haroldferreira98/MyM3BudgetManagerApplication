@@ -2565,6 +2565,144 @@
     }
 
     /* ============================================================
+       DA2 v15 — COLLAPSIBLE DATE GROUPS
+       A chevron sits at the far right of every date row. Collapsed
+       groups show a compact daily summary instead of transactions.
+       ============================================================ */
+    #screenOperations #txContainer.tx-list {
+      gap:0 !important;
+    }
+
+    #screenOperations .date-group {
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    #screenOperations .date-group + .date-group {
+      margin-top:16px;
+    }
+
+    #screenOperations .date-group-heading {
+      width:100%;
+      min-height:40px;
+      padding:0 2px;
+      margin:0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border:0;
+      background:transparent;
+      color:var(--nb-black);
+      font:inherit;
+      text-align:left;
+      cursor:pointer;
+    }
+
+    #screenOperations .date-group:first-child .date-group-heading {
+      margin-top:-12px;
+    }
+
+    #screenOperations .date-group-heading .date-group-header {
+      margin:0 !important;
+      flex:0 1 auto;
+    }
+
+    #screenOperations .date-group-chevron {
+      width:38px;
+      height:38px;
+      flex:0 0 38px;
+      display:grid;
+      place-items:center;
+      border:3px solid var(--nb-black);
+      border-radius:13px;
+      background:var(--nb-yellow);
+      color:var(--nb-black);
+      box-shadow:3px 3px 0 var(--nb-black);
+      transition:transform .1s ease, box-shadow .1s ease;
+    }
+
+    #screenOperations .date-group-heading:active .date-group-chevron {
+      transform:translate(2px,2px);
+      box-shadow:1px 1px 0 var(--nb-black);
+    }
+
+    #screenOperations .date-group-chevron .material-symbols-rounded {
+      font-size:25px !important;
+      font-weight:700 !important;
+      color:var(--nb-black) !important;
+    }
+
+    #screenOperations .date-group-items {
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    #screenOperations .date-group-summary {
+      min-height:82px;
+      padding:13px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      border:3px solid var(--nb-black);
+      border-radius:24px;
+      background:var(--nb-bg);
+      color:var(--nb-black);
+      box-shadow:var(--nb-shadow);
+    }
+
+    #screenOperations .date-group-summary-copy {
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+    }
+
+    #screenOperations .date-group-summary-copy strong {
+      font-size:17px;
+      line-height:1.1;
+      font-weight:700;
+      letter-spacing:-.35px;
+    }
+
+    #screenOperations .date-group-summary-copy span {
+      color:var(--nb-muted);
+      font-size:11px;
+      line-height:1.35;
+      font-weight:600;
+    }
+
+    #screenOperations .date-group-summary-net {
+      flex:0 0 auto;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:2px;
+      text-align:right;
+    }
+
+    #screenOperations .date-group-summary-net small {
+      color:var(--nb-muted);
+      font-size:10px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+
+    #screenOperations .date-group-summary-net strong {
+      font-size:17px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    #screenOperations .date-group-summary-net.positive strong { color:#137A49; }
+    #screenOperations .date-group-summary-net.negative strong { color:var(--nb-black); }
+
+    /* ============================================================
        DA2 v14 — UPDATE CURTAIN
        Full-screen neo-brutal curtain instead of a bottom toast.
        ============================================================ */
@@ -3719,6 +3857,7 @@
     let currentUser = null, currentHouseholdId = null, realtimeChannel = null, transactions = [];
     let currentFilter = "all", editingId = null, selectedId = null, modalType = "expense", searchQuery = "";
     let currentMonth = new Date().toISOString().slice(0, 7);
+    const collapsedDateGroups = new Set();
 
     const getMonthTx = () => transactions.filter(t => (t.date || "").startsWith(currentMonth));
     const sum = (arr, fn) => arr.filter(fn).reduce((s, t) => s + (Number(t.amount) || 0), 0);
@@ -3853,38 +3992,88 @@
               <p style="margin-top:6px; font-weight:700;">Aucune opération trouvée</p>
             </div>`;
         } else {
-          let lastDate = null, html = "";
+          const groups = [];
           list.forEach(tx => {
-            const cat = ALL_CATS.find(x => x.id === tx.category) || { label: tx.category || "Divers", icon: "category" };
-            const isExp = tx.type === "expense";
-            const isFix = (tx.isFixed === true || tx.isFixed === "true" || tx.isFixed === 1);
-            const isReimb = !!tx.isReimbursed;
-
-            if (tx.date !== lastDate) {
-              lastDate = tx.date;
-              const [y, m, d] = (tx.date || "").split("-").map(Number);
-              const dateObj = new Date(y, m - 1, d);
-              const today = new Date(); today.setHours(0,0,0,0); dateObj.setHours(0,0,0,0);
-              const diff = Math.round((today - dateObj) / 86400000);
-              const dateLabel = diff === 0 ? "Aujourd'hui" : diff === 1 ? "Hier" : diff === 2 ? "Avant-hier" : dateObj.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
-              html += `<div class="date-group-header">${dateLabel}</div>`;
+            let group = groups[groups.length - 1];
+            if (!group || group.date !== tx.date) {
+              group = { date: tx.date, items: [] };
+              groups.push(group);
             }
+            group.items.push(tx);
+          });
+
+          let html = "";
+          groups.forEach(group => {
+            const [y, m, d] = (group.date || "").split("-").map(Number);
+            const dateObj = new Date(y, m - 1, d);
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            dateObj.setHours(0,0,0,0);
+            const diff = Math.round((today - dateObj) / 86400000);
+            const dateLabel = diff === 0 ? "Aujourd'hui" : diff === 1 ? "Hier" : diff === 2 ? "Avant-hier" : dateObj.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+
+            // During a search, matching transactions stay visible even if that day was collapsed before.
+            const collapsed = !searchQuery.trim() && collapsedDateGroups.has(group.date);
+            const expenseTotal = group.items
+              .filter(tx => tx.type === "expense" && !tx.isReimbursed)
+              .reduce((total, tx) => total + (Number(tx.amount) || 0), 0);
+            const incomeTotal = group.items
+              .filter(tx => tx.type === "income")
+              .reduce((total, tx) => total + (Number(tx.amount) || 0), 0);
+            const netTotal = incomeTotal - expenseTotal;
+            const reimbursedCount = group.items.filter(tx => tx.type === "expense" && tx.isReimbursed).length;
+            const operationLabel = `${group.items.length} opération${group.items.length > 1 ? "s" : ""}`;
+            const reimbursedLabel = reimbursedCount ? ` · ${reimbursedCount} remboursée${reimbursedCount > 1 ? "s" : ""}` : "";
 
             html += `
-              <div class="tx-item ios-press" data-id="${tx.id}">
-                <div class="tx-left">
-                  <div class="tx-icon-wrap"><span class="material-symbols-rounded">${cat.icon}</span></div>
-                  <div style="min-width:0;">
-                    <div class="tx-title">${tx.label}</div>
-                    <div class="tx-meta">
-                      <span>${cat.label}</span>
-                      ${isFix ? `<span class="tag-pill tag-fixed">Charge</span>` : ""}
-                      ${isReimb ? `<span class="tag-pill tag-reimbursed">Remboursé</span>` : ""}
-                    </div>
+              <section class="date-group ${collapsed ? 'is-collapsed' : ''}" data-date="${group.date}">
+                <button class="date-group-heading" type="button" data-date="${group.date}" aria-expanded="${collapsed ? 'false' : 'true'}" aria-label="${collapsed ? 'Déplier' : 'Replier'} les opérations du ${dateLabel}">
+                  <span class="date-group-header">${dateLabel}</span>
+                  <span class="date-group-chevron" aria-hidden="true">
+                    <span class="material-symbols-rounded">${collapsed ? 'expand_more' : 'expand_less'}</span>
+                  </span>
+                </button>`;
+
+            if (collapsed) {
+              html += `
+                <div class="date-group-summary">
+                  <div class="date-group-summary-copy">
+                    <strong>${operationLabel}</strong>
+                    <span>Dépenses ${fmt(expenseTotal)} · Revenus ${fmt(incomeTotal)}${reimbursedLabel}</span>
                   </div>
-                </div>
-                <div class="tx-amount ${isExp ? '' : 'income'} ${isReimb ? 'reimbursed' : ''}">${isExp ? '-' : '+'}${fmt(tx.amount)}</div>
-              </div>`;
+                  <div class="date-group-summary-net ${netTotal > 0 ? 'positive' : netTotal < 0 ? 'negative' : ''}">
+                    <small>Solde</small>
+                    <strong>${netTotal > 0 ? '+' : ''}${fmt(netTotal)}</strong>
+                  </div>
+                </div>`;
+            } else {
+              html += `<div class="date-group-items">`;
+              group.items.forEach(tx => {
+                const cat = ALL_CATS.find(x => x.id === tx.category) || { label: tx.category || "Divers", icon: "category" };
+                const isExp = tx.type === "expense";
+                const isFix = (tx.isFixed === true || tx.isFixed === "true" || tx.isFixed === 1);
+                const isReimb = !!tx.isReimbursed;
+
+                html += `
+                  <div class="tx-item ios-press" data-id="${tx.id}">
+                    <div class="tx-left">
+                      <div class="tx-icon-wrap"><span class="material-symbols-rounded">${cat.icon}</span></div>
+                      <div style="min-width:0;">
+                        <div class="tx-title">${tx.label}</div>
+                        <div class="tx-meta">
+                          <span>${cat.label}</span>
+                          ${isFix ? `<span class="tag-pill tag-fixed">Charge</span>` : ""}
+                          ${isReimb ? `<span class="tag-pill tag-reimbursed">Remboursé</span>` : ""}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tx-amount ${isExp ? '' : 'income'} ${isReimb ? 'reimbursed' : ''}">${isExp ? '-' : '+'}${fmt(tx.amount)}</div>
+                  </div>`;
+              });
+              html += `</div>`;
+            }
+
+            html += `</section>`;
           });
           txCont.innerHTML = html;
         }
@@ -4267,6 +4456,16 @@
     };
 
     $("txContainer").onclick = e => {
+      const groupToggle = e.target.closest(".date-group-heading");
+      if (groupToggle) {
+        const date = groupToggle.dataset.date;
+        if (!date) return;
+        if (collapsedDateGroups.has(date)) collapsedDateGroups.delete(date);
+        else collapsedDateGroups.add(date);
+        renderApp();
+        return;
+      }
+
       const item = e.target.closest(".tx-item");
       if (!item) return;
       selectedId = item.dataset.id;
