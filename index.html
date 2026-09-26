@@ -2470,6 +2470,33 @@
       transform:scale(1) !important;
     }
 
+    /* DA2 v9 — vertical rhythm cleanup */
+
+    /* Move the page content slightly lower on iPhone so it clears
+       the top blur / Dynamic Island area more comfortably. */
+    .app {
+      padding-top:10px !important;
+    }
+
+    /* Operations list was starting too far below its title.
+       Tighten only this gap without changing side margins. */
+    #screenOperations .sec-header {
+      margin-bottom:6px !important;
+      padding-bottom:6px !important;
+      min-height:auto !important;
+    }
+
+    #screenOperations #txContainer,
+    #screenOperations .tx-list {
+      margin-top:0 !important;
+      padding-top:0 !important;
+    }
+
+    #screenOperations .date-group-header {
+      margin-top:2px !important;
+      margin-bottom:8px !important;
+    }
+
   </style>
 </head>
 <body class="auth-locked">
