@@ -738,9 +738,393 @@
       }
     }
 
+
+    /* ─────────────────────────────────────────────────────────────
+       AUTH GATE — email OTP only
+       Full-screen, fluid, mobile-first and consistent with Liquid Glass.
+       The budget UI is inaccessible until Supabase returns a session.
+       ───────────────────────────────────────────────────────────── */
+    body.auth-locked {
+      overflow: hidden;
+      padding-bottom: 0 !important;
+    }
+    body:not(.auth-ready) > .app,
+    body:not(.auth-ready) > #navBar {
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    body.auth-ready > .app,
+    body.auth-ready > #navBar {
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    .auth-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
+      color: var(--ios-label);
+      background:
+        radial-gradient(74% 50% at 4% 0%, color-mix(in srgb, var(--ios-accent) 20%, transparent), transparent 72%),
+        radial-gradient(62% 48% at 100% 28%, rgba(76,161,255,.16), transparent 76%),
+        radial-gradient(62% 46% at 18% 100%, rgba(120,92,255,.12), transparent 76%),
+        var(--ios-bg);
+      transition: opacity .38s cubic-bezier(.2,.8,.2,1), visibility .38s ease;
+    }
+    .auth-gate.is-leaving {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .auth-blob {
+      position: absolute;
+      width: 270px;
+      height: 270px;
+      border-radius: 50%;
+      filter: blur(26px);
+      opacity: .42;
+      pointer-events: none;
+      animation: authFloat 10s ease-in-out infinite alternate;
+    }
+    .auth-blob.one {
+      top: -116px;
+      right: -96px;
+      background: color-mix(in srgb, var(--ios-accent) 55%, transparent);
+    }
+    .auth-blob.two {
+      bottom: -132px;
+      left: -116px;
+      background: rgba(84,167,255,.32);
+      animation-delay: -4s;
+    }
+    @keyframes authFloat {
+      from { transform: translate3d(-10px,-6px,0) scale(.96); }
+      to   { transform: translate3d(16px,14px,0) scale(1.08); }
+    }
+
+    .auth-shell {
+      position: relative;
+      width: min(100%, 440px);
+      min-height: 100dvh;
+      padding:
+        calc(42px + env(safe-area-inset-top, 0px))
+        22px
+        calc(28px + env(safe-area-inset-bottom, 0px));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .auth-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 28px;
+      animation: authRise .62s cubic-bezier(.2,.85,.2,1) both;
+    }
+    .auth-logo {
+      width: 78px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      border-radius: 25px;
+      margin-bottom: 18px;
+      color: white;
+      background:
+        radial-gradient(90% 90% at 25% 10%, rgba(255,255,255,.7), transparent 38%),
+        linear-gradient(145deg, color-mix(in srgb,var(--ios-accent) 72%,white), var(--ios-accent));
+      border: .5px solid rgba(255,255,255,.58);
+      box-shadow:
+        0 18px 44px color-mix(in srgb,var(--ios-accent) 22%,transparent),
+        inset 0 1px 0 rgba(255,255,255,.72),
+        inset 0 -1px 0 rgba(0,0,0,.08);
+    }
+    .auth-logo .material-symbols-rounded { font-size: 36px; font-variation-settings:'FILL' 1,'wght' 420; }
+    .auth-title {
+      font-size: 38px;
+      line-height: 1;
+      letter-spacing: -1.45px;
+      font-weight: 780;
+    }
+    .auth-tagline {
+      margin-top: 10px;
+      max-width: 310px;
+      color: var(--ios-secondary-label);
+      font-size: 15px;
+      line-height: 1.42;
+      font-weight: 500;
+    }
+
+    .auth-card {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      padding: 20px;
+      border-radius: 28px;
+      background: rgba(var(--glass-rgb), calc(var(--glass-alpha) + .10));
+      border: .5px solid var(--glass-border);
+      -webkit-backdrop-filter: blur(36px) saturate(190%) contrast(1.03);
+      backdrop-filter: blur(36px) saturate(190%) contrast(1.03);
+      box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,.46);
+      animation: authRise .68s .06s cubic-bezier(.2,.85,.2,1) both;
+    }
+    .auth-card::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-1;
+      pointer-events:none;
+      background:
+        radial-gradient(72% 55% at 15% 0%, rgba(255,255,255,.36), transparent 65%),
+        linear-gradient(145deg, rgba(255,255,255,.12), transparent 44%);
+    }
+    @keyframes authRise {
+      from { opacity: 0; transform: translateY(18px) scale(.985); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .auth-step {
+      display: block;
+      animation: authStepIn .30s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .auth-step[hidden] { display: none !important; }
+    @keyframes authStepIn {
+      from { opacity:0; transform:translateX(12px); }
+      to { opacity:1; transform:translateX(0); }
+    }
+    .auth-step-title { font-size: 23px; font-weight: 750; letter-spacing: -.55px; }
+    .auth-step-copy { margin-top: 5px; color: var(--ios-secondary-label); font-size: 13px; line-height: 1.42; }
+    .auth-field-label { display:block; margin: 19px 2px 7px; font-size:12px; font-weight:650; color:var(--ios-secondary-label); }
+    .auth-input-wrap {
+      min-height: 54px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 0 15px;
+      border-radius: 17px;
+      background: color-mix(in srgb, var(--ios-fill-secondary) 78%, transparent);
+      border: .5px solid color-mix(in srgb,var(--ios-separator) 60%,transparent);
+      transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+    .auth-input-wrap:focus-within {
+      border-color: color-mix(in srgb,var(--ios-accent) 62%,transparent);
+      background: color-mix(in srgb,var(--ios-secondary-bg) 78%,transparent);
+      box-shadow: 0 0 0 3px color-mix(in srgb,var(--ios-accent) 13%,transparent);
+      transform: translateY(-1px);
+    }
+    .auth-input-wrap > .material-symbols-rounded { color:var(--ios-secondary-label); font-size:21px; }
+    .auth-input {
+      min-width:0;
+      flex:1;
+      height:52px;
+      border:0;
+      outline:0;
+      background:transparent;
+      color:var(--ios-label);
+      font: inherit;
+      font-size:16px;
+      font-weight:540;
+    }
+    .auth-input::placeholder { color:var(--ios-tertiary-label); }
+    .auth-otp {
+      text-align:center;
+      font-size: 25px;
+      font-weight: 720;
+      letter-spacing: 9px;
+      font-variant-numeric: tabular-nums;
+      padding-left: 9px;
+    }
+    .auth-primary {
+      width:100%;
+      min-height:52px;
+      margin-top:16px;
+      border:0;
+      border-radius:17px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      background:var(--ios-accent);
+      color:white;
+      font:inherit;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 9px 24px color-mix(in srgb,var(--ios-accent) 25%,transparent), inset 0 1px 0 rgba(255,255,255,.28);
+      transition: transform .14s ease, opacity .14s ease, filter .18s ease;
+    }
+    .auth-primary:active { transform:scale(.985); }
+    .auth-primary:disabled { opacity:.58; cursor:default; box-shadow:none; }
+    .auth-secondary-row {
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      margin-top:14px;
+      flex-wrap:wrap;
+    }
+    .auth-text-btn {
+      border:0;
+      background:transparent;
+      color:var(--ios-accent);
+      font:inherit;
+      font-size:13px;
+      font-weight:650;
+      padding:7px 8px;
+      border-radius:10px;
+      cursor:pointer;
+    }
+    .auth-text-btn:active { background:var(--ios-fill-tertiary); }
+    .auth-email-chip {
+      display:inline-flex;
+      align-items:center;
+      max-width:100%;
+      margin-top:12px;
+      padding:7px 10px;
+      border-radius:999px;
+      background:var(--ios-fill-tertiary);
+      color:var(--ios-secondary-label);
+      font-size:12px;
+      font-weight:600;
+    }
+    .auth-email-chip span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .auth-hint {
+      display:flex;
+      align-items:flex-start;
+      gap:7px;
+      margin-top:16px;
+      color:var(--ios-tertiary-label);
+      font-size:11px;
+      line-height:1.42;
+    }
+    .auth-hint .material-symbols-rounded { font-size:15px; margin-top:1px; }
+    .auth-status {
+      min-height:18px;
+      margin-top:10px;
+      color:var(--ios-secondary-label);
+      font-size:12px;
+      text-align:center;
+    }
+    .auth-status.error { color:var(--ios-red); }
+    .auth-spinner {
+      width:17px;
+      height:17px;
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,.42);
+      border-top-color:white;
+      animation:authSpin .7s linear infinite;
+    }
+    @keyframes authSpin { to { transform:rotate(360deg); } }
+    .auth-footer {
+      margin-top:17px;
+      text-align:center;
+      color:var(--ios-tertiary-label);
+      font-size:10px;
+      line-height:1.4;
+      animation:authRise .68s .12s cubic-bezier(.2,.85,.2,1) both;
+    }
+
+    @media (max-height: 660px) {
+      .auth-shell { justify-content:flex-start; padding-top:calc(22px + env(safe-area-inset-top,0px)); }
+      .auth-brand { margin-bottom:18px; }
+      .auth-logo { width:64px; height:64px; border-radius:21px; margin-bottom:12px; }
+      .auth-logo .material-symbols-rounded { font-size:30px; }
+      .auth-title { font-size:32px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .auth-blob, .auth-brand, .auth-card, .auth-footer, .auth-step { animation:none !important; }
+    }
+
   </style>
 </head>
-<body>
+<body class="auth-locked">
+
+  <section class="auth-gate" id="authGate" aria-label="Connexion à Budget">
+    <div class="auth-blob one"></div>
+    <div class="auth-blob two"></div>
+
+    <div class="auth-shell">
+      <div class="auth-brand">
+        <div class="auth-logo" aria-hidden="true">
+          <span class="material-symbols-rounded">account_balance_wallet</span>
+        </div>
+        <div class="auth-title">Budget</div>
+        <div class="auth-tagline">Vos finances, simplement. Synchronisées en toute sécurité avec votre compte.</div>
+      </div>
+
+      <div class="auth-card">
+        <form class="auth-step" id="authEmailStep" novalidate>
+          <div class="auth-step-title">Bon retour</div>
+          <div class="auth-step-copy">Entrez votre adresse e-mail. Aucun mot de passe à retenir.</div>
+
+          <label class="auth-field-label" for="authEmail">Adresse e-mail</label>
+          <div class="auth-input-wrap">
+            <span class="material-symbols-rounded" aria-hidden="true">mail</span>
+            <input
+              class="auth-input"
+              id="authEmail"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              autocapitalize="none"
+              spellcheck="false"
+              placeholder="vous@exemple.com"
+              required
+            />
+          </div>
+
+          <button class="auth-primary" id="authSendCode" type="submit">
+            <span>Continuer</span>
+            <span class="material-symbols-rounded" aria-hidden="true" style="font-size:19px;">arrow_forward</span>
+          </button>
+
+          <div class="auth-hint">
+            <span class="material-symbols-rounded" aria-hidden="true">lock</span>
+            <span>Nous vous envoyons un code de connexion à usage unique. Votre session reste gérée par Supabase Auth.</span>
+          </div>
+          <div class="auth-status" id="authEmailStatus" role="status" aria-live="polite"></div>
+        </form>
+
+        <form class="auth-step" id="authOtpStep" novalidate hidden>
+          <div class="auth-step-title">Vérifiez votre e-mail</div>
+          <div class="auth-step-copy">Saisissez le code à 6 chiffres reçu à cette adresse.</div>
+          <div class="auth-email-chip"><span id="authOtpEmail"></span></div>
+
+          <label class="auth-field-label" for="authOtp">Code de vérification</label>
+          <div class="auth-input-wrap">
+            <input
+              class="auth-input auth-otp"
+              id="authOtp"
+              type="text"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              placeholder="••••••"
+              required
+            />
+          </div>
+
+          <button class="auth-primary" id="authVerifyCode" type="submit">
+            <span>Se connecter</span>
+          </button>
+
+          <div class="auth-secondary-row">
+            <button class="auth-text-btn" id="authResendCode" type="button">Renvoyer le code</button>
+            <button class="auth-text-btn" id="authChangeEmail" type="button">Changer d’adresse</button>
+          </div>
+          <div class="auth-status" id="authOtpStatus" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+
+      <div class="auth-footer">Connexion sans mot de passe · Données protégées par les règles RLS Supabase</div>
+    </div>
+  </section>
 
   <div class="app">
     <!-- Header épuré sans bouton avatar -->
@@ -1058,7 +1442,7 @@
     </div>
   </div>
 
-  <!-- FEUILLE DE COMPTE GOOGLE -->
+  <!-- FEUILLE DE COMPTE -->
   <div class="modal-backdrop" id="modalAccount">
     <div class="sheet">
       <div class="sheet-handle"></div>
@@ -1067,21 +1451,15 @@
           <span class="material-symbols-rounded">person</span>
         </div>
         <div style="min-width: 0; flex: 1;">
-          <div id="accModalName" style="font-weight: 800; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Non connecté</div>
-          <div id="accModalEmail" style="font-size: 11px; color: var(--md-sys-color-outline); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Mode local</div>
-          <div id="accModalStatus" style="font-size: 11px; font-weight: 700; color: var(--md-sys-color-outline); margin-top: 2px;">• Hors ligne</div>
+          <div id="accModalName" style="font-weight: 800; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Compte</div>
+          <div id="accModalEmail" style="font-size: 11px; color: var(--md-sys-color-outline); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+          <div id="accModalStatus" style="font-size: 11px; font-weight: 700; color: var(--md-sys-color-success); margin-top: 2px;">• Synchronisé avec Supabase</div>
         </div>
       </div>
 
-      <div id="accountActionsLoggedOut" style="display: flex; flex-direction: column; gap: 8px;">
-        <button class="ios-button ios-primary ios-press" id="btnConnectGoogle" style="width: 100%;">
-          <span>Se connecter avec Google</span>
-        </button>
-      </div>
-
-      <div id="accountActionsLoggedIn" style="display: none; flex-direction: column; gap: 8px;">
+      <div id="accountActionsLoggedIn" style="display: flex; flex-direction: column; gap: 8px;">
         <button id="btnSwitchAccount" class="ios-button ios-secondary ios-press" style="justify-content: flex-start;">
-          <span class="material-symbols-rounded">switch_account</span>Changer de compte
+          <span class="material-symbols-rounded">alternate_email</span>Changer d’adresse e-mail
         </button>
         <button id="btnSyncNow" class="ios-button ios-secondary ios-press" style="justify-content: flex-start;">
           <span class="material-symbols-rounded">sync</span>Forcer la synchronisation
@@ -1484,35 +1862,92 @@
         .subscribe();
     }
 
+    function setAuthGateVisible(visible) {
+      const gate = $("authGate");
+      if (!gate) return;
+      if (visible) {
+        gate.classList.remove("is-leaving");
+        document.body.classList.remove("auth-ready");
+        document.body.classList.add("auth-locked");
+      } else {
+        document.body.classList.add("auth-ready");
+        document.body.classList.remove("auth-locked");
+        requestAnimationFrame(() => gate.classList.add("is-leaving"));
+      }
+    }
+
+    function setAuthStatus(id, message = "", isError = false) {
+      const el = $(id);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.toggle("error", !!isError);
+    }
+
+    function setAuthButtonBusy(button, busy, busyLabel = "Connexion…") {
+      if (!button) return;
+      if (busy) {
+        if (!button.dataset.originalHtml) button.dataset.originalHtml = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = `<span class="auth-spinner" aria-hidden="true"></span><span>${busyLabel}</span>`;
+      } else {
+        button.disabled = false;
+        if (button.dataset.originalHtml) button.innerHTML = button.dataset.originalHtml;
+      }
+    }
+
+    function showEmailStep(email = "") {
+      $("authOtpStep").hidden = true;
+      $("authEmailStep").hidden = false;
+      $("authEmail").value = email || $("authEmail").value || "";
+      $("authOtp").value = "";
+      setAuthStatus("authEmailStatus", "");
+      setAuthStatus("authOtpStatus", "");
+      setTimeout(() => $("authEmail")?.focus(), 80);
+    }
+
+    function showOtpStep(email) {
+      $("authEmailStep").hidden = true;
+      $("authOtpStep").hidden = false;
+      $("authOtpEmail").textContent = email;
+      $("authOtp").value = "";
+      setAuthStatus("authOtpStatus", "Code envoyé. Consultez votre boîte de réception.");
+      setTimeout(() => $("authOtp")?.focus(), 80);
+    }
+
+    async function sendEmailOtp(email, { resend = false } = {}) {
+      const cleanEmail = String(email || "").trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+        throw new Error("Entrez une adresse e-mail valide.");
+      }
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email: cleanEmail,
+        options: { shouldCreateUser: true }
+      });
+      if (error) throw error;
+      if (!resend) showOtpStep(cleanEmail);
+      return cleanEmail;
+    }
+
     async function applyAuthUser(user) {
       currentUser = user || null;
       const dot = $("navAccountDot");
       const indicator = $("navAccountIndicator");
-      const loggedOut = $("accountActionsLoggedOut");
-      const loggedIn = $("accountActionsLoggedIn");
       stopRealtime();
 
       if (user) {
+        setAuthGateVisible(false);
         const meta = user.user_metadata || {};
-        const photoURL = meta.avatar_url || meta.picture || "";
-        const displayName = meta.full_name || meta.name || user.email?.split("@")[0] || "Utilisateur Google";
+        const displayName = meta.full_name || meta.name || user.email?.split("@")[0] || "Compte";
+        const initials = displayName.charAt(0).toUpperCase();
 
         if (dot) dot.classList.add("online");
-        if (photoURL) {
-          if (indicator) indicator.innerHTML = `<img src="${photoURL}" alt="Photo" referrerpolicy="no-referrer" style="width:24px; height:24px; border-radius:50%; object-fit:cover;" /><div class="account-badge-dot online" id="navAccountDot" style="right:3px; bottom:3px;"></div>`;
-          $("accModalAvatar").innerHTML = `<img src="${photoURL}" alt="Photo" referrerpolicy="no-referrer" style="width:100%; height:100%; object-fit:cover;" />`;
-        } else {
-          const initials = displayName.charAt(0).toUpperCase();
-          if (indicator) indicator.innerHTML = `<div style="font-weight:800; font-size:14px;">${initials}</div><div class="account-badge-dot online" id="navAccountDot" style="right:3px; bottom:3px;"></div>`;
-          $("accModalAvatar").innerHTML = `<span>${initials}</span>`;
-        }
-
+        if (indicator) indicator.innerHTML = `<div style="font-weight:800; font-size:14px;">${initials}</div><div class="account-badge-dot online" id="navAccountDot" style="right:3px; bottom:3px;"></div>`;
+        $("accModalAvatar").innerHTML = `<span>${initials}</span>`;
         $("accModalName").textContent = displayName;
         $("accModalEmail").textContent = user.email || "";
         $("accModalStatus").textContent = "• Synchronisé avec Supabase Cloud";
         $("accModalStatus").style.color = "var(--md-sys-color-success)";
-        loggedOut.style.display = "none";
-        loggedIn.style.display = "flex";
 
         try {
           await loadActiveHousehold();
@@ -1526,20 +1961,16 @@
         }
       } else {
         currentHouseholdId = null;
-        if (dot) dot.classList.remove("online");
-        if (indicator) indicator.innerHTML = `<span class="material-symbols-rounded" id="navAccountIcon">account_circle</span><div class="account-badge-dot" id="navAccountDot" style="right:3px; bottom:3px;"></div>`;
-        $("accModalAvatar").innerHTML = `<span class="material-symbols-rounded">person</span>`;
-        $("accModalName").textContent = "Non connecté";
-        $("accModalEmail").textContent = "Mode local";
-        $("accModalStatus").textContent = "• Hors ligne";
-        $("accModalStatus").style.color = "var(--md-sys-color-outline)";
-        loggedOut.style.display = "flex";
-        loggedIn.style.display = "none";
         transactions = [];
         renderApp();
+        if (dot) dot.classList.remove("online");
+        if (indicator) indicator.innerHTML = `<span class="material-symbols-rounded" id="navAccountIcon">account_circle</span><div class="account-badge-dot" id="navAccountDot" style="right:3px; bottom:3px;"></div>`;
+        setAuthGateVisible(true);
       }
     }
 
+    // Keep the application locked until we know whether a Supabase session exists.
+    setAuthGateVisible(true);
     const { data: initialSessionData } = await supabase.auth.getSession();
     await applyAuthUser(initialSessionData?.session?.user || null);
 
@@ -1548,32 +1979,74 @@
       await applyAuthUser(session?.user || null);
     });
 
-    $("btnConnectGoogle").onclick = async () => {
+    $("authEmailStep").addEventListener("submit", async e => {
+      e.preventDefault();
+      const btn = $("authSendCode");
+      setAuthStatus("authEmailStatus", "");
+      setAuthButtonBusy(btn, true, "Envoi du code…");
       try {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: { redirectTo: window.location.origin + window.location.pathname }
+        await sendEmailOtp($("authEmail").value);
+      } catch (err) {
+        setAuthStatus("authEmailStatus", err.message || "Impossible d’envoyer le code.", true);
+      } finally {
+        setAuthButtonBusy(btn, false);
+      }
+    });
+
+    $("authOtp").addEventListener("input", e => {
+      e.target.value = e.target.value.replace(/\D/g, "").slice(0, 6);
+    });
+
+    $("authOtpStep").addEventListener("submit", async e => {
+      e.preventDefault();
+      const btn = $("authVerifyCode");
+      const email = $("authOtpEmail").textContent.trim();
+      const token = $("authOtp").value.replace(/\D/g, "");
+      if (token.length !== 6) {
+        setAuthStatus("authOtpStatus", "Saisissez les 6 chiffres du code.", true);
+        return;
+      }
+
+      setAuthStatus("authOtpStatus", "");
+      setAuthButtonBusy(btn, true, "Vérification…");
+      try {
+        const { data, error } = await supabase.auth.verifyOtp({
+          email,
+          token,
+          type: "email"
         });
         if (error) throw error;
+        if (!data?.session) throw new Error("La session n’a pas pu être créée.");
+        setAuthStatus("authOtpStatus", "Connexion réussie.");
       } catch (err) {
-        notify("Échec de connexion : " + err.message, "error");
+        setAuthStatus("authOtpStatus", err.message || "Code invalide ou expiré.", true);
+      } finally {
+        setAuthButtonBusy(btn, false);
+      }
+    });
+
+    $("authResendCode").onclick = async () => {
+      const email = $("authOtpEmail").textContent.trim();
+      const btn = $("authResendCode");
+      btn.disabled = true;
+      setAuthStatus("authOtpStatus", "Renvoi en cours…");
+      try {
+        await sendEmailOtp(email, { resend: true });
+        setAuthStatus("authOtpStatus", "Nouveau code envoyé.");
+      } catch (err) {
+        setAuthStatus("authOtpStatus", err.message || "Impossible de renvoyer le code.", true);
+      } finally {
+        btn.disabled = false;
       }
     };
 
+    $("authChangeEmail").onclick = () => showEmailStep($("authOtpEmail").textContent.trim());
+
     $("btnSwitchAccount").onclick = async () => {
-      try {
-        await supabase.auth.signOut({ scope: "local" });
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: window.location.origin + window.location.pathname,
-            queryParams: { prompt: "select_account" }
-          }
-        });
-        if (error) throw error;
-      } catch (err) {
-        notify("Action annulée : " + err.message, "info");
-      }
+      const previousEmail = currentUser?.email || "";
+      modal("modalAccount", false);
+      await supabase.auth.signOut();
+      showEmailStep(previousEmail);
     };
 
     $("btnSyncNow").onclick = async () => {
@@ -1587,9 +2060,10 @@
     };
 
     $("btnAccountLogout").onclick = async () => {
-      await supabase.auth.signOut();
+      const previousEmail = currentUser?.email || "";
       modal("modalAccount", false);
-      notify("Déconnecté", "logout");
+      await supabase.auth.signOut();
+      showEmailStep(previousEmail);
     };
 
     $("txContainer").onclick = e => {
@@ -1807,7 +2281,7 @@
               const isFixed = type === "expense" && !!t.isFixed;
               return {
                 household_id: currentHouseholdId,
-                client_entry_id: t.clientEntryId || t.client_entry_id || (t.id ? `firebase:${String(t.id)}` : (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`)),
+                client_entry_id: t.clientEntryId || t.client_entry_id || (t.id ? `legacy:${String(t.id)}` : (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`)),
                 month_key: date.slice(0, 7),
                 kind: type === "income" ? "income" : (isFixed ? "fixed" : "variable"),
                 title: t.label || t.title || "Sans titre",
