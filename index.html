@@ -2881,6 +2881,47 @@
       margin-top:-1px !important;
     }
 
+    /* DA2 v16 — all bottom-nav items share the same physical button language as "Ajouter". */
+    body > #navBar.nav-bar .nav-item,
+    .nav-bar .nav-item {
+      background:var(--nb-white) !important;
+      color:var(--nb-black) !important;
+      border:3px solid var(--nb-black) !important;
+      box-shadow:3px 3px 0 var(--nb-black) !important;
+      border-radius:15px !important;
+      transform:none !important;
+    }
+
+    body > #navBar.nav-bar .nav-item.nav-add,
+    .nav-bar .nav-item.nav-add {
+      background:var(--nb-mint) !important;
+      color:var(--nb-black) !important;
+    }
+
+    body > #navBar.nav-bar .nav-item.active,
+    .nav-bar .nav-item.active {
+      background:var(--nb-purple) !important;
+      color:#fff !important;
+      border-color:var(--nb-black) !important;
+      box-shadow:3px 3px 0 var(--nb-black) !important;
+    }
+
+    body > #navBar.nav-bar .nav-item:active,
+    .nav-bar .nav-item:active {
+      transform:translate(2px,2px) !important;
+      box-shadow:1px 1px 0 var(--nb-black) !important;
+    }
+
+    body > #navBar.nav-bar .nav-item .nav-indicator,
+    body > #navBar.nav-bar .nav-item .material-symbols-rounded,
+    body > #navBar.nav-bar .nav-item .nav-label,
+    .nav-bar .nav-item .nav-indicator,
+    .nav-bar .nav-item .material-symbols-rounded,
+    .nav-bar .nav-item .nav-label {
+      color:inherit !important;
+      background:transparent !important;
+    }
+
   </style>
 </head>
 <body class="auth-locked">
